@@ -55,3 +55,6 @@ storybook-static/
 
 # ── 이미지/대용량은 LFS 권장(선택)
 # .gitattributes 에서 관리: git lfs track "*.png" "*.jpg" "*.mp4" "*.zip"
+
+# local sqlite dev db
+prisma/*.db
