@@ -1,26 +1,143 @@
+/* app/globals.css */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+/* ================================
+   Design Tokens (HSL)
+   ================================ */
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 220 25% 10%;
+    --foreground: 210 40% 98%;
+    --card: 220 20% 14%;
+    --card-foreground: 210 40% 98%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 190 80% 60%;
+    --primary-foreground: 220 25% 10%;
+
+    --secondary: 280 70% 65%;
+    --secondary-foreground: 220 25% 10%;
+
+    --muted: 220 15% 25%;
+    --muted-foreground: 210 20% 65%;
+
+    --accent: 340 75% 75%;
+    --accent-foreground: 220 25% 10%;
+
+    --destructive: 0 70% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 15% 22%;
+    --input: 220 15% 22%;
+    --ring: 190 80% 60%;
+
+    --radius: 1rem;
+
+    --pastel-pink: 340 75% 85%;
+    --pastel-mint: 160 60% 80%;
+
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 190 80% 60%;
+    --sidebar-primary-foreground: 220 25% 10%;
+    --sidebar-accent: 220 15% 25%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 15% 22%;
+    --sidebar-ring: 190 80% 60%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ================================
+   Base Resets / Global Styles
+   ================================ */
+@layer base {
+  *, *::before, *::after {
+    border-color: hsl(var(--border));
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", system-ui, sans-serif;
+  }
+}
+
+/* ================================
+   Token Utility Classes
+   (Tailwind v5 configless 환경에서 토큰 유틸 제공)
+   ================================ */
+@layer utilities {
+  /* Base token aliases */
+  .bg-background { background-color: hsl(var(--background)); }
+  .text-foreground { color: hsl(var(--foreground)); }
+
+  .bg-card { background-color: hsl(var(--card)); }
+  .text-card-foreground { color: hsl(var(--card-foreground)); }
+
+  .bg-popover { background-color: hsl(var(--popover)); }
+  .text-popover-foreground { color: hsl(var(--popover-foreground)); }
+
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .text-primary-foreground { color: hsl(var(--primary-foreground)); }
+
+  .bg-secondary { background-color: hsl(var(--secondary)); }
+  .text-secondary-foreground { color: hsl(var(--secondary-foreground)); }
+
+  .bg-accent { background-color: hsl(var(--accent)); }
+  .text-accent-foreground { color: hsl(var(--accent-foreground)); }
+
+  .bg-destructive { background-color: hsl(var(--destructive)); }
+  .text-destructive-foreground { color: hsl(var(--destructive-foreground)); }
+
+  .bg-muted { background-color: hsl(var(--muted)); }
+  .text-muted-foreground { color: hsl(var(--muted-foreground)); }
+
+  .border-border { border-color: hsl(var(--border)); }
+  .border-input { border-color: hsl(var(--input)); }
+
+  /* Opacity variants matching your usage */
+  .bg-card-50 { background-color: hsl(var(--card) / 0.5); }
+  .bg-muted-20 { background-color: hsl(var(--muted) / 0.2); }
+  .border-border-50 { border-color: hsl(var(--border) / 0.5); }
+  .hover\:bg-destructive-20:hover { background-color: hsl(var(--destructive) / 0.2); }
+
+  /* Ring helper (optional) */
+  .ring-primary { box-shadow: 0 0 0 3px hsl(var(--primary) / 0.5); }
+
+  /* ================================
+     Your custom helpers
+     ================================ */
+
+  /* Glass card */
+  .glass-card {
+    background-color: hsl(var(--card) / 0.5);
+    backdrop-filter: blur(24px);
+    border-width: 1px;
+    border-style: solid;
+    border-color: hsl(var(--border) / 0.5);
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background-image: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Hover lift */
+  .hover-lift {
+    transition-property: transform, box-shadow, filter, opacity, background-color, color, border-color;
+    transition-duration: 300ms;
+    transform: translateY(0);
+  }
+  .hover-lift:hover {
+    transform: translateY(-0.25rem); /* -translate-y-1 */
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.2);
+  }
 }
