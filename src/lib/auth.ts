@@ -6,7 +6,7 @@ import { prisma } from './prisma'
 export type SessionUser = { id: string; email: string; nickname: string | null }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
-  const cookie = cookies().get('session')?.value
+  const cookie = (await cookies()).get('session')?.value
   const payload = await verifySession<{ uid: string }>(cookie)
   if (!payload?.uid) return null
   const user = await prisma.user.findUnique({ where: { id: payload.uid }, select: { id: true, email: true, nickname: true } })
