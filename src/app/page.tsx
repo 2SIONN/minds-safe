@@ -7,12 +7,14 @@ export default function HomePage() {
   return (
     <>
       <Header
-        className="glass-card border-b border-border/50" // 글로벌 유틸·토큰 사용
-        containerClassName="flex items-center justify-between" // 배치만 담당
+        className="glass-card border-b border-border/50"         // 글로벌 유틸·토큰 사용
+        containerClassName="flex items-center justify-between"   // 배치만 담당
       >
         {/* 왼쪽 */}
         <div className="flex items-center gap-2">
-          <h1 className="text-xl sm:text-2xl font-extrabold gradient-text">고민타파</h1>
+          <h1 className="text-xl sm:text-2xl font-extrabold gradient-text">
+            고민타파
+          </h1>
         </div>
 
         {/* 오른쪽 */}
