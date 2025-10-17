@@ -4,14 +4,28 @@ import { cn } from '@/lib/utils'
 
 interface CardProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
+  closable?: boolean
+  onClose?: () => void
 }
 
-export function Card({ className, children, ...props }: CardProps) {
+export function Card({ className, children, closable, onClose, ...props }: CardProps) {
   return (
     <div
-      className={cn('rounded-lg border border-gray-200 bg-white shadow-sm', className)}
+      className={cn(
+        'relative rounded-lg border border-border bg-card text-card-foreground shadow-sm',
+        className
+      )}
       {...props}
     >
+      {closable && (
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 p-1 rounded-md hover:bg-muted transition-colors cursor-pointer"
+          aria-label="닫기"
+        >
+          <X className="size-4" />
+        </button>
+      )}
       {children}
     </div>
   )
@@ -21,25 +35,17 @@ interface CardHeaderProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
   left?: ReactNode
   right?: ReactNode
-  closable?: boolean
-  onClose?: () => void
 }
 
-export function CardHeader({ className, children, left, right, closable, onClose, ...props }: CardHeaderProps) {
+export function CardHeader({ className, children, left, right, ...props }: CardHeaderProps) {
   return (
-    <div className={cn('flex items-center justify-between p-6', className)} {...props}>
+    <div
+      className={cn('flex items-center justify-between p-6 text-card-foreground', className)}
+      {...props}
+    >
       {left && <div className="mr-4">{left}</div>}
       <div className="flex-1 min-w-0">{children}</div>
       {right && <div className="ml-4">{right}</div>}
-      {closable && (
-        <button
-          onClick={onClose}
-          className="ml-4 p-1 rounded-md hover:bg-gray-100 transition-colors"
-          aria-label="닫기"
-        >
-          <X className="size-4" />
-        </button>
-      )}
     </div>
   )
 }
@@ -50,7 +56,7 @@ interface CardContentProps extends ComponentPropsWithRef<'div'> {
 
 export function CardContent({ className, children, ...props }: CardContentProps) {
   return (
-    <div className={cn('p-6 pt-0', className)} {...props}>
+    <div className={cn('p-6 text-card-foreground', className)} {...props}>
       {children}
     </div>
   )
@@ -62,7 +68,7 @@ interface CardFooterProps extends ComponentPropsWithRef<'div'> {
 
 export function CardFooter({ className, children, ...props }: CardFooterProps) {
   return (
-    <div className={cn('flex items-center p-6 pt-0', className)} {...props}>
+    <div className={cn('flex items-center p-6 text-card-foreground', className)} {...props}>
       {children}
     </div>
   )
