@@ -59,14 +59,14 @@
 }
 
 /* v4에서는 커스텀 유틸을 @utility로 정의하는 게 권장 */
-@utility .glass-card {
+@utility glass-card {
   @apply bg-card/50 backdrop-blur-xl border border-border/50;
 }
 
-@utility .gradient-text {
+@utility gradient-text {
   @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
 }
 
-@utility .hover-lift {
+@utility hover-lift {
   @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_hsl(var(--color-primary)/0.2)];
 }
