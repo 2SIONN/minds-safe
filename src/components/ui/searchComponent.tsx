@@ -2,11 +2,15 @@ import { Search } from 'lucide-react'
 export default function SearchComponent() {
   return (
     <>
-      <div>
+      <div className="flex flex-col">
         <div>지금 마음, 익명으로 털어놓아도 괜찮아요.</div>
-        <div>
-          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-          <input type="text" placeholder="내용이나 태그로 검색..."></input>
+        <div className="flex gap-2 items-center border-1 border-sky-500">
+          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50 border-1 border-purple-500" />
+          <input
+            type="text"
+            className="border-1 border-sky-500"
+            placeholder="내용이나 태그로 검색..."
+          ></input>
         </div>
         <div>
           <ul>
