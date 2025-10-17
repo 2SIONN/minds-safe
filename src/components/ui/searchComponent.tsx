@@ -1,5 +1,7 @@
+'use client'
+
 import { Search } from 'lucide-react'
-import { useEffect } from 'react'
+
 export default function SearchComponent() {
   return (
     <>
@@ -11,7 +13,7 @@ export default function SearchComponent() {
             type="text"
             className="flex-1 text-slate-50 outline-none"
             placeholder="내용이나 태그로 검색..."
-          ></input>
+          />
         </div>
         {/* 선택true - bg: sky-400, text:zinc-900 */}
         {/* 선택 false - bg:gray-700/50. text: slate-400,  hover: gray-700*/}
