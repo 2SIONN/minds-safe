@@ -1,8 +1,14 @@
 'use client'
-
+import { useEffect } from 'react'
 import { Search } from 'lucide-react'
-
+import axios from 'axios'
 export default function SearchComponent() {
+  useEffect(() => {
+    axios
+      .get('/api/tags')
+      .then((res) => console.log(res.data))
+      .catch((err) => console.error(err))
+  }, [])
   return (
     <>
       <div className="flex flex-col max-w-4xl mx-auto bg-zinc-900">
