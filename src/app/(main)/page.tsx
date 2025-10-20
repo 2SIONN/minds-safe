@@ -1,9 +1,22 @@
 // src/app/(main)/page.tsx
-import Link from 'next/link';
-import SearchFilter from '@/components/common/SearchFilter';
-import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge';
+import SearchFilter from '@/components/common/SearchFilter'
+import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
+import FeedCard from '@/components/feed/feed-card'
+import { Posts } from '@/types/post'
+import { getPosts } from './server'
 
-export default function Home() {
+export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
+  const q = (await searchParams)?.q
+  const posts: Posts[] = await getPosts(q)
+
+  if (!posts.length) {
+    return (
+      <div className="p-4 text-center text-gray-500">
+        게시글이 없습니다{q ? ` (검색어: "${q}")` : ''}.
+      </div>
+    )
+  }
+
   return (
     <>
       {/* 검색창 */}
@@ -23,6 +36,12 @@ export default function Home() {
           </TagBadge>
         ))}
       </div>
+
+      <div className="p-4 max-w-2xl mx-auto">
+        {posts.map((p) => (
+          <FeedCard key={p.id} {...p} />
+        ))}
+      </div>
     </>
-  );
+  )
 }
