@@ -1,6 +1,7 @@
 'use client'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
+import TagBadge from '@/components/common/TagBadge'
 import { Posts } from '@/types/post'
 
 /**
@@ -11,18 +12,21 @@ import { Posts } from '@/types/post'
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Posts) {
   return (
     <div className="p-3">
-      <Card key={id} className="min-w-sm w-sm m-0 mx-auto my-0 mb-8">
-        <CardHeader>{content}</CardHeader>
-        <CardContent>
-          {tags.map((tag) => (
-            <span key={tag}>#{tag} </span>
+      <Card key={id} className="mt-4">
+        <CardHeader className="p-5 pb-0">{content}</CardHeader>
+        <CardContent className="px-5 py-3">
+          {tags?.map((tag) => (
+            <TagBadge key={tag}>{tag}</TagBadge>
           ))}
         </CardContent>
-        <CardFooter>
-          <div style={{ display: 'flex' }}>
-            <div> {empathies.length}</div>
-            <div> {replies ? replies.length : 0}</div>
-            <div> {new Date(createdAt).toLocaleString()}</div>
+        <CardFooter className="p-5 pt-0  text-muted-foreground text-sm">
+          <div className="w-full flex justify-between">
+            <div>익명</div>
+            <div className="flex gap-4">
+              <div>♡ {empathies.length}</div>
+              <div>댓글 {replies ? replies.length : 0}</div>
+              <div>{new Date(createdAt).toLocaleString()}</div>
+            </div>
           </div>
         </CardFooter>
       </Card>

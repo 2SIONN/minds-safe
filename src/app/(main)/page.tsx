@@ -37,7 +37,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
         ))}
       </div>
 
-      <div className="p-4 max-w-2xl mx-auto">
+      <div className="max-w-4xl px-4 sm:px-6 flex flex-col gap-2 m-0 mx-auto">
         {posts.map((p) => (
           <FeedCard key={p.id} {...p} />
         ))}
