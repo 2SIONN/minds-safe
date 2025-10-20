@@ -1,19 +1,4 @@
-
-'use client';
-import { useEffect, useState } from 'react';
-
 export default function Loading() {
-  const [dotCount, setDotCount] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDotCount((prev: number) => (prev + 1) % 4);
-    }, 500); // 0.5초마다 실행
-
-    return () => clearInterval(interval); // 클리너 함수입니다.
-  }, []);
-
-  const dots = '.'.repeat(dotCount);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -25,7 +10,7 @@ export default function Loading() {
         
       }}></div>
       
-      <p className="mt-[1rem]">잠시만 기다려 주세요{dots}</p>
+      <p className="mt-[1rem]">잠시만 기다려 주세요!</p>
       
     </div>
 
