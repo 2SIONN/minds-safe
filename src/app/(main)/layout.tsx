@@ -2,8 +2,9 @@
 import Link from 'next/link'
 import Header from '@/components/common/Header'
 import SearchFilter from '@/components/common/SearchFilter'
+import { ReactNode } from 'react'
 
-export default function HomePage() {
+export default function HomePage({children}: {children: ReactNode}) {
   return (
     <>
       {/* 헤더 */}
@@ -30,6 +31,7 @@ export default function HomePage() {
         }
       
       />
+      <div>{children}</div>
 
      
     </>
