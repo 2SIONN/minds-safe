@@ -2,6 +2,8 @@
 import Link from 'next/link';
 import SearchFilter from '@/components/common/SearchFilter';
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge';
+import Fab from '@/components/common/Fab';
+import { Plus } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -23,6 +25,7 @@ export default function Home() {
           </TagBadge>
         ))}
       </div>
+      <Fab icon={<Plus className='w-6 h-6 '/>}></Fab>
     </>
   );
 }
