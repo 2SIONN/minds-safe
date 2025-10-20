@@ -30,7 +30,7 @@ const sizeMap = {
 } as const
 
 const colorMap = {
-  neutral: 'bg-card text-muted-foreground',
+  neutral: 'bg-popover text-muted-foreground',
   primary: 'bg-primary text-primary-foreground',
 } as const
 
