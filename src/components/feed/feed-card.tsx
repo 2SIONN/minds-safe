@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 import TagBadge from '@/components/common/TagBadge'
+import { formatRelativeDate } from '@/lib/data'
 import { Posts } from '@/types/post'
 
 /**
@@ -25,7 +26,7 @@ export default function FeedCard({ id, content, tags, empathies, replies, create
             <div className="flex gap-4">
               <div>♡ {empathies.length}</div>
               <div>댓글 {replies ? replies.length : 0}</div>
-              <div>{new Date(createdAt).toLocaleString()}</div>
+              <div>{formatRelativeDate(createdAt)}</div>
             </div>
           </div>
         </CardFooter>
