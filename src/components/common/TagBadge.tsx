@@ -17,14 +17,22 @@ export const DEFAULT_TAGS = [
 
 export type TagOption = (typeof DEFAULT_TAGS)[number]
 
-type TagBadgeProps = ComponentPropsWithoutRef<'span'> & {
+type TagBadgeProps = ComponentPropsWithoutRef<'button'> & {
   children: ReactNode // 내부 콘텐츠(텍스트, 아이콘 등)
   selected?: boolean // 선택 상태(시각적 표시만)
   size?: 'sm' | 'md' // 크기 프리셋
 }
 
-//  TagBadge (공용 시각용 태그 컴포넌트)
-//  selected는 외부 상태에 따라 제어 (ex. 클릭 시 색상 토글 등)
+// size / color 매핑
+const sizeMap = {
+  sm: 'h-6 px-2.5 text-[10px]',
+  md: 'h-8 px-3 text-xs',
+} as const
+
+const colorMap = {
+  neutral: 'bg-popover text-muted-foreground',
+  primary: 'bg-primary text-primary-foreground',
+} as const
 
 function TagBadgeBase({
   children,
@@ -33,24 +41,22 @@ function TagBadgeBase({
   className,
   ...rest
 }: TagBadgeProps) {
-  const sizeCls = size === 'sm' ? 'h-6 px-2.5 text-[10px]' : 'h-8 px-3 text-xs'
-  const colorCls = selected ? 'bg-primary text-primary-foreground' : 'bg-card text-muted-foreground'
-
   return (
-    <span
+    <button
+      type="button"
       data-selected={selected ? '' : undefined}
       className={[
         'inline-flex items-center justify-center gap-1.5',
         'rounded-[14px] select-none whitespace-nowrap',
-        colorCls,
+        selected ? colorMap.primary : colorMap.neutral,
         'transition-colors duration-200',
-        sizeCls,
+        sizeMap[size],
         className ?? '',
       ].join(' ')}
       {...rest}
     >
       {children}
-    </span>
+    </button>
   )
 }
 
