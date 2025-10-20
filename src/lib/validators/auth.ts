@@ -49,7 +49,7 @@ export const registerSchema = z
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: '비밀번호 값이 일치하지 않습니다',
-    path: ['passwwordConfirm'],
+    path: ['passwordConfirm'],
   })
 
 export const validateLogin = (data: unknown) => loginSchema.safeParse(data)
