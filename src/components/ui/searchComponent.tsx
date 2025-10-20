@@ -20,7 +20,7 @@ export default function SearchComponent() {
 
   return (
     <>
-      <div className="flex flex-col max-w-4xl mx-auto bg-zinc-900">
+      <div className="flex flex-col max-w-4xl mx-auto ">
         <p className="text-sm text-slate-50 mb-4">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
         <SearchFilter></SearchFilter>
         {/* 선택true - bg: sky-400, text:zinc-900 */}
