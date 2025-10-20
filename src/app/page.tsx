@@ -1,32 +1,19 @@
-// app/page.tsx
-import Link from 'next/link'
-import Header from '@/components/common/Header'
 
-export default function HomePage() {
+
+export default function Home() {
   return (
-    <>
-      <Header
-        className="glass-card border-b border-border/50"         // 글로벌 유틸·토큰 사용
-        containerClassName="flex items-center justify-between"   // 배치만 담당
-      >
-        {/* 왼쪽 */}
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl sm:text-2xl font-extrabold gradient-text">
-            고민타파
-          </h1>
-        </div>
+    <div className="flex flex-col items-center justify-center">
+      <div className="w-12 h-12 border-[7.5] border-t-[3px 3px] border-t-[#00000000] border-dotted border-[#eeeeee] rounded-full"
+      style={{
+        animation: ' 1.2s ease-in-out infinite',
+        maskImage: 'conic-gradient(transparent 0deg, black 180deg )',
+        WebkitMaskImage: 'conic-gradient(transparent 0deg, black 330deg)',
+        
+      }}></div>
+      
+      <p>잠시만 기다려 주세요</p>
+    </div>
 
-        {/* 오른쪽 */}
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <span className="hidden sm:inline">익명</span>
-          <Link href="/mypage" className="text-primary hover:underline underline-offset-4">
-            마이페이지
-          </Link>
-          <Link href="/login" className="p-2 rounded-lg hover:bg-muted/40">
-            로그인
-          </Link>
-        </div>
-      </Header>
-    </>
-  )
+  );
 }
+
