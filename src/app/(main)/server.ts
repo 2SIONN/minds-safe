@@ -1,6 +1,11 @@
 import { base } from '@/lib/http'
 import { Posts } from '@/types/post'
 
+/**
+ * Get /api/posts
+ * @param q
+ * @returns res.json()
+ */
 export async function getPosts(q?: string): Promise<Posts[]> {
   const b = await base()
   const url = new URL('/apis/posts', b)

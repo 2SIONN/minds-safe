@@ -3,6 +3,11 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 import { Posts } from '@/types/post'
 
+/**
+ * 게시글 목록 전용 카드
+ * @param { id, content, tags, empathies, replies, createdAt }: Posts
+ * @returns ReactNode
+ */
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Posts) {
   return (
     <div className="p-3">
