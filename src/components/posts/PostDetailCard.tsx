@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
-import Tags from '@/app/posts/components/tags'
+import Tags from '@/components/posts/tags'
 
 export default function PostDetailCard({ post }: { post: any }) {
   const handleClose = () => alert('카드 닫힘')

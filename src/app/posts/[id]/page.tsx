@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import PostDetailCard from '@/app/posts/components/PostDetailCard'
+import PostDetailCard from '@/components/posts/PostDetailCard'
 import { getBaseUrl } from '@/lib/http'
 
 export const dynamic = 'force-dynamic'
