@@ -2,8 +2,8 @@
 import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
 import axios from 'axios'
-import SearchFilter from './SearchFilter'
-import TagBadge from './TagBadge'
+import SearchFilter from '../common/SearchFilter'
+import TagBadge from '../common/TagBadge'
 
 export default function SearchComponent() {
   const [tags, setTags] = useState<{ tag: string; count: number }[]>([])
@@ -32,8 +32,6 @@ export default function SearchComponent() {
               {tag}
             </TagBadge>
           ))}
-
-          {/* 나머지 태그 */}
         </div>
       </div>
     </>
