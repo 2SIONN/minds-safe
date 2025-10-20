@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
 import axios from 'axios'
 import SearchFilter from './SearchFilter'
+import TagBadge from './TagBadge'
 
 export default function SearchComponent() {
   const [tags, setTags] = useState<{ tag: string; count: number }[]>([])
@@ -22,36 +23,17 @@ export default function SearchComponent() {
     <>
       <div className="flex flex-col max-w-4xl mx-auto ">
         <p className="text-sm text-slate-50 mb-4">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
-        <SearchFilter></SearchFilter>
+        <SearchFilter />
         {/* 선택true - bg: sky-400, text:zinc-900 */}
         {/* 선택 false - bg:gray-700/50. text: slate-400,  hover: gray-700*/}
         <div>
-          <ul className="flex flex-wrap gap-2">
-            <li
-              onClick={() => setSelected('전체')}
-              className={`px-3 py-1 rounded-full cursor-pointer ${
-                selected === '전체'
-                  ? 'bg-sky-400 text-zinc-900'
-                  : 'bg-gray-700/50 text-slate-400 hover:bg-gray-700'
-              }`}
-            >
-              전체
-            </li>
+          {tags.map(({ tag }) => (
+            <TagBadge key={tag} onClick={() => setSelected(tag)} selected={selected === tag}>
+              {tag}
+            </TagBadge>
+          ))}
 
-            {tags.map(({ tag }) => (
-              <li
-                key={tag}
-                onClick={() => setSelected(tag)}
-                className={`px-3 py-1 rounded-full cursor-pointer ${
-                  selected === tag
-                    ? 'bg-sky-400 text-zinc-900'
-                    : 'bg-gray-700/50 text-slate-400 hover:bg-gray-700'
-                }`}
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
+          {/* 나머지 태그 */}
         </div>
       </div>
     </>
