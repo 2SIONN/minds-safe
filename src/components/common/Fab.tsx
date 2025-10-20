@@ -1,5 +1,3 @@
-'use client'
-
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import Button from '@/components/common/Button'
