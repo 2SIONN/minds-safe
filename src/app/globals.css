@@ -70,3 +70,9 @@
 @utility hover-lift {
   @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_hsl(var(--color-primary)/0.2)];
 }
+
+@keyframes spin-slow { /* 로딩과 함께 추가됐습니다. - 서민욱 */
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
