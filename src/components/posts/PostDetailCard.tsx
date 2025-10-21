@@ -2,8 +2,10 @@
 
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 import Tags from '@/components/posts/tags'
+import ReplyList from './ReplyList'
+import { Post } from '@/types/post'
 
-export default function PostDetailCard({ post }: { post: any }) {
+export default function PostDetailCard({ post }: { post: Post }) {
   const handleClose = () => alert('카드 닫힘')
 
   return (
@@ -18,6 +20,7 @@ export default function PostDetailCard({ post }: { post: any }) {
         </CardContent>
         {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
         <div className="h-px bg-white/10 mx-6" />
+        <ReplyList replies={post.replies}/>
         {/* 댓글 ui랑 댓글 입력창 컴포넌트 넣기 */}
       </Card>
     </div>
