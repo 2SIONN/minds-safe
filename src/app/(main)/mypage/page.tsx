@@ -1,10 +1,9 @@
 'use client'
 
-import Header from '@/components/common/Header'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-import { useState, useRef, useEffect } from 'react'
 import { Pencil } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 function NicknameSection({ initialName = '익명' }: { initialName?: string }) {
   const [isEdit, setIsEdit] = useState(false)
@@ -90,33 +89,23 @@ export default function Page() {
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-10">
-        {/* ✅ 공통 Header로 대체 */}
-        <Header
-          variant="main" // 뒤로가기 아이콘 자동 표시
-          onBack={() => history.back()} // 없으면 기본으로 router.back()
-          title={
-            // 브랜드와 맞춘 그라디언트 제목
-            <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 text-transparent bg-clip-text">
-              마이페이지
-            </span>
-          }
-          left={
-            <button
-              onClick={() => history.back()}
-              className="inline-flex items-center gap-2 rounded-md px-2 py-1 hover:bg-muted focus:outline-none focus:ring-2"
-              aria-label="뒤로가기"
-            >
-              ←
-            </button>
-          }
-          className="bg-transparent border-b border-zinc-800 mb-6"
-          // 컴포넌트 내부 기본값( max-w-4xl px-4 sm:px-6 h-16 )을 덮어씀
-          containerClassName="max-w-5xl px-6 h-auto py-2"
-        />
+        {/* 상단 헤더 */}
+        <div className="mb-6 flex items-center gap-3">
+          <button
+            aria-label="뒤로가기"
+            className="rounded-xl p-2 hover:bg-zinc-800"
+            onClick={() => history.back()}
+          >
+            ←
+          </button>
+          {/* 본문 */}
+          <div className="mb-6">
+            <NicknameSection initialName="익명" />
 
-        {/* 본문 */}
-        <div className="mb-6">
-          <NicknameSection initialName="익명" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 text-transparent bg-clip-text">
+              마이페이지
+            </h1>
+          </div>
         </div>
       </div>
     </main>
