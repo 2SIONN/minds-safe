@@ -18,6 +18,8 @@ export default function RegisterPage() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
@@ -26,7 +28,7 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    // setMessage('') // 제거
+    setSuccessMessage('')
     setLoading(true)
 
     const parsed = registerSchema.safeParse(formData)
@@ -50,16 +52,21 @@ export default function RegisterPage() {
         body: body,
       })
 
-      if (!res.ok) {
+      if (res.ok) {
+        setSuccessMessage('회원가입 성공! 잠시 후 로그인 페이지로 이동합니다.')
+        setTimeout(() => {
+          router.push('/login')
+        }, 1000)
+      } else {
         const data = await res.json()
-        setError(data?.message || '회원가입에 실패했습니다.')
+        setError(data?.message || '회원가입에 실패했습니다')
+        setLoading(false)
       }
     } catch (err) {
       console.error(err)
       setError('네트워크 오류가 발생했습니다.')
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
   return (
@@ -67,7 +74,7 @@ export default function RegisterPage() {
       formData={formData}
       loading={loading}
       error={error}
-      message={''}
+      message={successMessage}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
     />
