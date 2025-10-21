@@ -1,13 +1,15 @@
 // src/app/(main)/page.tsx
+import Fab from '@/components/common/Fab'
 import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
 import FeedCard from '@/components/feed/feed-card'
-import { Posts } from '@/types/post'
+import { Post } from '@/types/post'
+import { Plus } from 'lucide-react'
 import { getPosts } from './server'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
-  const posts: Posts[] = await getPosts(q)
+  const posts: Post[] = await getPosts(q)
 
   if (!posts.length) {
     return (
@@ -36,6 +38,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           </TagBadge>
         ))}
       </div>
+      <Fab icon={<Plus className="w-6 h-6 " />}></Fab>
 
       <div className="max-w-4xl px-4 sm:px-6 flex flex-col gap-2 m-0 mx-auto">
         {posts.map((p) => (
