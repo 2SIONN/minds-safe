@@ -31,8 +31,8 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
       </div>
 
       {/* 게시글 리스트 / 빈 상태 */}
-      <Suspense fallback={<Loading />}>
-        <AllPosts q={q} />
+      <Suspense key={q || ''} fallback={<Loading />}>
+        <AllPosts q={q || ''} />
       </Suspense>
 
       <Fab icon={<Plus className="w-6 h-6" />} />
