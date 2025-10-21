@@ -13,7 +13,6 @@ export default function SearchComponent() {
     axios
       .get('/apis/tags')
       .then((res) => {
-        console.log(res.data)
         setTags(res.data.items)
       })
       .catch((err) => console.error('api 오류:', err))
