@@ -1,34 +1,37 @@
+'use client'
+import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
-import { useEffect } from 'react'
+import axios from 'axios'
+import SearchFilter from '../common/SearchFilter'
+import TagBadge from '../common/TagBadge'
+
 export default function SearchComponent() {
+  const [tags, setTags] = useState<{ tag: string; count: number }[]>([])
+  const [selected, setSelected] = useState('전체')
+
+  useEffect(() => {
+    axios
+      .get('/api/tags')
+      .then((res) => {
+        console.log(res.data)
+        setTags(res.data.items)
+      })
+      .catch((err) => console.error('api 오류:', err))
+  }, []) //[] 컴포넌트 마운트 될 때 한 번만 실행
+
   return (
     <>
-      <div className="flex flex-col max-w-4xl mx-auto bg-zinc-900">
+      <div className="flex flex-col max-w-4xl mx-auto ">
         <p className="text-sm text-slate-50 mb-4">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
-        <div className="flex gap-2 items-center outline outline-slate-50 p-2 has-[:focus]:outline-2 has-[:focus]:outline-sky-400 rounded-xl mb-4">
-          <Search className="mr-2 h-4 w-4 shrink-0 opacity-50 text-slate-50" />
-          <input
-            type="text"
-            className="flex-1 text-slate-50 outline-none"
-            placeholder="내용이나 태그로 검색..."
-          ></input>
-        </div>
+        <SearchFilter />
         {/* 선택true - bg: sky-400, text:zinc-900 */}
         {/* 선택 false - bg:gray-700/50. text: slate-400,  hover: gray-700*/}
         <div>
-          <ul>
-            <li>전체</li>
-            <li>고민</li>
-            <li>연애</li>
-            <li>친구</li>
-            <li>가족</li>
-            <li>학교</li>
-            <li>진로</li>
-            <li>취업</li>
-            <li>외모</li>
-            <li>성격</li>
-            <li>돈</li>
-          </ul>
+          {tags.map(({ tag }) => (
+            <TagBadge key={tag} onClick={() => setSelected(tag)} selected={selected === tag}>
+              {tag}
+            </TagBadge>
+          ))}
         </div>
       </div>
     </>
