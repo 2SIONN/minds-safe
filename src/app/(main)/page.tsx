@@ -12,13 +12,6 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
   const q = (await searchParams)?.q
   const posts: Post[] = await getPosts(q)
 
-  if (!posts.length) {
-    return (
-      <div className="p-4 text-center text-gray-500">
-        게시글이 없습니다{q ? ` (검색어: "${q}")` : ''}.
-      </div>
-    )
-  }
 
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6">
@@ -39,12 +32,16 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           </TagBadge>
         ))}
       </div>
-
-      {/* 게시글 리스트 */}
-      <div className="flex flex-col gap-2 mt-4">
-        {posts.map((p) => (
-          <FeedCard key={p.id} {...p} />
-        ))}
+      
+        {/* 게시글 리스트 / 빈 상태 */}
+      <div className="mt-4 flex flex-col gap-2">
+        {posts.length > 0 ? (
+          posts.map((p) => <FeedCard key={p.id} {...p} />)
+        ) : (
+          <div className="p-6 text-center text-muted-foreground border border-border/50 rounded-xl">
+            게시글이 없습니다{q ? ` (검색어: "${q}")` : ''}.
+          </div>
+        )}
       </div>
 
       <Fab icon={<Plus className="w-6 h-6" />} />
