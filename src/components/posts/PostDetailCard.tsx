@@ -1,9 +1,9 @@
 'use client'
 
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
-import Tags from '@/components/posts/tags'
-
-export default function PostDetailCard({ post }: { post: any }) {
+import TagBadge from '../common/TagBadge'
+import { Post } from '@/types/post'
+export default function PostDetailCard({ post }: { post: Post }) {
   const handleClose = () => alert('카드 닫힘')
 
   return (
@@ -14,7 +14,9 @@ export default function PostDetailCard({ post }: { post: any }) {
         </CardHeader>
 
         <CardContent className="p-6 pt-3">
-          <Tags tags={post.tags} />
+          {post.tags?.map((tag) => (
+            <TagBadge key={tag}>{tag}</TagBadge>
+          ))}
         </CardContent>
         {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
         <div className="h-px bg-white/10 mx-6" />
