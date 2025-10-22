@@ -13,7 +13,9 @@ import { Post } from '@/types/post'
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Post) {
   return (
     <Card key={id} onClick={() => {}} className="p-5">
-      <CardHeader className="p-0 mb-4">{content}</CardHeader>
+      <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
+        {content}
+      </CardHeader>
       <CardContent className="p-0 mb-4">
         {tags?.map((tag) => (
           <TagBadge key={tag} size="sm" className="mr-2">
