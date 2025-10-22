@@ -24,7 +24,7 @@ export async function GET() {
       items: tags,
     })
   } catch (error) {
-    console.log('GET api/tags:', error)
+    console.error('GET api/tags:', error)
     return NextResponse.json({ success: false, message: '서버 에러 발생' }, { status: 500 })
   }
 }
