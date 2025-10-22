@@ -1,6 +1,5 @@
 import { User } from "./user"
 
-// teamA 에서 타입 파일 생성 예정(추후 수정 필요)
 export type Post = {
   id: string
   authorId: string
