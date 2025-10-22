@@ -1,7 +1,8 @@
-import MypagePostCard from "@/components/mypage/MypagePostCard.tsx"
+'use client'
 
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
+import MypagePostCard from '@/components/mypage/MypagePostCard.tsx'
 import { Pencil } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 

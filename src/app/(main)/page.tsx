@@ -42,7 +42,6 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           </Suspense>
         </div>
       </section>
-
       {/* 변경: 기존 <Fab .../> 대신 */}
       <PostFab />
       <PostWriteModal />
