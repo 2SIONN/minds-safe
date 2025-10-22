@@ -1,4 +1,3 @@
-// src/app/(main)/page.tsx
 import Fab from '@/components/common/Fab'
 import Loading from '@/components/common/Loading'
 import SearchFilter from '@/components/common/SearchFilter'
@@ -6,6 +5,10 @@ import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
 import { AllPosts } from '@/components/feed/all-posts'
 import { Plus } from 'lucide-react'
 import { Suspense } from 'react'
+
+// 추가
+import PostFab from '@/components/posts/PostFab'
+import PostWriteModal from '@/components/posts/PostWriteModal'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
@@ -38,9 +41,9 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
         <Suspense key={q || ''} fallback={<Loading />}>
           <AllPosts q={q || ''} />
         </Suspense>
-
-        <Fab icon={<Plus className="w-6 h-6" />} />
       </section>
+      <PostFab />
+      <PostWriteModal />
     </div>
   )
 }
