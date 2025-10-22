@@ -1,11 +1,23 @@
 'use client'
 import SearchFilter from '@/components/common/SearchFilter'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+
 export default function SearchInput() {
   const [search, setSearch] = useState('')
+  const router = useRouter()
+  const searchParms = useSearchParams()
+  const q = searchParms.get('q')
 
-  const onChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value)
+  useEffect(() => {
+    setSearch(q && q.length < 100 ? q : '')
+  }, [q])
+
+  const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // q 100자 초과 거부
+    if (e.currentTarget.value.length > 100) return
+    setSearch(e.currentTarget.value)
+    router.push(`?q=${e.currentTarget.value}`)
   }
 
   return (
@@ -16,7 +28,7 @@ export default function SearchInput() {
           containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring/40"
           placeholder="내용이나 태그로 검색..."
           value={search}
-          onChange={onChangeSearch}
+          onInput={onInputSearch}
         />
       </div>
     </>
