@@ -60,7 +60,7 @@
 
 /* v4에서는 커스텀 유틸을 @utility로 정의하는 게 권장 */
 @utility glass-card {
-  @apply bg-card/50 backdrop-blur-xl border border-border/50;
+  @apply bg-card/50 backdrop-blur-xl ;
 }
 
 @utility gradient-text {

@@ -1,8 +1,9 @@
 'use client'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
-import SearchFilter from '../common/SearchFilter'
-import TagBadge from '../common/TagBadge'
+import { Search } from 'lucide-react'
+import axios from 'axios'
+import SearchFilter from '@/components/common/SearchFilter'
+import TagBadge from '@/components/common/TagBadge'
 
 export default function SearchComponent() {
   const [tags, setTags] = useState<{ tag: string; count: number }[]>([])
@@ -12,7 +13,6 @@ export default function SearchComponent() {
     axios
       .get('/apis/tags')
       .then((res) => {
-        console.log(res.data)
         setTags(res.data.items)
       })
       .catch((err) => console.error('api 오류:', err))
@@ -21,7 +21,9 @@ export default function SearchComponent() {
   return (
     <>
       <div className="flex flex-col max-w-4xl mx-auto ">
-        <p className="text-sm text-slate-50 mb-4">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
+        <p className="text-sm text-muted-foreground mb-4">
+          지금 마음, 익명으로 털어놓아도 괜찮아요.
+        </p>
         <SearchFilter />
         {/* 선택true - bg: sky-400, text:zinc-900 */}
         {/* 선택 false - bg:gray-700/50. text: slate-400,  hover: gray-700*/}
