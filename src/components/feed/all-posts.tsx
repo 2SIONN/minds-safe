@@ -1,5 +1,5 @@
 import { getPosts } from '@/app/(main)/server'
-import FeedCard from '@/components/feed/feed-card'
+import FeedCard from './feed-card'
 import type { Post } from '@/types/post'
 
 export async function AllPosts({ q }: { q?: string }) {
