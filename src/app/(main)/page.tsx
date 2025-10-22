@@ -3,7 +3,7 @@ import Fab from '@/components/common/Fab'
 import Loading from '@/components/common/Loading'
 import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
-import { AllPosts } from '@/components/feed/all-posts'
+import { AllPosts } from '@/components/feed/AllPosts'
 import { Plus } from 'lucide-react'
 import { Suspense } from 'react'
 
