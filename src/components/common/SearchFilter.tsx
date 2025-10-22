@@ -1,8 +1,5 @@
-type SearchInputProps = {
-  className?: string // 인풋 자체 스타일
-  containerClassName?: string // 감싸는 박스 스타일
-  type?: string
-  placeholder?: string
+type SearchInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  containerClassName?: string // 박스 스타일만 별도 유지
 }
 
 export default function SearchFilter({
@@ -10,14 +7,15 @@ export default function SearchFilter({
   containerClassName = '',
   type = 'search',
   placeholder = '내용이나 태그로 검색...',
+  ...inputProps // ← value, onChange, onKeyDown, autoFocus 등 다 여기로
 }: SearchInputProps) {
   return (
     <div
-      className={`h-12 w-full px-5 mt-4  flex items-center rounded-[--radius]
-                  border-1
-                  backdrop-blur-xl ${containerClassName}`}
+      className={`h-12 w-full px-5 mt-4 flex items-center rounded-[--radius]
+                  border-1 backdrop-blur-xl ${containerClassName}`}
     >
       <input
+        {...inputProps} // ← 전달받은 표준 input 속성 전부 적용
         type={type}
         placeholder={placeholder}
         className={`flex-1 bg-transparent outline-none
