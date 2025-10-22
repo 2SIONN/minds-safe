@@ -12,21 +12,29 @@ import { Post } from '@/types/post'
  */
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Post) {
   return (
-    <Card key={id} className="mt-4">
-      <CardHeader className="p-5 pb-0">{content}</CardHeader>
-      <CardContent className="px-5 py-3">
+    <Card key={id} onClick={() => {}} className="p-5">
+      <CardHeader className="p-0 mb-4">{content}</CardHeader>
+      <CardContent className="p-0 mb-4">
         {tags?.map((tag) => (
-          <TagBadge key={tag}>{tag}</TagBadge>
+          <TagBadge key={tag} size="sm" className="mr-2">
+            {tag}
+          </TagBadge>
         ))}
       </CardContent>
-      <CardFooter className="gitp-5 pt-0  text-muted-foreground text-sm">
-        <div className="w-full flex justify-between">
-          <div>익명</div>
-          <div className="flex gap-4">
-            <div>♡ {empathies.length}</div>
-            <div>댓글 {replies ? replies.length : 0}</div>
-            <div>{formatRelativeDate(createdAt)}</div>
+      <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">
+        {/* 닉네임이 있는 경우 닉네임 노출, 아닌 경우 "익명"으로 노출 */}
+        <div>익명</div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1">
+            {/* TODO: 공통 컴포넌트로 변경 필요 */}
+            <div className="w-4 h-4">♡</div>
+            <span>{empathies.length}</span>
           </div>
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4">♡</div>
+            <span>{replies ? replies.length : 0}</span>
+          </div>
+          <span>{formatRelativeDate(createdAt)}</span>
         </div>
       </CardFooter>
     </Card>
