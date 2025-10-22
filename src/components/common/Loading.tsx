@@ -8,6 +8,6 @@ export default function Loading() {
       <p className="mt-[1rem]">잠시만 기다려 주세요!</p>
       
     </div>
-
+ 
   );
 }
