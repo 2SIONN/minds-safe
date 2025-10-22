@@ -1,5 +1,5 @@
-import 'server-only'
 import { headers } from 'next/headers'
+import 'server-only'
 
 export async function getBaseUrl(): Promise<string> {
   const h = await headers()
