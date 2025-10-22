@@ -33,10 +33,16 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
             ))}
           </div>
 
-          {/* 게시글 리스트 / 빈 상태 */}
-          <Suspense key={q || ''} fallback={<Loading />}>
-            <AllPosts q={q || ''} />
-          </Suspense>
+          <main className="max-w-4xl mx-auto p-4">
+            <div className="flex justify-end mb-4">
+              {/* 정렬 */}
+              <div></div>
+            </div>
+            {/* 게시글 리스트 / 빈 상태 */}
+            <Suspense key={q || ''} fallback={<Loading />}>
+              <AllPosts q={q || ''} />
+            </Suspense>
+          </main>
         </div>
       </section>
       <Fab icon={<Plus className="w-6 h-6" />} />
