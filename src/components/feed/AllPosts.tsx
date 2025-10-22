@@ -5,7 +5,9 @@ import type { Post } from '@/types/post'
 export async function AllPosts({ q }: { q?: string }) {
   const posts: Post[] = await getPosts(q)
 
-  // 추후 검색 기능 구현 후, 검색 결과 없을떄 사용하기 위한 용도로 상황에 따라 코드 변경 가능성이 있음
+  // [추후 - 검색] 검색 결과 없을 경우 => "조건에 맞는 고민이 없어요" 노출
+
+  // 전체 비어있을 경우
   if (!posts.length) {
     return (
       <div className="text-center py-24 text-muted-foreground">
