@@ -24,19 +24,20 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
             />
           </div>
 
-      {/* 태그 리스트 */}
-      <div className="flex flex-wrap gap-2 mt-4">
-        {DEFAULT_TAGS.map((t) => (
-          <TagBadge key={t.value} size="md">
-            {t.label}
-          </TagBadge>
-        ))}
-      </div>
+          {/* 태그 리스트 */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {DEFAULT_TAGS.map((t) => (
+              <TagBadge key={t.value} size="md">
+                {t.label}
+              </TagBadge>
+            ))}
+          </div>
+        </div>
 
-      {/* 게시글 리스트 / 빈 상태 */}
-      <Suspense key={q || ''} fallback={<Loading />}>
-        <AllPosts q={q || ''} />
-      </Suspense>
+        {/* 게시글 리스트 / 빈 상태 */}
+        <Suspense key={q || ''} fallback={<Loading />}>
+          <AllPosts q={q || ''} />
+        </Suspense>
 
         <Fab icon={<Plus className="w-6 h-6" />} />
       </section>
