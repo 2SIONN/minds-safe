@@ -26,11 +26,11 @@ type TagBadgeProps = ComponentPropsWithoutRef<'button'> & {
 // size / color 매핑
 const sizeMap = {
   sm: 'h-6 px-2.5 text-[10px]',
-  md: 'h-8 px-3 text-xs',
+  md: 'py-1 px-3 text-xs',
 } as const
 
 const colorMap = {
-  neutral: 'bg-card text-muted-foreground',
+  neutral: 'bg-muted/50 text-muted-foreground hover:bg-muted',
   primary: 'bg-primary text-primary-foreground',
 } as const
 
