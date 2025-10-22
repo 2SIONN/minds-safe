@@ -1,7 +1,8 @@
 'use client'
 
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
-import TagBadge from '@/components/common/TagBadge'
+import { default as FeedButtonGroup } from '@/components/feed/FeedButtonGroup'
+import FeedTags from '@/components/feed/FeedTags'
 import { formatRelativeDate } from '@/lib/data'
 import { Post } from '@/types/post'
 
@@ -11,31 +12,22 @@ import { Post } from '@/types/post'
  * @returns ReactNode
  */
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Post) {
+  const likeCount = empathies?.length ?? 0
+  const replyCount = replies?.length ?? 0
+
   return (
     <Card key={id} onClick={() => {}} className="p-5">
       <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
         {content}
       </CardHeader>
       <CardContent className="p-0 mb-4">
-        {tags?.map((tag) => (
-          <TagBadge key={tag} size="sm" className="mr-2">
-            {tag}
-          </TagBadge>
-        ))}
+        <FeedTags tags={tags} />
       </CardContent>
       <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">
-        {/* 닉네임이 있는 경우 닉네임 노출, 아닌 경우 "익명"으로 노출 */}
+        {/* TODO: 닉네임이 있는 경우 닉네임 노출, 아닌 경우 "익명"으로 노출 */}
         <div>익명</div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1">
-            {/* TODO: 공통 컴포넌트로 변경 필요 */}
-            <div className="w-4 h-4">♡</div>
-            <span>{empathies.length}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-4">♡</div>
-            <span>{replies ? replies.length : 0}</span>
-          </div>
+          <FeedButtonGroup empathiesCount={likeCount} repliesCount={replyCount} />
           <span>{formatRelativeDate(createdAt)}</span>
         </div>
       </CardFooter>
