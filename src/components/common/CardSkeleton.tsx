@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 
-export default function MainSkeleton() {
+export default function CardSkeleton() {
   return (
     <Card className="w-full skeleton mt-4">
       <CardHeader className="p-5 pb-0 ">
