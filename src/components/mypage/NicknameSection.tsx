@@ -49,8 +49,8 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   }
 
   return (
-    <section className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6">
-      <div className="text-sm text-zinc-400 mb-2">닉네임</div>
+    <section className="glass-card p-6 rounded-3xl mb-6">
+      <div className="flex items-center gap-4">닉네임</div>
 
       {!isEdit && (
         <div className="flex items-center">

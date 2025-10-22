@@ -53,7 +53,11 @@ export default function Header({
 
           {/* main일 때는 왼쪽 정렬 */}
           {title && variant !== 'back' && (
-            <h1 className={`truncate text-lg font-semibold ${titleClassName}`}>{title}</h1>
+            <h1
+              className={`truncate text-lg font-semibold ${titleClassName}`}
+            >
+              {title}
+            </h1>
           )}
         </div>
 
@@ -70,7 +74,9 @@ export default function Header({
         <div className="flex items-center gap-2 shrink-0">{right}</div>
       </div>
 
-      {children && <div className="mx-auto max-w-4xl px-4 sm:px-6">{children}</div>}
+      {children && (
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">{children}</div>
+      )}
     </header>
   )
 }
