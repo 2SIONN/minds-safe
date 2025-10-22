@@ -9,7 +9,7 @@ import {usePathname} from "next/navigation";
 
 export default function HomePage({children}: {children: ReactNode}) {
   const pathname = usePathname()
-  
+
   return (
     <>
       {/* 헤더 */}
