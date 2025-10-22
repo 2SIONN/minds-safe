@@ -1,5 +1,3 @@
-// src/app/(main)/page.tsx
-import Link from 'next/link'
 import Fab from '@/components/common/Fab'
 import { Plus } from 'lucide-react'
 import SearchFilter from '@/components/common/SearchFilter'
