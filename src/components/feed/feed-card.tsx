@@ -12,20 +12,22 @@ import { Post } from '@/types/post'
  */
 export default function FeedCard({ id, content, tags, empathies, replies, createdAt }: Post) {
   return (
-    <Card key={id} className="mt-4">
-      <CardHeader className="p-5 pb-0">{content}</CardHeader>
-      <CardContent className="px-5 py-3">
-        {tags?.map((tag) => (
-          <TagBadge key={tag}>{tag}</TagBadge>
-        ))}
+    <Card key={id} className="bg-gradient-to-r from-blue-500 to-purple-600 mt-4">
+      <CardHeader className="p-5 pb-0 ">
+        <span className="px-60 bg-muted/50 rounded-[14px]"></span>
+      </CardHeader>
+      <CardContent className="mt-0.5 px-5 py-3 ">
+        <span className="mr-2 px-[25px] bg-muted/50 rounded-[14px]"></span>
+        <span className="mr-2 px-[25px] bg-muted/50 rounded-[14px]"></span>
+        <span className="mr-2 px-[25px] bg-muted/50 rounded-[14px]"></span>
       </CardContent>
-      <CardFooter className="gitp-5 pt-0  text-muted-foreground text-sm">
+      <CardFooter className="gitp-5 pt-0 text-muted-foreground text-sm">
         <div className="w-full flex justify-between">
-          <div>익명</div>
+          <div className="h-[20px] px-[16px] bg-muted/50 rounded-[14px]"></div>
           <div className="flex gap-4">
-            <div>♡ {empathies.length}</div>
-            <div>댓글 {replies ? replies.length : 0}</div>
-            <div>{formatRelativeDate(createdAt)}</div>
+            <div className="mr-[-1] h-[20px] px-[12px] bg-muted/50 rounded-[14px]"></div>
+            <div className="h-[20px] px-[18px] bg-muted/50 rounded-[14px]"></div>
+            <div className="h-[20px] px-[18px] bg-muted/50 rounded-[14px]"></div>
           </div>
         </div>
       </CardFooter>
