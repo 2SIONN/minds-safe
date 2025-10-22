@@ -32,15 +32,14 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
               </TagBadge>
             ))}
           </div>
+
+          {/* 게시글 리스트 / 빈 상태 */}
+          <Suspense key={q || ''} fallback={<Loading />}>
+            <AllPosts q={q || ''} />
+          </Suspense>
         </div>
-
-        {/* 게시글 리스트 / 빈 상태 */}
-        <Suspense key={q || ''} fallback={<Loading />}>
-          <AllPosts q={q || ''} />
-        </Suspense>
-
-        <Fab icon={<Plus className="w-6 h-6" />} />
       </section>
+      <Fab icon={<Plus className="w-6 h-6" />} />
     </div>
   )
 }
