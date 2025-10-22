@@ -1,51 +1,46 @@
 // src/app/(main)/page.tsx
-import Link from 'next/link'
 import Fab from '@/components/common/Fab'
-import { Plus } from 'lucide-react'
+import Loading from '@/components/common/Loading'
 import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
-import FeedCard from '@/components/feed/feed-card'
-import { Post } from '@/types/post'
-import { getPosts } from './server'
+import { AllPosts } from '@/components/feed/all-posts'
+import { Plus } from 'lucide-react'
+import { Suspense } from 'react'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
-  const posts: Post[] = await getPosts(q)
-
-  if (!posts.length) {
-    return (
-      <div className="p-4 text-center text-gray-500">
-        게시글이 없습니다{q ? ` (검색어: "${q}")` : ''}.
-      </div>
-    )
-  }
 
   return (
-    <>
-      {/* 검색창 */}
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 mt-6">
-        <SearchFilter
-          className="text-base"
-          containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring/40"
-          placeholder="내용이나 태그로 검색..."
-        />
-      </div>
+    <div>
+      <section className="bg-card/80 backdrop-blur">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 ">
+          <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
+          {/* 검색창 */}
+          <div className="mt-4">
+            <SearchFilter
+              className="text-base"
+              containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring/40"
+              placeholder="내용이나 태그로 검색..."
+            />
+          </div>
 
-      {/* 태그 리스트 */}
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 flex flex-wrap gap-2 mt-4">
-        {DEFAULT_TAGS.map((t) => (
-          <TagBadge key={t.value} size="md">
-            {t.label}
-          </TagBadge>
-        ))}
-      </div>
-      <Fab icon={<Plus className="w-6 h-6 " />}></Fab>
+          {/* 태그 리스트 */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {DEFAULT_TAGS.map((t) => (
+              <TagBadge key={t.value} size="md">
+                {t.label}
+              </TagBadge>
+            ))}
+          </div>
+        </div>
 
-      <div className="max-w-4xl px-4 sm:px-6 flex flex-col gap-2 m-0 mx-auto">
-        {posts.map((p) => (
-          <FeedCard key={p.id} {...p} />
-        ))}
-      </div>
-    </>
+        {/* 게시글 리스트 / 빈 상태 */}
+        <Suspense key={q || ''} fallback={<Loading />}>
+          <AllPosts q={q || ''} />
+        </Suspense>
+
+        <Fab icon={<Plus className="w-6 h-6" />} />
+      </section>
+    </div>
   )
 }
