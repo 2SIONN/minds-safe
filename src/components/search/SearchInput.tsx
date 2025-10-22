@@ -17,7 +17,9 @@ export default function SearchInput() {
     // q 100자 초과 거부
     if (e.currentTarget.value.length > 100) return
     setSearch(e.currentTarget.value)
-    router.push(`?q=${e.currentTarget.value}`)
+    setTimeout(() => {
+      router.replace(`?q=${e.target.value}`)
+    }, 1000)
   }
 
   return (
