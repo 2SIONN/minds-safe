@@ -1,7 +1,6 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { Search } from 'lucide-react'
 import axios from 'axios'
+import { useEffect, useState } from 'react'
 import SearchFilter from '../common/SearchFilter'
 import TagBadge from '../common/TagBadge'
 
@@ -11,7 +10,7 @@ export default function SearchComponent() {
 
   useEffect(() => {
     axios
-      .get('/api/tags')
+      .get('/apis/tags')
       .then((res) => {
         console.log(res.data)
         setTags(res.data.items)
