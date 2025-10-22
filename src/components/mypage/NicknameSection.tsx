@@ -50,15 +50,15 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
   return (
     <section className="glass-card p-6 rounded-3xl mb-6">
-      <div className="flex items-center gap-4">닉네임</div>
+      <div className="text-sm text-muted-foreground mb-1">닉네임</div>
 
       {!isEdit && (
         <div className="flex items-center">
-          <div className="text-2xl font-semibold tracking-tight">{value}</div>
+          <div className="text-xl font-semibold">{value}</div>
           <button
             onClick={handleEdit}
             aria-label="닉네임 편집"
-            className="ml-auto inline-flex items-center justify-center rounded-full p-2 hover:bg-zinc-800"
+            className="ml-auto p-2 rounded-full hover:bg-muted/50 transition-colors"
           >
             <Pencil className="h-4 w-4" />
           </button>
@@ -73,12 +73,12 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDraft(e.target.value)}
             onKeyDown={handleEnter}
             placeholder="닉네임"
-            className="flex-1 h-11 rounded-xl"
+            className="flex-1"
           />
-          <Button onClick={handleSave} disabled={isSaving} className="h-11 px-4">
+          <Button onClick={handleSave} disabled={isSaving}>
             {isSaving ? '저장중…' : '저장'}
           </Button>
-          <Button variant="ghost" onClick={handleCancel} disabled={isSaving} className="h-11 px-4">
+          <Button variant="ghost" onClick={handleCancel} disabled={isSaving}>
             취소
           </Button>
         </div>
