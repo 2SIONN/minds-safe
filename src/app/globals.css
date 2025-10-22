@@ -60,7 +60,7 @@
 
 /* v4에서는 커스텀 유틸을 @utility로 정의하는 게 권장 */
 @utility glass-card {
-  @apply bg-card/50 backdrop-blur-xl ;
+  @apply bg-card/50 backdrop-blur-xl border border-border/50;
 }
 
 @utility gradient-text {
@@ -75,4 +75,19 @@
   0% { transform: rotate(0deg); }
   50% { transform: rotate(180deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes skeleton-loading { /* 스켈레톤 UI와 함께 추가했습니다. - 서민욱 */
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1C252E 25%, #1F2831 50%, #1C252E 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 2s infinite linear;
 }
