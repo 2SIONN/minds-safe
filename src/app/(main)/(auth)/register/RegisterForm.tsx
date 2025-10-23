@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import type { z } from 'zod'
-import { registerSchema } from '@/lib/validators/auth'
+import { registerSchema } from '@/utils/validators/auth'
 import { Card, CardContent } from '@/components/common/Card'
 import Input from '@/components/common/Input'
 import Button from '@/components/common/Button'

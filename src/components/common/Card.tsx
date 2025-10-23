@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef, ReactNode } from 'react'
 import { X } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/utils'
 
 interface CardProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode

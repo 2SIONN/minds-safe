@@ -1,7 +1,7 @@
 'use client'
 
 import { ComponentPropsWithRef, ReactNode, useEffect, useRef } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils/utils'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 
 interface ModalProps extends ComponentPropsWithRef<'div'> {

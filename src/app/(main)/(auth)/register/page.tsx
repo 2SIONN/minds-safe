@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { registerSchema } from '@/lib/validators/auth'
+import { registerSchema } from '@/utils/validators/auth'
 import RegisterForm from './RegisterForm'
 import type { z } from 'zod'
 

@@ -1,9 +1,6 @@
-import { headers } from 'next/headers'
-import 'server-only'
+import axios from 'axios'
 
-export async function getBaseUrl(): Promise<string> {
-  const h = await headers()
-  const proto = h.get('x-forwarded-proto') ?? 'http'
-  const host = h.get('x-forwarded-host') ?? h.get('host')
-  return `${proto}://${host}`
-}
+export const http = axios.create({
+  baseURL: '/',
+  headers: { 'Content-Type': 'application/json' },
+})

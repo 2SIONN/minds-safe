@@ -1,41 +1,45 @@
+// src/app/api/posts/route.ts
 import { prisma } from '@/lib/prisma'
-import { postCreateSchema } from '@/lib/validators'
+import { postCreateSchema } from '@/utils/validators'
 import { NextResponse } from 'next/server'
-import { verifySession } from '@/lib/jwt'
-import { cookies } from 'next/headers'
-import type { Prisma } from '@prisma/client'
+import { auth } from '@/auth'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const q = searchParams.get('q') || ''
-  const where: Prisma.PostWhereInput | undefined = q
-    ? { OR: [{ content: { contains: q } }, { tags: { string_contains: q } }] }
-    : undefined
+  const where = q ? { OR: [{ content: { contains: q } }, { tags: { string_contains: q } }] } : {}
+
   const list = await prisma.post.findMany({
     where,
     orderBy: { createdAt: 'desc' },
     include: { empathies: true, replies: true },
   })
+
   return NextResponse.json(list)
 }
 
 export async function POST(req: Request) {
   try {
-    const cookie = (await cookies()).get('session')?.value
-    const session = await verifySession<{ uid: string }>(cookie)
-    if (!session?.uid) return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
-    const body = await req.json()
-    const parsed = postCreateSchema.parse(body)
+    const session = await auth()
+    const userId = (session?.user as any)?.id as string | undefined
+    if (!userId) {
+      return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
+    }
+
+    const json = await req.json()
+    const parsed = postCreateSchema.parse(json)
+
     const post = await prisma.post.create({
       data: {
-        authorId: session.uid,
+        authorId: userId,
         content: parsed.content,
         tags: parsed.tags as any,
         imageUrl: parsed.imageUrl || null,
       },
     })
+
     return NextResponse.json(post, { status: 201 })
   } catch (e: any) {
-    return NextResponse.json({ message: e?.message || 'error' }, { status: 400 })
+    return NextResponse.json({ message: e?.message ?? 'error' }, { status: 400 })
   }
 }

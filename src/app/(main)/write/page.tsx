@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { postCreateSchema } from '@/lib/validators'
+import { postCreateSchema } from '@/utils/validators'
 
 type FormValues = z.input<typeof postCreateSchema>
 const LIMIT = 1000

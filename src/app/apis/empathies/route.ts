@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { likeToggleSchema } from '@/lib/validators'
+import { likeToggleSchema } from '@/utils/validators'
 import { cookies } from 'next/headers'
 import { verifySession } from '@/lib/jwt'
 import { NextResponse } from 'next/server'
