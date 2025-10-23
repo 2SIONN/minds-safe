@@ -12,7 +12,7 @@ export function Card({ className, children, closable, onClose, ...props }: CardP
   return (
     <div
       className={cn(
-        'relative rounded-lg border border-border bg-card text-card-foreground shadow-sm',
+        'relative rounded-lg border border-border glass-card text-card-foreground shadow-sm',
         className
       )}
       {...props}
