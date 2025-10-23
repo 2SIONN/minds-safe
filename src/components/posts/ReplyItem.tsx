@@ -25,7 +25,6 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
   const [isShown, setIsShown] = useState(false)
   const likeCount = reply.empathies?.length ?? 0
   const handleToggle = () => setIsShown((prev) => !prev)
-
   return (
     <li className="flex justify-between items-start px-2 py-4">
       <div className="flex flex-col overflow-hidden gap-1 items-start">
