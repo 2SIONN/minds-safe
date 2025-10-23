@@ -1,10 +1,10 @@
 // src/app/(main)/page.tsx
 import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
-import { AllPosts } from '@/components/feed/AllPosts'
 import { Suspense } from 'react'
 
 // 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
+import ClientPage from '@/app/(main)/client-page'
 import FeedListSkeleton from '@/components/feed/FeedListSkeleton'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
@@ -45,7 +45,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
         <Suspense key={q || ''} fallback={<FeedListSkeleton count={3} />}>
-          <AllPosts q={q || ''} />
+          <ClientPage q={q || ''} />
         </Suspense>
       </main>
 
