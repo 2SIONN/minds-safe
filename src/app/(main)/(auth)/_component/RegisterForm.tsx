@@ -72,7 +72,6 @@ export default function RegisterForm({
               value={formData.nickname || ''}
               onChange={handleChange}
               placeholder="비워두면 '익명'으로 표시해요"
-              helperText="닉네임을 비워두면 '익명'으로 표시해요. 실제 식별은 UID로만 합니다."
             />
 
             {message && <p className="text-green-600 text-sm text-center">{message}</p>}
