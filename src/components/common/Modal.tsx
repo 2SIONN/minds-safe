@@ -1,7 +1,7 @@
 'use client'
 
 import { ComponentPropsWithRef, ReactNode, useEffect, useRef } from 'react'
-import { cn } from '@/utils/utils'
+import { cn } from '@/lib/utils'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 
 interface ModalProps extends ComponentPropsWithRef<'div'> {
@@ -26,6 +26,7 @@ export function Modal({
   ...props
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
+  const scrollYRef = useRef<number>(0)
 
   // ESC 키로 모달 닫기
   useEffect(() => {
@@ -41,16 +42,25 @@ export function Modal({
     return () => document.removeEventListener('keydown', handleEscape)
   }, [open, onClose, closeOnEscape])
 
-  // 모달 열릴 때 body 스크롤 방지
+  // 모달 열릴 때 스크롤 위치 저장 및 body 스크롤 방지
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
+      // 현재 스크롤 위치 저장
+      scrollYRef.current = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollYRef.current}px`
+      document.body.style.width = '100%'
     }
 
     return () => {
-      document.body.style.overflow = ''
+      if (open) {
+        // 모달이 닫힐 때 스크롤 위치 복원
+        const scrollY = scrollYRef.current
+        document.body.style.position = ''
+        document.body.style.top = ''
+        document.body.style.width = ''
+        window.scrollTo(0, scrollY)
+      }
     }
   }, [open])
 

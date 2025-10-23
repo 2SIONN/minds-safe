@@ -1,13 +1,15 @@
 // src/app/api/posts/route.ts
 import { prisma } from '@/lib/prisma'
-import { postCreateSchema } from '@/utils/validators'
+import { postCreateSchema } from '@/lib/validators'
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const q = searchParams.get('q') || ''
-  const where = q ? { OR: [{ content: { contains: q } }, { tags: { string_contains: q } }] } : {}
+  const where = q
+    ? { OR: [{ content: { contains: q } }, { tags: { path: '$[*]', string_contains: q } }] }
+    : {}
 
   const list = await prisma.post.findMany({
     where,
@@ -33,7 +35,7 @@ export async function POST(req: Request) {
       data: {
         authorId: userId,
         content: parsed.content,
-        tags: parsed.tags as any,
+        tags: parsed.tags,
         imageUrl: parsed.imageUrl || null,
       },
     })

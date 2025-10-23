@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import {ReactNode} from "react";
+import { ReactNode } from 'react'
 
-export default function mypageLayout({children} : {children: ReactNode}) {
+export default function mypageLayout({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen bg-zinc-950 text-zinc-100">
       <div className="mx-auto max-w-5xl px-6 py-10">
@@ -15,7 +15,7 @@ export default function mypageLayout({children} : {children: ReactNode}) {
           >
             ←
           </button>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-violet-400 text-transparent bg-clip-text">
+          <h1 className="text-2xl font-bold bg-linear-to-r from-cyan-400 to-violet-400 text-transparent bg-clip-text">
             마이페이지
           </h1>
         </div>

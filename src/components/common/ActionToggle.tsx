@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
-import { cn } from '@/utils/utils'
-import Button from './Button'
+import { cn } from '@/lib/utils'
 import { Heart, MessageCircle } from 'lucide-react'
 
 type Variant = 'like' | 'comment'
@@ -50,7 +49,7 @@ export default function ActionToggle({
 
   return (
     <div className={cn('flex items-center gap-1', wrapperClassName)}>
-      <Button
+      <button
         type="button"
         aria-pressed={active}
         onClick={onToggle}
@@ -67,7 +66,7 @@ export default function ActionToggle({
         ) : (
           (icon ?? defaultIcon)
         )}
-      </Button>
+      </button>
 
       {typeof count === 'number' && <span className="text-sm text-muted-foreground">{count}</span>}
     </div>

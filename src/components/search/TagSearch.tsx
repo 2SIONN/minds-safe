@@ -1,4 +1,5 @@
-import TagBadge, { DEFAULT_TAGS } from '../common/TagBadge'
+import TagBadge from '../common/TagBadge'
+import { DEFAULT_TAGS } from '@/constants/tags'
 
 export default function TagSearch() {
   return (

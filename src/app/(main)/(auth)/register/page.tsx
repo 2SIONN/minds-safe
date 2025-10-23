@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { registerSchema } from '@/utils/validators/auth'
-import RegisterForm from './RegisterForm'
+import { registerSchema } from '@/lib/validators'
+import RegisterForm from '../_component/RegisterForm'
 import type { z } from 'zod'
 
 type FormDataState = z.infer<typeof registerSchema>
@@ -42,12 +42,14 @@ export default function RegisterPage() {
     }
 
     try {
+      const nicknameToSend = parsed.data.nickname || '익명'
       const body = new FormData()
       body.append('email', parsed.data.email)
       body.append('password', parsed.data.password)
-      body.append('nickname', parsed.data.nickname)
+      body.append('passwordConfirm', parsed.data.passwordConfirm)
+      body.append('nickname', nicknameToSend)
 
-      const res = await fetch('/apis/auth/register', {
+      const res = await fetch('/apis/auth/legacy/register', {
         method: 'POST',
         body: body,
       })

@@ -139,7 +139,7 @@ export const listOf = <T extends z.ZodTypeAny>(item: T) =>
 
 ### 👤 Auth
 
-#### POST `/api/auth/signup`
+#### POST `/apis/auth/signup`
 
 - Body: `signupInput`
 - 201 Created + `Set-Cookie: session=<JWT>`
@@ -161,54 +161,90 @@ export const listOf = <T extends z.ZodTypeAny>(item: T) =>
 
 - 409 CONFLICT: 이메일 중복 → `{ ok:false, error:{ code:"CONFLICT", message:"Email already exists" } }`
 
-#### POST `/api/auth/login`
+#### POST `/apis/auth/login`
 
 - Body: `loginInput`
 - 200 OK + `Set-Cookie: session=<JWT>`
 - Response: `ApiSuccess<{ user: userDTO }>`
 
-#### POST `/api/auth/logout`
+#### POST `/apis/auth/logout`
 
 - 200 OK + `Set-Cookie: session=; Max-Age=0`
 - Response: `{ ok:true, data:{}}`
 
-#### GET `/api/auth/me`
+#### GET `/apis/auth/me`
 
 - Cookie 필요
 - Response: `ApiSuccess<{ user: userDTO }>`
+
+### 🙋 Me
+
+#### GET `/apis/me`
+
+- Cookie 필요
+- Response: `{ id: string; email: string; nickname: string | null } | null`
+- ⚠️ 로그인하지 않은 경우 200 OK + `null` 반환 (Envelope 미적용)
+
+#### PATCH `/apis/me`
+
+- Cookie 필요
+- Body: `{ nickname?: string }`
+- Response: `{ ok: true }`
+- 401 UNAUTHORIZED: `{ message: "UNAUTHORIZED" }`
+- 닉네임은 trim 후 빈 문자열이면 `null`로 저장
+
+#### GET `/apis/me/posts`
+
+- Cookie 필요
+- Query: `limit?`(기본 10, 최대 50), `cursor?`(이전 페이지 마지막 `postId`), `order?=asc|desc`(기본 desc)
+- Response: `{ items: (Post & { _count: { replies: number; empathies: number } })[]; nextCursor: string | null }`
+- 커서 기반 페이지네이션: `nextCursor`를 전달하면 다음 페이지
+- ⚠️ 로그인하지 않은 경우 200 OK + `null` 반환
+- 401 UNAUTHORIZED: `{ error: "UNAUTHORIZED" }`
+- 500 INTERNAL_ERROR: `{ error: "INTERNAL_ERROR" }`
+
+#### GET `/apis/me/replies`
+
+- Cookie 필요
+- Query: `limit?`(기본 10, 최대 50), `cursor?`(이전 페이지 마지막 `replyId`), `order?=asc|desc`(기본 desc)
+- Response: `{ items: (Reply & { post: { id: string; content: string; createdAt: string; authorId: string } })[]; nextCursor: string | null }`
+- 커서 기반 페이지네이션: `nextCursor`를 전달하면 다음 페이지
+- ⚠️ 로그인하지 않은 경우 200 OK + `null` 반환
+- 401 UNAUTHORIZED: `{ error: "UNAUTHORIZED" }`
+- 500 INTERNAL_ERROR: `{ error: "INTERNAL_ERROR" }`
 
 ---
 
 ### 📨 Posts
 
-#### GET `/api/posts`
+#### GET `/apis/posts`
 
 - Query: `page`, `limit`, `tag?`(단일), `q?`(본문 검색), `sort?=latest|popular`(기본 latest)
 - Response: `ApiSuccess<{ items: postDTO[]; meta: pageMeta }>`
 
-#### POST `/api/posts`
+#### POST `/apis/posts`
 
 - Cookie 필요
 - Body: `postCreateInput`
 - 201 Created
 - Response: `ApiSuccess<{ post: postDTO }>`
 
-#### GET `/api/posts/:postId`
+#### GET `/apis/posts/:postId`
 
 - Response: `ApiSuccess<{ post: postDTO }>`
 
-#### PATCH `/api/posts/:postId`
+#### PATCH `/apis/posts/:postId`
 
 - Cookie 필요 & 작성자만
 - Body: `postUpdateInput`
 - Response: `ApiSuccess<{ post: postDTO }>`
 
-#### DELETE `/api/posts/:postId`
+#### DELETE `/apis/posts/:postId`
 
 - Cookie 필요 & 작성자만
 - 204 No Content → `{ ok:true, data:{} }`
 
-#### POST `/api/posts/:postId/like-toggle`
+#### POST `/apis/posts/:postId/like-toggle`
 
 - Cookie 필요
 - Body: `likeToggleInput` **(서버에서는 `targetId`를 URL에서 보정 가능)**
@@ -218,29 +254,36 @@ export const listOf = <T extends z.ZodTypeAny>(item: T) =>
 
 ### 💬 Replies
 
-#### GET `/api/posts/:postId/replies`
+#### GET `/apis/posts/:postId/replies`
 
 - Query: `page`, `limit`, `sort?=latest|best`
 - Response: `ApiSuccess<{ items: replyDTO[]; meta: pageMeta }>`
 
-#### POST `/api/posts/:postId/replies`
+#### POST `/apis/posts/:postId/replies`
 
 - Cookie 필요
 - Body: `replyCreateInput`
 - 201 Created
 - Response: `ApiSuccess<{ reply: replyDTO }>`
 
-#### POST `/api/replies/:replyId/like-toggle`
+#### POST `/apis/replies/:replyId/like-toggle`
 
 - Cookie 필요
 - Body: `{ targetType: "REPLY" }` (또는 빈 바디, 서버가 URL로 판단)
 - Response: `ApiSuccess<{ state: likeStateDTO }>`
 
+#### DELETE `/apis/replies/:replyId`
+
+- Cookie 필요 (작성자 본인)
+- 200 OK
+- Response: `{ ok: true }`
+- 게시글에 속한 지정 댓글을 삭제
+
 ---
 
 ### 🏷️ Tags (파생 데이터)
 
-#### GET `/api/tags`
+#### GET `/apis/tags`
 
 - 인기 태그 Top N (기본 50)
 - Query: `limit?=number`
@@ -255,7 +298,7 @@ export const listOf = <T extends z.ZodTypeAny>(item: T) =>
 **Request**
 
 ```http
-POST /api/posts HTTP/1.1
+POST /apis/posts HTTP/1.1
 Cookie: session=eyJhbGciOiJI...
 Content-Type: application/json
 
@@ -292,7 +335,7 @@ Content-Type: application/json
 **Request**
 
 ```http
-POST /api/replies/r_88/like-toggle HTTP/1.1
+POST /apis/replies/r_88/like-toggle HTTP/1.1
 Cookie: session=eyJhbGciOiJI...
 Content-Type: application/json
 
@@ -303,6 +346,131 @@ Content-Type: application/json
 
 ```json
 { "ok": true, "data": { "state": { "liked": true, "likeCount": 12 } } }
+```
+
+### 내 정보 조회
+
+**Request**
+
+```http
+GET /apis/me HTTP/1.1
+Cookie: session=eyJhbGciOiJI...
+```
+
+**Response**
+
+```json
+{
+  "id": "u_1",
+  "email": "me@example.com",
+  "nickname": "시온"
+}
+```
+
+> 세션이 없으면 200 OK와 함께 `null`이 반환됩니다.
+
+### 닉네임 수정
+
+**Request**
+
+```http
+PATCH /apis/me HTTP/1.1
+Cookie: session=eyJhbGciOiJI...
+Content-Type: application/json
+
+{ "nickname": "시온2" }
+```
+
+**Response**
+
+```json
+{ "ok": true }
+```
+
+### 내 게시글 목록
+
+**Request**
+
+```http
+GET /apis/me/posts?limit=2 HTTP/1.1
+Cookie: session=eyJhbGciOiJI...
+```
+
+**Response**
+
+```json
+{
+  "items": [
+    {
+      "id": "p_102",
+      "authorId": "u_1",
+      "content": "오늘도 파이팅!",
+      "tags": ["다짐"],
+      "imageUrl": null,
+      "createdAt": "2025-10-17T02:10:11.000Z",
+      "updatedAt": "2025-10-17T02:10:11.000Z",
+      "_count": { "replies": 3, "empathies": 7 }
+    },
+    {
+      "id": "p_101",
+      "authorId": "u_1",
+      "content": "요즘 잠들기가 너무 힘들어요.",
+      "tags": ["수면", "스트레스"],
+      "imageUrl": "https://example.com/1.jpg",
+      "createdAt": "2025-10-16T03:22:11.000Z",
+      "updatedAt": "2025-10-16T03:22:11.000Z",
+      "_count": { "replies": 0, "empathies": 2 }
+    }
+  ],
+  "nextCursor": null
+}
+```
+
+### 내 댓글 목록
+
+**Request**
+
+```http
+GET /apis/me/replies?limit=2 HTTP/1.1
+Cookie: session=eyJhbGciOiJI...
+```
+
+**Response**
+
+```json
+{
+  "items": [
+    {
+      "id": "r_205",
+      "postId": "p_110",
+      "authorId": "u_1",
+      "body": "같은 고민 있어요. 같이 힘내요!",
+      "createdAt": "2025-10-18T09:12:45.000Z",
+      "updatedAt": "2025-10-18T09:12:45.000Z",
+      "post": {
+        "id": "p_110",
+        "content": "퇴근 후에도 머리가 멍해요.",
+        "createdAt": "2025-10-18T08:03:11.000Z",
+        "authorId": "u_2"
+      }
+    },
+    {
+      "id": "r_204",
+      "postId": "p_101",
+      "authorId": "u_1",
+      "body": "저도 비슷한 경험이 있었어요.",
+      "createdAt": "2025-10-17T04:55:32.000Z",
+      "updatedAt": "2025-10-17T04:55:32.000Z",
+      "post": {
+        "id": "p_101",
+        "content": "요즘 잠들기가 너무 힘들어요.",
+        "createdAt": "2025-10-16T03:22:11.000Z",
+        "authorId": "u_1"
+      }
+    }
+  ],
+  "nextCursor": "r_204"
+}
 ```
 
 ### 검증 실패 예시
@@ -323,7 +491,7 @@ Content-Type: application/json
 ## 📖 4) 서버 구현 가이드 (Next.js 15 Route Handler)
 
 ```ts
-// src/app/api/posts/route.ts
+// src/app/apis/posts/route.ts
 import { NextRequest, NextResponse } from 'next/server'
 import { postCreateInput, pageQuery, listOf, postDTO } from '@/lib/validators'
 import { getSessionUser } from '@/lib/auth'

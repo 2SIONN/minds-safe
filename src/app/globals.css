@@ -60,19 +60,42 @@
 
 /* v4에서는 커스텀 유틸을 @utility로 정의하는 게 권장 */
 @utility glass-card {
-  @apply bg-card/50 backdrop-blur-xl border border-border/50;
+  @apply bg-card/50 backdrop-blur-xl;
 }
 
 @utility gradient-text {
-  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
 }
 
 @utility hover-lift {
   @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_hsl(var(--color-primary)/0.2)];
 }
 
-@keyframes spin-slow { /* 로딩과 함께 추가됐습니다. - 서민욱 */
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(180deg); }
-  100% { transform: rotate(360deg); }
+@keyframes spin-slow {
+  /* 로딩과 함께 추가됐습니다. - 서민욱 */
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skeleton-loading {
+  /* 스켈레톤 UI와 함께 추가 했습니다. - 서민욱 */
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1c252e 25%, #1f2831 50%, #1c252e 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 2s infinite linear;
 }

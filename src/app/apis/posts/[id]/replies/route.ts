@@ -1,9 +1,11 @@
 import { prisma } from '@/lib/prisma'
-import { replyCreateSchema } from '@/utils/validators'
+import { replyCreateSchema } from '@/lib/validators'
 import { auth } from '@/auth'
 import { NextResponse } from 'next/server'
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+type RouteParams = { params: Promise<{ id: string }> }
+
+export async function POST(req: Request, context: RouteParams) {
   try {
     const session = await auth()
     const userId = (session?.user as any)?.id as string | undefined
@@ -11,12 +13,13 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
     }
 
+    const { id } = await context.params
     const json = await req.json()
     const { body } = replyCreateSchema.parse(json)
 
     const reply = await prisma.reply.create({
       data: {
-        postId: params.id,
+        postId: id,
         authorId: userId,
         body,
       },
@@ -28,9 +31,10 @@ export async function POST(req: Request, { params }: { params: { id: string } })
   }
 }
 
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+export async function GET(_req: Request, context: RouteParams) {
+  const { id } = await context.params
   const list = await prisma.reply.findMany({
-    where: { postId: params.id },
+    where: { postId: id },
     include: { empathies: true, author: true },
     orderBy: { createdAt: 'desc' },
   })

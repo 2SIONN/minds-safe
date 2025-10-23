@@ -1,21 +1,29 @@
+// src/stores/session.ts
 import { create } from 'zustand'
+import { persist, subscribeWithSelector, createJSONStorage } from 'zustand/middleware'
 
-export type SessionUser = { id: string; email: string; name: string }
-
-type State = {
-  user: SessionUser | null
-  hydrateFromServer: (u: SessionUser | null) => void
-  setUser: (u: SessionUser | null) => void
-  setNickname: (name: string) => void
+type SessionState = {
+  isAuthed: boolean
+  nickname: string
+  setAuthed: (v: boolean) => void
+  setNickname: (n: string) => void
+  reset: () => void
 }
 
-export const useSession = create<State>((set, get) => ({
-  user: null,
-  hydrateFromServer: (u) => set({ user: u }),
-  setUser: (u) => set({ user: u }),
-  setNickname: (name) => {
-    const u = get().user
-    if (!u) return
-    set({ user: { ...u, name } })
-  },
-}))
+export const useSession = create<SessionState>()(
+  persist(
+    subscribeWithSelector<SessionState>((set) => ({
+      isAuthed: false,
+      nickname: '',
+      setAuthed: (v) => set({ isAuthed: v }),
+      setNickname: (n) => set({ nickname: n }),
+      reset: () => set({ isAuthed: false, nickname: '' }),
+    })),
+    {
+      name: 'session-ui',
+      storage: createJSONStorage(() => localStorage), // SSR 안전 지연
+      partialize: (s) => ({ isAuthed: s.isAuthed, nickname: s.nickname }),
+      version: 1,
+    }
+  )
+)

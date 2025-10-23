@@ -1,4 +1,4 @@
-import { User } from "./user"
+import { Author, User } from './user'
 
 export type Post = {
   id: string
@@ -12,15 +12,18 @@ export type Post = {
   replies: Reply[] | null
 }
 
-export type Reply = {
-  id: string
+export interface ReplyPayload {
   postId: string
   authorId: string
   body: string
+}
+
+export interface Reply extends ReplyPayload {
+  id: string
   createdAt: string
   updatedAt: string
   empathies: Empathy[]
-  author: User
+  author: Author
 }
 
 export type Empathy = {
