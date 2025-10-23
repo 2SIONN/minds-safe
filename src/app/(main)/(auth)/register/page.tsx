@@ -42,10 +42,11 @@ export default function RegisterPage() {
     }
 
     try {
+      const nicknameToSend = parsed.data.nickname || '익명'
       const body = new FormData()
       body.append('email', parsed.data.email)
       body.append('password', parsed.data.password)
-      body.append('nickname', parsed.data.nickname)
+      body.append('nickname', nicknameToSend)
 
       const res = await fetch('/apis/auth/register', {
         method: 'POST',
