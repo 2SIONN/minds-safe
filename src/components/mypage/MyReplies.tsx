@@ -1,9 +1,8 @@
 'use client';
 
 import { memo } from 'react';
-import { Trash2 } from 'lucide-react';
+import MyReplyItem, { Reply } from './MyReplyItem';
 
-export type Reply = { id: string; content: string };
 
 type MyRepliesProps = {
   replies?: Reply[];
@@ -31,21 +30,11 @@ function MyRepliesBase({
       ) : (
         <ul className="space-y-3">
           {replies.map((reply) => (
-            <li
+            <MyReplyItem
               key={reply.id}
-              className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl"
-            >
-              <p className="flex-1 line-clamp-2">{reply.content}</p>
-              <button
-                type="button"
-                onClick={() => onDelete(reply.id)}
-                className="p-2 hover:bg-destructive/20 hover:text-destructive rounded-lg transition-colors"
-                aria-label="댓글 삭제"
-                title="댓글 삭제"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </li>
+              reply={reply}
+              onDelete={onDelete}
+              />
           ))}
         </ul>
       )}

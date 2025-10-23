@@ -1,5 +1,5 @@
 import { ComponentPropsWithRef, ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface ButtonProps extends ComponentPropsWithRef<'button'> {
   variant?: 'default' | 'ghost'

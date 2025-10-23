@@ -1,7 +1,6 @@
 'use client'
 
 import { useToast } from '@/store/useToast'
-import { Card } from '@/components/common/Card'
 import { X } from 'lucide-react'
 
 export default function Toast() {
@@ -12,16 +11,17 @@ export default function Toast() {
     <div className="fixed bottom-6 right-6 z-[9999] space-y-3">
       {items.map((t) => (
         // 개별 토스트 카드
-        <Card
+        <div
           key={t.id}
           className={[
+            'rounded-lg border border-border bg-background text-card-foreground shadow-sm',
             'group relative rounded-2xl cursor-pointer',
             'px-5 pr-10 py-4', // X 버튼 공간 확보
             'transition-transform hover:scale-[1.02]',
           ].join(' ')}
         >
           {/* 메시지 텍스트 */}
-          <span className="block">{t.message}</span>
+          <span className="block text-sm">{t.message}</span>
 
           {/* 호버 시에만 표시되는 X 닫기 버튼 */}
           <button
@@ -37,7 +37,7 @@ export default function Toast() {
           >
             <X className="size-2.5" />
           </button>
-        </Card>
+        </div>
       ))}
     </div>
   )

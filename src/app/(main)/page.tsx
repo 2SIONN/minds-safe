@@ -1,6 +1,7 @@
 // src/app/(main)/page.tsx
 import SearchFilter from '@/components/common/SearchFilter'
-import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
+import TagBadge from '@/components/common/TagBadge'
+import { DEFAULT_TAGS } from '@/constants/tags'
 
 // 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
 import ClientPage from '@/app/(main)/client-page'
