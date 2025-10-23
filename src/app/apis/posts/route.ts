@@ -8,9 +8,10 @@ import type { Prisma } from '@prisma/client'
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const q = searchParams.get('q') || ''
-  const where: Prisma.PostWhereInput | undefined = q
-    ? { OR: [{ content: { contains: q } }, { tags: { string_contains: q } }] }
-    : undefined
+  const where = q
+    ? { OR: [{ content: { contains: q } }, { tags: { path: '$[*]', string_contains: q } }] }
+    : {}
+
   const list = await prisma.post.findMany({
     where,
     orderBy: { createdAt: 'desc' },
@@ -30,7 +31,7 @@ export async function POST(req: Request) {
       data: {
         authorId: session.uid,
         content: parsed.content,
-        tags: parsed.tags as any,
+        tags: parsed.tags,
         imageUrl: parsed.imageUrl || null,
       },
     })
