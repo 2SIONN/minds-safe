@@ -1,11 +1,11 @@
 'use client'
 
-import { formatRelativeDate } from "@/lib/data";
-import { Reply } from "@/types/post";
-import { Trash2 } from "lucide-react";
-import { useState } from "react";
-import ActionToggle from "../common/ActionToggle";
-import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore } from '@/store/useAuthStore'
+import { Reply } from '@/types/post'
+import { formatRelativeDate } from '@/utils/date'
+import { Trash2 } from 'lucide-react'
+import { useState } from 'react'
+import ActionToggle from '../common/ActionToggle'
 
 interface TruncatedBodyProps {
   body: string
@@ -18,13 +18,13 @@ interface ReplyItemProps {
   postAuthorId: string
 }
 
-const MAX_LENGTH = 200;
+const MAX_LENGTH = 200
 
 export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
-  const { user } = useAuthStore();
-  const [isShown, setIsShown] = useState(false);
-  const likeCount = reply.empathies?.length ?? 0;
-  const handleToggle = () => setIsShown(prev => !prev);
+  const { user } = useAuthStore()
+  const [isShown, setIsShown] = useState(false)
+  const likeCount = reply.empathies?.length ?? 0
+  const handleToggle = () => setIsShown((prev) => !prev)
 
   return (
     <li className="flex justify-between items-start px-2 py-4">
@@ -37,22 +37,26 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
           </span>
           <span className="text-gray-400">{formatRelativeDate(reply.createdAt)}</span>
         </div>
-        {
-          reply.body.length > MAX_LENGTH ?
-            <TruncatedBody body={reply.body} isShown={isShown} onClick={handleToggle} />
-            :
-            <span>{reply.body}</span>
-        }
+        {reply.body.length > MAX_LENGTH ? (
+          <TruncatedBody body={reply.body} isShown={isShown} onClick={handleToggle} />
+        ) : (
+          <span>{reply.body}</span>
+        )}
       </div>
       <div className="flex gap-2">
         <ActionToggle
           variant="like"
           active={false}
-          onToggle={() => { }}
+          onToggle={() => {}}
           disabled={false}
           count={likeCount}
         />
-        {user?.id === reply.authorId && <button><Trash2 className="text-red-700 size-4" /></button>} {/* 공통 컴포넌트로 변경 예정 */}
+        {user?.id === reply.authorId && (
+          <button>
+            <Trash2 className="text-red-700 size-4" />
+          </button>
+        )}{' '}
+        {/* 공통 컴포넌트로 변경 예정 */}
       </div>
     </li>
   )
@@ -63,14 +67,24 @@ function TruncatedBody({ body, isShown, onClick }: TruncatedBodyProps) {
     return (
       <div>
         <span>{truncatedText}</span>
-        <button className="cursor-pointer underline text-gray-400 hover:text-gray-200" onClick={onClick}>더보기</button>
+        <button
+          className="cursor-pointer underline text-gray-400 hover:text-gray-200"
+          onClick={onClick}
+        >
+          더보기
+        </button>
       </div>
     )
   }
   return (
     <div>
       <span>{body}</span>
-      <button className="cursor-pointer underline text-gray-400 hover:text-gray-200" onClick={onClick}>간략히 보기</button>
+      <button
+        className="cursor-pointer underline text-gray-400 hover:text-gray-200"
+        onClick={onClick}
+      >
+        간략히 보기
+      </button>
     </div>
   )
 }
