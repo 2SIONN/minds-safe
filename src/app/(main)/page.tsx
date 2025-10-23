@@ -1,11 +1,13 @@
 // src/app/(main)/page.tsx
-import Fab from '@/components/common/Fab'
 import Loading from '@/components/common/Loading'
 import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
 import { AllPosts } from '@/components/feed/all-posts'
-import { Plus } from 'lucide-react'
 import { Suspense } from 'react'
+
+// 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
+import PostFab from '@/components/posts/PostFab'
+import PostWriteModal from '@/components/posts/PostWriteModal'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
@@ -15,6 +17,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
       <section className="bg-card/80 backdrop-blur">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 ">
           <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
+
           {/* 검색창 */}
           <div className="mt-4">
             <SearchFilter
@@ -39,7 +42,9 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           </Suspense>
         </div>
       </section>
-      <Fab icon={<Plus className="w-6 h-6" />} />
+      {/* 변경: 기존 <Fab .../> 대신 */}
+      <PostFab />
+      <PostWriteModal />
     </div>
   )
 }
