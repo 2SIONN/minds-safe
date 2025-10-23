@@ -28,6 +28,7 @@ export default function FeedCard(props: Post) {
     try {
       const data = await getPostDetailClient(id)
       setDetail(data)
+      console.log(data)
     } catch (e) {
       console.error(e)
     }

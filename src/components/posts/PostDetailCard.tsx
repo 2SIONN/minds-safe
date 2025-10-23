@@ -6,6 +6,8 @@ import ReplyList from './ReplyList'
 import { Post } from '@/types/post'
 import { Modal } from '../common/Modal'
 import ReplyForm from './ReplyForm'
+import LikeButton from './LikeButton'
+import NickName from './NickName'
 
 type Props = {
   open: boolean
@@ -14,6 +16,8 @@ type Props = {
 }
 
 export default function PostDetailCard({ open, onClose, post }: Props) {
+  const currentUserId = localStorage.getItem('userId') || ''
+  const initiallyLiked = post?.empathies?.some((e) => e.userId === currentUserId) ?? false
   return (
     <Modal open={open} onClose={onClose} size="2xl" closeOnBackdrop>
       {!post ? (
@@ -30,6 +34,16 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
           <CardContent className="p-6 pt-3">
             <Tags tags={post.tags} />
             {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
+            {(() => {
+              const nickname = post.authorId ?? '익명'
+              return <NickName nickname={nickname} />
+            })()}
+            {(() => {
+              const likeCount = post.empathies?.length ?? 0 // 기본값 0
+              return (
+                <LikeButton id={post.id} initialActive={initiallyLiked} initialCount={likeCount} />
+              )
+            })()}
           </CardContent>
           <CardFooter className='flex-col items-start'>
             <ReplyForm id={post.id} />
