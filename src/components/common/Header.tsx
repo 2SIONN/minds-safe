@@ -43,7 +43,7 @@ export default function Header({
     )
 
   return (
-    <header className={`z-50 bg-card/80 backdrop-blur ${className}`}>
+    <header className={`z-50 glass-card ${className}`}>
       <div
         className={`relative mx-auto max-w-4xl px-4 sm:px-6 h-16 w-full flex items-center ${containerClassName}`}
       >

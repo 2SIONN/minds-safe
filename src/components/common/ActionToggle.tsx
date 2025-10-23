@@ -56,7 +56,7 @@ export default function ActionToggle({
 
   return (
     <div className={cn("flex items-center gap-1", wrapperClassName)}>
-      <Button
+      <button
         type="button"
         aria-pressed={active}
         onClick={onToggle}
@@ -77,7 +77,7 @@ export default function ActionToggle({
         ) : (
           icon ?? defaultIcon
         )}
-      </Button>
+      </button>
 
       {typeof count === "number" && (
         <span className="text-sm text-muted-foreground">{count}</span>
