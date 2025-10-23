@@ -1,6 +1,5 @@
 'use client'
 
-import { ChangeEvent, useState } from "react";
 import Button from "../common/Button";
 import Textarea from "../common/Textarea";
 import { z } from "zod";
@@ -18,18 +17,20 @@ export default function ReplyForm() {
     }
   })
 
-  const len = watch('body').length
+  const len = watch('body').trim().length
 
   return (
-    <form className="w-full flex items-end gap-4"> {/*Subbit handler 추가 예정*/}
-      <Textarea
-        wrapperClassName="flex-1"
-        textareaClassName="rounded-md"
-        placeholder="따뜻한 응원을 남겨보세요..."
-        {...register('body')}
-      />
-      {/* 길이 표시 및 에러 상태 표시 추가 예정 */}
-      <Button disabled={len === 0 || isSubmitting}>전송</Button>
+    <form className="w-full py-6 border-y border-white/10"> {/*Submit handler 추가 예정*/}
+      <div className="flex items-end gap-4 ">
+        <Textarea
+          wrapperClassName="flex-1"
+          textareaClassName="rounded-md"
+          placeholder="따뜻한 응원을 남겨보세요..."
+          {...register('body')}
+        />
+        <Button disabled={len === 0 || isSubmitting}>전송</Button>
+      </div>
+      {errors?.body && <span className="text-destructive">{errors.body.message}</span>}
     </form>
   )
 }

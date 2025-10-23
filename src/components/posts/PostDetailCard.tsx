@@ -1,10 +1,11 @@
 'use client'
 
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
+import { CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 import Tags from '@/components/posts/tags'
 import ReplyList from './ReplyList'
 import { Post } from '@/types/post'
 import { Modal } from '../common/Modal'
+import ReplyForm from './ReplyForm'
 
 type Props = {
   open: boolean
@@ -28,11 +29,12 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
 
           <CardContent className="p-6 pt-3">
             <Tags tags={post.tags} />
+            {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
           </CardContent>
-          {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
-          <div className="h-px bg-white/10 mx-6" />
-          <ReplyList replies={post.replies} />
-          {/* 댓글 ui랑 댓글 입력창 컴포넌트 넣기 */}
+          <CardFooter className='flex-col items-start'>
+            <ReplyForm />
+            <ReplyList id={post.id} postAuthorId={post.authorId} />
+          </CardFooter>
         </>
       )}
     </Modal>
