@@ -1,11 +1,15 @@
 'use client'
 import SearchFilter from '@/components/common/SearchFilter'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 
+type DebounceTimer = ReturnType<typeof setTimeout> | null
+
 export default function SearchInput({ q }: { q: string }) {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState(q || '')
   const router = useRouter()
+  // 타이머 아이디를 저장해야 함.
+  const timerId = useRef<DebounceTimer>(null)
 
   useEffect(() => {
     setSearch(q && q.length < 100 ? q : '')
@@ -15,9 +19,14 @@ export default function SearchInput({ q }: { q: string }) {
     // q 100자 초과 거부
     if (e.currentTarget.value.length > 100) return
     setSearch(e.currentTarget.value)
-    setTimeout(() => {
+
+    if (timerId.current) {
+      clearTimeout(timerId.current)
+    }
+    const newTimer = setTimeout(() => {
       router.replace(`?q=${e.target.value}`)
     }, 1000)
+    timerId.current = newTimer
   }
 
   return (
