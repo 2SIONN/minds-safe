@@ -1,7 +1,8 @@
 // src/app/(main)/page.tsx
 import Loading from '@/components/common/Loading'
 import SearchFilter from '@/components/common/SearchFilter'
-import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
+import TagBadge from '@/components/common/TagBadge'
+import { DEFAULT_TAGS } from '@/constants/tags'
 import { AllPosts } from '@/components/feed/AllPosts'
 import { Suspense } from 'react'
 
