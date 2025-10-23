@@ -44,7 +44,7 @@ export default function AllPosts({ q = '' }: { q?: string }) {
         ))}
       </div>
       <div ref={bottomRef} aria-hidden />
-      {isFetchingNextPage && <div className="py-6">Loading…</div>}
+      {isFetchingNextPage && <FeedListSkeleton count={3} />}
       {!hasNextPage && (
         <div className="py-10 text-center text-sm text-muted-foreground">
           마지막 글까지 모두 봤어요.
