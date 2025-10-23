@@ -12,16 +12,14 @@ interface Post {
 }
 
 export default function MypagePostCard () {
-  const userid = "cmh1d24n500dnuwfoalvaqzxo";
-
   const [posts,setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`/apis/posts/${userid}`);
-        const data = await res.json();
-        setPosts(data)
+        const res = await fetch(`/apis/me/posts`);
+        const {items} = await res.json();
+        setPosts(items)
       } catch (err) {
         console.error('데이터 요청 실패:', err);
       }
@@ -30,9 +28,10 @@ export default function MypagePostCard () {
     fetchData()
   }, [])
 
+  //TODO : 삭제 API 완료 후 수정 필요
   async function handleDelete(id: string | undefined) {
     try {
-      const res = await fetch(`apis/posts/${id}`, {method: 'DELETE'});
+      const res = await fetch(`apis/me/posts`, {method: 'DELETE'});
       setPosts(prev => prev.filter(post => post.id !== id));
     } catch (err) {
       console.error(err);
@@ -43,13 +42,12 @@ export default function MypagePostCard () {
     <Card className="rounded-3xl mb-6">
       <CardContent>
         <h2 className="text-lg font-semibold mb-4">나의 고민</h2>
-        <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl">
-          {/* 추후 API 수정 후 작업 */}
-          {/*{posts.length === 0 ? (
-              <p className="text-muted-foreground text-center py-8">등록된 게시글이 없습니다.</p>
+        <div className="space-y-3">
+          {posts.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">아직 작성한 고민이 없어요.</p>
             ) : (<>
               {posts.map(post => (
-                <div key={post.id}>
+                <div key={post.id} className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl">
                   <p className="flex-1 line-clamp-2">{post?.content}</p>
                   <button
                     onClick={() => handleDelete(post?.id)}
@@ -59,7 +57,7 @@ export default function MypagePostCard () {
                 </div>
               ))}
             </>)
-          }*/}
+          }
         </div>
       </CardContent>
     </Card>
