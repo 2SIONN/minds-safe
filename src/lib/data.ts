@@ -1,19 +1,34 @@
 // utils/date.ts
 
+const MINUTE = 60 * 1000
+const HOUR = 60 * MINUTE
+const DAY = 24 * HOUR
+const THIRTY_DAYS = 30 * DAY
+
 /**
- * 날짜 파싱 함수
- * @param createAt
- * @returns '오늘' 혹은 ${diffDays}일 전
+ * 날짜를 현재 시각과 비교
+ * @param createdAt - ISO(예: "2025-10-21T00:48:08.721Z")
+ * @returns '방금 전' | 'n분 전' | 'n시간 전' | 'n일 전' | 'YYYY-MM-DD' | '날짜 정보 없음'
  */
-export function formatRelativeDate(createAt: string | number | Date): string {
-  const created = new Date(createAt)
-  const now = new Date()
+export function formatRelativeDate(createdAt: string): string {
+  if (!createdAt) return '날짜 정보 없음'
 
-  // 자정 기준으로 날짜만 비교
-  const diffTime = now.getTime() - created.getTime()
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+  const timestamp = new Date(createdAt).getTime()
+  if (Number.isNaN(timestamp)) return '날짜 정보 없음'
 
-  if (diffDays <= 0) return '오늘'
-  if (diffDays === 1) return '1일 전'
+  const diffMs = Date.now() - timestamp
+  if (diffMs < 0) return '방금 전' // 미래 시각 방어
+
+  if (diffMs < MINUTE) return '방금 전'
+  if (diffMs < HOUR) return `${Math.floor(diffMs / MINUTE)}분 전`
+  if (diffMs < DAY) return `${Math.floor(diffMs / HOUR)}시간 전`
+
+  const diffDays = Math.floor(diffMs / DAY)
+
+  if (diffMs >= THIRTY_DAYS) {
+    const date = new Date(timestamp)
+    return date.toISOString().split('T')[0]
+  }
+
   return `${diffDays}일 전`
 }
