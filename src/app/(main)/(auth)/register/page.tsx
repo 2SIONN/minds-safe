@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { registerSchema } from '@/lib/validators/auth'
-import RegisterForm from './RegisterForm'
+import RegisterForm from '../_component/RegisterForm'
 import type { z } from 'zod'
 
 type FormDataState = z.infer<typeof registerSchema>
