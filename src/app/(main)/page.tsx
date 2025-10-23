@@ -1,14 +1,12 @@
 // src/app/(main)/page.tsx
-import Loading from '@/components/common/Loading'
-import SearchFilter from '@/components/common/SearchFilter'
-import TagBadge, { DEFAULT_TAGS } from '@/components/common/TagBadge'
-import SearchInput from '@/components/search/SearchInput'
-import { AllPosts } from '@/components/feed/AllPosts'
-import { Suspense } from 'react'
+import TagBadge from '@/components/common/TagBadge'
+import { DEFAULT_TAGS } from '@/constants/tags'
 
 // 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
+import ClientPage from '@/app/(main)/client-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
+import SearchInput from '@/components/search/SearchInput'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
@@ -39,9 +37,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           <div></div>
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
-        <Suspense key={q || ''} fallback={<Loading />}>
-          <AllPosts q={q || ''} />
-        </Suspense>
+        <ClientPage q={q || ''} />
       </main>
 
       {/* 변경: 기존 <Fab .../> 대신 */}
