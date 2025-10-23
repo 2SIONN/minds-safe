@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       data: {
         authorId: session.uid,
         content: parsed.content,
-        tags: parsed.tags as any,
+        tags: parsed.tags,
         imageUrl: parsed.imageUrl || null,
       },
     })

@@ -2,37 +2,34 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { registerSchema } from '@/lib/validators'
-import RegisterForm from '../_component/RegisterForm'
-import type { z } from 'zod'
+import { useAuthStore } from '@/store/useAuthStore'
+import { loginSchema } from '@/lib/validators'
+import LoginForm from '../_component/LoginForm'
 
-type FormDataState = z.infer<typeof registerSchema>
-
-export default function RegisterPage() {
+export default function LoginPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState<FormDataState>({
+  const { setUser } = useAuthStore()
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
-    passwordConfirm: '',
-    nickname: '',
   })
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [successMessage, setSuccessMessage] = useState('')
+  const [error, setError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error) {
+      setError('')
+    }
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setSuccessMessage('')
     setLoading(true)
+    setError('')
 
-    const parsed = registerSchema.safeParse(formData)
-
+    const parsed = loginSchema.safeParse(formData)
     if (!parsed.success) {
       const fieldErrors = parsed.error.flatten().fieldErrors
       const firstError = Object.values(fieldErrors)[0]?.[0]
@@ -42,41 +39,35 @@ export default function RegisterPage() {
     }
 
     try {
-      const nicknameToSend = parsed.data.nickname || '익명'
       const body = new FormData()
       body.append('email', parsed.data.email)
       body.append('password', parsed.data.password)
-      body.append('passwordConfirm', parsed.data.passwordConfirm)
-      body.append('nickname', nicknameToSend)
-
-      const res = await fetch('/apis/auth/register', {
+      const res = await fetch('/apis/auth/login', {
         method: 'POST',
-        body: body,
+        body,
       })
 
+      const data = await res.json()
+
       if (res.ok) {
-        setSuccessMessage('회원가입 성공! 잠시 후 로그인 페이지로 이동합니다.')
-        setTimeout(() => {
-          router.push('/login')
-        }, 1000)
+        setUser(data.user)
+        router.push('/')
       } else {
-        const data = await res.json()
-        setError(data?.message || '회원가입에 실패했습니다')
-        setLoading(false)
+        setError(data?.message || '로그인 실패')
       }
     } catch (err) {
       console.error(err)
       setError('네트워크 오류가 발생했습니다.')
+    } finally {
       setLoading(false)
     }
   }
 
   return (
-    <RegisterForm
+    <LoginForm
       formData={formData}
       loading={loading}
       error={error}
-      message={successMessage}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
     />
