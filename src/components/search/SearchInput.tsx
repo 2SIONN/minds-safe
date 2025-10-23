@@ -1,13 +1,11 @@
 'use client'
 import SearchFilter from '@/components/common/SearchFilter'
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
-export default function SearchInput() {
+export default function SearchInput({ q }: { q: string }) {
   const [search, setSearch] = useState('')
   const router = useRouter()
-  const searchParms = useSearchParams()
-  const q = searchParms.get('q')
 
   useEffect(() => {
     setSearch(q && q.length < 100 ? q : '')
