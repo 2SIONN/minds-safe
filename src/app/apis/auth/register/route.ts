@@ -1,14 +1,15 @@
 import { prisma } from '@/lib/prisma'
-import { signupSchema } from '@/lib/validators'
+import { registerSchema } from '@/lib/validators'
 import bcrypt from 'bcryptjs'
 import { NextResponse } from 'next/server'
 
 export async function POST(req: Request) {
   try {
     const body = await req.formData()
-    const data = signupSchema.parse({
+    const data = registerSchema.parse({
       email: String(body.get('email') || ''),
       password: String(body.get('password') || ''),
+      passwordConfirm: String(body.get('passwordConfirm') || ''),
       nickname: String(body.get('nickname') || ''),
     })
     const exists = await prisma.user.findUnique({ where: { email: data.email } })
