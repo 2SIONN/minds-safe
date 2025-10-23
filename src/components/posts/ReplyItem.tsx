@@ -17,7 +17,7 @@ export default function ReplyItem({ reply }: { reply: Reply }) {
   const handleToggle = () => setIsShown(prev => !prev);
 
   return (
-    <li className="flex justify-between items-start px-6 py-4">
+    <li className="flex justify-between items-start px-2 sm:px-0 py-4">
       <div className="flex flex-col overflow-hidden gap-1 items-start">
         <span className="text-sm font-semibold">{reply.author.nickname ?? '익명'}</span>
         {
