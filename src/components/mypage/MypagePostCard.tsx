@@ -2,6 +2,7 @@
 
 import {Trash2} from "lucide-react";
 import {useEffect, useState} from "react";
+import {Card, CardContent, CardHeader} from "@/components/common/Card.tsx";
 
 interface Post {
   id: string;
@@ -39,26 +40,28 @@ export default function MypagePostCard () {
   }
 
   return (
-    <div className="glass-card p-6 rounded-3xl mb-6">
-      <h2 className="text-lg font-semibold mb-4">나의 고민</h2>
-      <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl">
-        {/* 추후 API 수정 후 작업 */}
-        {/*{posts.length === 0 ? (
-            <p className="text-sm text-muted-foreground">등록된 게시글이 없습니다.</p>
-          ) : (<>
-            {posts.map(post => (
-              <div key={post.id}>
-                <p className="flex-1 line-clamp-2">{post?.content}</p>
-                <button
-                  onClick={() => handleDelete(post?.id)}
-                  className="p-2 hover:bg-destructive/20 hover:text-destructive rounded-lg transition-colors">
-                  <Trash2 className="w-4 h-4"/>
-                </button>
-              </div>
-            ))}
-          </>)
-        }*/}
-      </div>
-    </div>
+    <Card className="rounded-3xl mb-6">
+      <CardContent>
+        <h2 className="text-lg font-semibold mb-4">나의 고민</h2>
+        <div className="flex items-start gap-3 p-4 bg-muted/20 rounded-xl">
+          {/* 추후 API 수정 후 작업 */}
+          {/*{posts.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">등록된 게시글이 없습니다.</p>
+            ) : (<>
+              {posts.map(post => (
+                <div key={post.id}>
+                  <p className="flex-1 line-clamp-2">{post?.content}</p>
+                  <button
+                    onClick={() => handleDelete(post?.id)}
+                    className="p-2 hover:bg-destructive/20 hover:text-destructive rounded-lg transition-colors">
+                    <Trash2 className="w-4 h-4"/>
+                  </button>
+                </div>
+              ))}
+            </>)
+          }*/}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
