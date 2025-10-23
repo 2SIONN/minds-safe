@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import ActionToggle from '../common/ActionToggle'
 
-type Varaint = 'like' | 'comment'
-
 type LikeButtonProps = {
   id?: string
   initialActive?: boolean
@@ -12,8 +10,9 @@ type LikeButtonProps = {
   disabled?: boolean
   className?: string
   wrapperClassName?: string
-  onChange?: (active: boolean, count: number) => void
 }
+
+type LikeState = { active: boolean; count: number }
 
 export default function LikeButton({
   id,
@@ -22,33 +21,27 @@ export default function LikeButton({
   disabled = false,
   className,
   wrapperClassName,
-  onChange,
 }: LikeButtonProps) {
-  const [active, setActive] = useState(initialActive)
-  const [count, setCount] = useState(initialCount)
+  const [state, setState] = useState<LikeState>({
+    active: initialActive,
+    count: initialCount,
+  })
 
   const handleToggle = () => {
     if (disabled) return
 
-    setActive((prevActive) => {
-      const nextActive = !prevActive
-
-      setCount((prevCount) => {
-        console.log(prevCount)
-        const nextCount = nextActive ? prevCount + 1 : Math.max(0, prevCount - 1)
-        onChange?.(nextActive, nextCount)
-
-        return nextCount
-      })
-
-      return nextActive
+    setState((prev) => {
+      const nextActive = !prev.active
+      const nextCount = nextActive ? prev.count + 1 : Math.max(0, prev.count - 1)
+      return { active: nextActive, count: nextCount }
     })
   }
+
   return (
     <ActionToggle
       variant="like"
-      active={active}
-      count={count}
+      active={state.active}
+      count={state.count}
       onToggle={handleToggle}
       disabled={disabled}
       className={className}

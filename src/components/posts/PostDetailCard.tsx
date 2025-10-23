@@ -35,7 +35,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
           </CardContent>
           {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
           {(() => {
-            const nickname = post.authorId ?? '익명' // 기본값 0
+            const nickname = post.authorId ?? '익명'
             return <NickName nickname={nickname} />
           })()}
           {(() => {
