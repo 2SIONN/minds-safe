@@ -32,7 +32,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
             {/* 회원 별명이랑 공감 수 버튼 컴포넌트 넣기 */}
           </CardContent>
           <CardFooter className='flex-col items-start'>
-            <ReplyForm />
+            <ReplyForm id={post.id} />
             <ReplyList id={post.id} postAuthorId={post.authorId} />
           </CardFooter>
         </>
