@@ -1,5 +1,4 @@
 // src/app/(main)/page.tsx
-import SearchFilter from '@/components/common/SearchFilter'
 import TagBadge from '@/components/common/TagBadge'
 import { DEFAULT_TAGS } from '@/constants/tags'
 
@@ -7,6 +6,7 @@ import { DEFAULT_TAGS } from '@/constants/tags'
 import ClientPage from '@/app/(main)/client-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
+import SearchInput from '@/components/search/SearchInput'
 
 export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
@@ -18,13 +18,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
 
           {/* 검색창 */}
-          <div className="mt-4">
-            <SearchFilter
-              className="text-base"
-              containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring/40"
-              placeholder="내용이나 태그로 검색..."
-            />
-          </div>
+          <SearchInput q={q || ''} />
 
           {/* 태그 리스트 */}
           <div className="flex flex-wrap gap-2 mt-4 pb-6">
