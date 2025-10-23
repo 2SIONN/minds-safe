@@ -9,14 +9,20 @@ import { Suspense } from 'react'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 
-export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string }>
+}) {
   const q = (await searchParams)?.q
 
   return (
     <div>
-      <section className="bg-card/80 backdrop-blur">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 ">
-          <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
+      <section className="glass-card border-b border-border/50">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6">
+          <p className="text-sm text-muted-foreground">
+            지금 마음, 익명으로 털어놓아도 괜찮아요.
+          </p>
 
           {/* 검색창 */}
           <div className="mt-4">
@@ -28,20 +34,23 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           </div>
 
           {/* 태그 리스트 */}
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4 pb-6">
             {DEFAULT_TAGS.map((t) => (
               <TagBadge key={t.value} size="md">
                 {t.label}
               </TagBadge>
             ))}
           </div>
-
-          {/* 게시글 리스트 / 빈 상태 */}
-          <Suspense key={q || ''} fallback={<Loading />}>
-            <AllPosts q={q || ''} />
-          </Suspense>
         </div>
       </section>
+
+      <div className="mx-auto max-w-4xl px-4 sm:px-6">
+        {/* 게시글 리스트 / 빈 상태 */}
+        <Suspense key={q || ''} fallback={<Loading />}>
+          <AllPosts q={q || ''} />
+        </Suspense>
+      </div>
+
       {/* 변경: 기존 <Fab .../> 대신 */}
       <PostFab />
       <PostWriteModal />
