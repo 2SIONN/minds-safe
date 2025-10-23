@@ -46,6 +46,7 @@ export default function RegisterPage() {
       const body = new FormData()
       body.append('email', parsed.data.email)
       body.append('password', parsed.data.password)
+      body.append('passwordConfirm', parsed.data.passwordConfirm)
       body.append('nickname', nicknameToSend)
 
       const res = await fetch('/apis/auth/register', {

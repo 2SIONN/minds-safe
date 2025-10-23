@@ -40,12 +40,19 @@ export const registerSchema = z
     }),
 
     nickname: z
-      .string()
-      .trim()
-      .min(2, { error: '닉네임은 2자 이상이어야 합니다.' })
-      .max(12, { error: '닉네임은 12자 이하로 입력해주세요.' })
-      .regex(/^[a-zA-Z0-9가-힣]*$/, { error: '닉네임은 영어, 숫자, 한글만 사용할 수 있습니다.' })
-      .optional(),
+      .union([
+        z.literal(''),
+        z
+          .string()
+          .trim()
+          .min(2, { message: '닉네임은 2자 이상이어야 합니다.' })
+          .max(12, { message: '닉네임은 12자 이하로 입력해주세요.' })
+          .regex(/^[a-zA-Z0-9가-힣]*$/, {
+            message: '닉네임은 영어, 숫자, 한글만 사용할 수 있습니다.',
+          }),
+      ])
+      .optional()
+      .transform((name) => (name ? name : '익명')),
   })
   .refine((data) => data.password === data.passwordConfirm, {
     message: '비밀번호 값이 일치하지 않습니다',
