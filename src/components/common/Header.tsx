@@ -36,7 +36,7 @@ export default function Header({
         className="inline-flex items-center gap-2 rounded-md px-2 py-1 hover:bg-muted focus:outline-none focus:ring-2"
         aria-label="뒤로가기"
       >
-        <ArrowLeft className="size-5" />
+        <ArrowLeft className="size-5 shrink-0" />
       </button>
     ) : (
       left
@@ -45,13 +45,20 @@ export default function Header({
   return (
     <header className={`z-50 glass-card ${className}`}>
       <div
-        className={`relative mx-auto max-w-4xl px-4 sm:px-6 h-16 w-full flex items-center ${containerClassName}`}
+        className={`relative mx-auto max-w-4xl px-4 sm:px-6 h-16 w-full flex items-center justify-between ${containerClassName}`}
       >
         {/* 왼쪽 영역 */}
-        <div className="flex flex-1 min-w-0 items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           {leftArea}
 
-          {/* main일 때는 왼쪽 정렬 */}
+          {/* back일 때: 버튼 옆에 타이틀 */}
+          {title && variant === 'back' && (
+            <h1 className={`truncate text-lg font-semibold ${titleClassName}`}>
+              {title}
+            </h1>
+          )}
+
+          {/* main일 때: 왼쪽 정렬 */}
           {title && variant !== 'back' && (
             <h1
               className={`truncate text-lg font-semibold ${titleClassName}`}
@@ -60,15 +67,6 @@ export default function Header({
             </h1>
           )}
         </div>
-
-        {/* back일 때는 중앙 정렬 */}
-        {title && variant === 'back' && (
-          <h1
-            className={`absolute left-1/2 -translate-x-1/2 text-lg font-semibold truncate text-center ${titleClassName}`}
-          >
-            {title}
-          </h1>
-        )}
 
         {/* 오른쪽 영역 */}
         <div className="flex items-center gap-2 shrink-0">{right}</div>
