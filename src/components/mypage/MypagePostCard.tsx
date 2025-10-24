@@ -45,7 +45,6 @@ export default function MypagePostCard() {
     fetchData()
   }, [])
 
-  //TODO : 삭제 API 완료 후 수정 필요
   async function handleDelete(id: string | undefined) {
     try {
       setLoading(true);
