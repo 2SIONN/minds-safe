@@ -35,23 +35,22 @@ export function useOptimisticCreate<T, V>({
     onMutate: async (payload) => {
       await queryClient.cancelQueries({ queryKey: listKey })
       const prev = queryClient.getQueryData<T[]>(listKey)
-      // 낙관적 업데이트를 위한 임시 댓글 삽입 (리스트 상단)
+      // 낙관적 업데이트를 위한 임시 아이템 삽입 (리스트 상단)
       const temp = buildTempItem(payload);
-      // 댓글 리스트 업데이트
+      // 리스트 업데이트
       queryClient.setQueryData(listKey, (old: T[]) => [temp, ...(old ?? [])])
       return { prev, tempId: temp.id } satisfies Ctx<T>
     },
-    onError: (err, _payload, ctx) => {
+    onError: (_err, _payload, ctx) => {
       // 실패 시 복구
       if (ctx?.prev) {
         queryClient.setQueryData(listKey, ctx.prev)
       }
-      return err;
     },
     onSuccess: (res, _payload, ctx) => {
-      const replace = replaceItem ?? ((item: any, c: Ctx<T>) => item?.id === c.tempId);
-      const merge = mergeServerItem ?? ((_o: T, s: T) => s);
-      // 성공 시 임시 댓글 교체
+      const replace = replaceItem ?? ((item: any, c: Ctx<T>) => item?.id === c.tempId)
+      const merge = mergeServerItem ?? ((_o: T, s: T) => s)
+      // 성공 시 임시 아이템 교체
       queryClient.setQueryData(listKey, (old: T[]) => {
         return (old ?? []).map((item) => (replace(item, ctx) ? merge(item, res) : item))
       })

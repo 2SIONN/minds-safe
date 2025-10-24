@@ -4,8 +4,10 @@ import { useAuthStore } from '@/store/useAuthStore'
 import { Reply } from '@/types/post'
 import { formatRelativeDate } from '@/utils/date'
 import { Trash2 } from 'lucide-react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import ActionToggle from '../common/ActionToggle'
+import LikeButton from './LikeButton'
+import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
 
 interface TruncatedBodyProps {
   body: string
@@ -23,8 +25,18 @@ const MAX_LENGTH = 200
 export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
   const { user } = useAuthStore()
   const [isShown, setIsShown] = useState(false)
+
+  const initiallyLiked = useMemo(() => {
+    if(!reply.empathies || !user)return false
+    return reply.empathies.some((em) => user.id === em.userId)
+  }, [reply.empathies, user?.id]);
+
   const likeCount = reply.empathies?.length ?? 0
+
   const handleToggle = () => setIsShown((prev) => !prev)
+
+  const { mutate: deleteReply } = useDeleteReplies(reply.postId)
+
   return (
     <li className="flex justify-between items-start px-2 py-4">
       <div className="flex flex-col overflow-hidden gap-1 items-start">
@@ -32,7 +44,7 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
           <span className="font-semibold">
             {reply.author.nickname ?? '익명'}
             &nbsp;
-            {user?.id === postAuthorId && <span className="text-muted-foreground">글쓴이</span>}
+            {reply.authorId === postAuthorId && <span className="text-muted-foreground">글쓴이</span>}
           </span>
           <span className="text-gray-400">{formatRelativeDate(reply.createdAt)}</span>
         </div>
@@ -43,19 +55,19 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
         )}
       </div>
       <div className="flex gap-2">
-        <ActionToggle
-          variant="like"
-          active={false}
-          onToggle={() => {}}
-          disabled={false}
-          count={likeCount}
+        <LikeButton
+          id={reply.id}
+          initialActive={initiallyLiked}
+          initialCount={likeCount}
+          disabled={!user}
         />
         {user?.id === reply.authorId && (
-          <button>
+          <button onClick={() => deleteReply(reply)} 
+            className='cursor-pointer'
+          >
             <Trash2 className="text-red-700 size-4" />
           </button>
         )}{' '}
-        {/* 공통 컴포넌트로 변경 예정 */}
       </div>
     </li>
   )

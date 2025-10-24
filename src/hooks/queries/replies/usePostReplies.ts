@@ -1,9 +1,9 @@
-import { queryKeys } from './query-keys'
+import { queryKeys } from '../query-keys'
 import { postReplies } from '@/lib/api/replies'
 import { Reply, ReplyPayload } from '@/types/post'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Author } from '@/types/user'
-import { useOptimisticCreate } from './useOptimisticCreate'
+import { useOptimisticCreate } from '../useOptimisticCreate'
 
 export const usePostReplies = (postId: string) => {
   const { user } = useAuthStore()

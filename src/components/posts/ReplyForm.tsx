@@ -6,7 +6,7 @@ import { z } from "zod";
 import { replyCreateSchema } from "@/lib/validators";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { usePostReplies } from "@/hooks/queries/usePostReplies";
+import { usePostReplies } from "@/hooks/queries/replies/usePostReplies";
 import { useAuthStore } from "@/store/useAuthStore";
 
 type ReplyInput = z.infer<typeof replyCreateSchema>
