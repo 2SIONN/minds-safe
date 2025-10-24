@@ -21,7 +21,7 @@ export default function TagSearch() {
           setTags(data.items)
         }
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
     fetchTags()
