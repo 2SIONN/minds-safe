@@ -6,9 +6,24 @@ import Header from '@/components/common/Header'
 import SearchFilter from '@/components/common/SearchFilter'
 import { ReactNode } from 'react'
 import {usePathname} from "next/navigation";
+import { useAuthStore } from '@/store/useAuthStore'
+import { useRouter } from 'next/navigation'
+import { LogOut } from 'lucide-react'
+
 
 export default function HomePage({children}: {children: ReactNode}) {
   const pathname = usePathname()
+  const {isAuthed, logout} = useAuthStore();
+const router = useRouter();
+
+const handleLogout = async () => {
+  await fetch('/apis/auth/logout', {method: 'POST', credentials: 'include'})
+  logout()
+  router.refresh()
+
+  router.push('/login')
+  
+}
 
   return (
     <>
@@ -34,12 +49,22 @@ export default function HomePage({children}: {children: ReactNode}) {
               >
                 마이페이지
               </Link>
+              {isAuthed ? (
+                <button
+                onClick={handleLogout}
+                className='rounded-lg hover:bg-muted/40'
+                >
+                  <LogOut className='w-4 h-4'/>
+                </button>
+              ): (
               <Link
                 href="/login"
                 className="p-2 rounded-lg hover:bg-muted/40"
               >
                 로그인
               </Link>
+              )
+            }
             </div>
           }
 
