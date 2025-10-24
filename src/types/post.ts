@@ -1,6 +1,5 @@
-import { User } from "./user"
+import { Author, User } from './user'
 
-// teamA 에서 타입 파일 생성 예정(추후 수정 필요)
 export type Post = {
   id: string
   authorId: string
@@ -13,15 +12,18 @@ export type Post = {
   replies: Reply[] | null
 }
 
-export type Reply = {
-  id: string
+export interface ReplyPayload {
   postId: string
   authorId: string
   body: string
+}
+
+export interface Reply extends ReplyPayload {
+  id: string
   createdAt: string
   updatedAt: string
   empathies: Empathy[]
-  author: User
+  author: Author
 }
 
 export type Empathy = {

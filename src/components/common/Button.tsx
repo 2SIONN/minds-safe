@@ -1,5 +1,5 @@
 import { ComponentPropsWithRef, ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface ButtonProps extends ComponentPropsWithRef<'button'> {
   variant?: 'default' | 'ghost'
@@ -31,6 +31,7 @@ export default function Button({
         'inline-flex items-center justify-center gap-2 rounded-lg font-medium cursor-pointer',
         'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         'disabled:pointer-events-none disabled:opacity-50',
+        'relative',
 
         variant === 'default' && 'bg-primary text-primary-foreground hover:bg-primary/80',
         variant === 'ghost' && 'text-foreground hover:bg-muted',
@@ -46,18 +47,22 @@ export default function Button({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading ? (
-        <>
-          <span className="animate-pulse">⏳</span>
-          {children}
-        </>
-      ) : (
-        <>
-          {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
-          {children}
-          {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
-        </>
+      {isLoading && (
+        <span
+          className={cn(
+            'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2',
+            'inline-block rounded-full border-2 border-current border-t-transparent animate-spin',
+            size === 'sm' && 'w-3 h-3',
+            size === 'md' && 'w-4 h-4',
+            size === 'lg' && 'w-5 h-5'
+          )}
+        />
       )}
+      <span className={cn(isLoading && 'invisible')}>
+        {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+        {children}
+        {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+      </span>
     </button>
   )
 }
