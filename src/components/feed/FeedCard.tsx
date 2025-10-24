@@ -5,8 +5,8 @@ import { default as FeedButtonGroup } from '@/components/feed/FeedButtonGroup'
 import FeedTags from '@/components/feed/FeedTags'
 import PostDetailCard from '@/components/posts/PostDetailCard'
 import { getPostDetailClient } from '@/lib/client'
-import { formatRelativeDate } from '@/lib/data'
 import { Post } from '@/types/post'
+import { formatRelativeDate } from '@/utils/date'
 import { useState } from 'react'
 
 /**
@@ -28,6 +28,7 @@ export default function FeedCard(props: Post) {
     try {
       const data = await getPostDetailClient(id)
       setDetail(data)
+      console.log(data)
     } catch (e) {
       console.error(e)
     }
