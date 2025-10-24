@@ -82,15 +82,13 @@ export default function FeedCard(props: Post) {
             <div onClick={stopPropagation}>
               <LikeButton id={id} initialActive={initiallyLiked} initialCount={likeCount} />
             </div>
-            <div onClick={stopPropagation}>
-              <ActionToggle
-                variant="comment"
-                active={false}
-                onToggle={() => {}}
-                count={replyCount}
-                aria-label="댓글 보기"
-              />
-            </div>
+            <ActionToggle
+              variant="comment"
+              active={false}
+              onToggle={() => {}}
+              count={replyCount}
+              aria-label="댓글 보기"
+            />
             <span aria-label="작성일시">{formatRelativeDate(createdAt)}</span>
           </div>
         </CardFooter>
