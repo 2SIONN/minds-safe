@@ -7,6 +7,7 @@ import RegisterForm from '../_component/RegisterForm'
 import type { z } from 'zod'
 
 type FormDataState = z.infer<typeof registerSchema>
+type FieldErrors = Partial<Record<keyof FormDataState, string[]>>
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -16,27 +17,31 @@ export default function RegisterPage() {
     passwordConfirm: '',
     nickname: '',
   })
-  const [error, setError] = useState('')
+
+  // ✅ 변경: 단일 문자열 → 필드별 에러 배열
+  const [errors, setErrors] = useState<FieldErrors>({})
   const [loading, setLoading] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+
+    // ✅ 입력 시 해당 필드 에러만 클리어(UX 향상)
+    setErrors((prev) => ({ ...prev, [name as keyof FormDataState]: [] }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
     setSuccessMessage('')
     setLoading(true)
+    setErrors({}) // ✅ 제출 전에 에러 초기화
 
     const parsed = registerSchema.safeParse(formData)
 
     if (!parsed.success) {
-      const fieldErrors = parsed.error.flatten().fieldErrors
-      const firstError = Object.values(fieldErrors)[0]?.[0]
-      setError(firstError || '입력값이 올바르지 않습니다.')
+      const { fieldErrors } = parsed.error.flatten()
+      setErrors(fieldErrors as FieldErrors) // ✅ 모든 위반 사항을 그대로 저장
       setLoading(false)
       return
     }
@@ -51,22 +56,21 @@ export default function RegisterPage() {
 
       const res = await fetch('/apis/auth/register', {
         method: 'POST',
-        body: body,
+        body,
       })
 
       if (res.ok) {
         setSuccessMessage('회원가입 성공! 잠시 후 로그인 페이지로 이동합니다.')
-        setTimeout(() => {
-          router.push('/login')
-        }, 1000)
+        setTimeout(() => router.push('/login'), 1000)
       } else {
-        const data = await res.json()
-        setError(data?.message || '회원가입에 실패했습니다')
+        const data = await res.json().catch(() => null)
+        // 서버 전역 에러는 폼 하단에 한 줄로 표시하고 싶다면 별도 message prop 사용 권장
+        setErrors({ email: [data?.message || '회원가입에 실패했습니다'] })
         setLoading(false)
       }
     } catch (err) {
       console.error(err)
-      setError('네트워크 오류가 발생했습니다.')
+      setErrors({ email: ['네트워크 오류가 발생했습니다.'] })
       setLoading(false)
     }
   }
@@ -75,7 +79,8 @@ export default function RegisterPage() {
     <RegisterForm
       formData={formData}
       loading={loading}
-      error={error}
+      // ✅ 변경: errors 전달
+      errors={errors}
       message={successMessage}
       handleChange={handleChange}
       handleSubmit={handleSubmit}

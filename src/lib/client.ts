@@ -1,8 +1,19 @@
+import axios from 'axios'
+
+// 단일 게시글 상세
 export async function getPostDetailClient(id: string) {
-  const res = await fetch(`/apis/posts/${id}`, { cache: 'no-store' })
-  if (res.status === 404) throw new Error('NOT_FOUND')
-  if (!res.ok) throw new Error(`Failed: ${res.status}`)
-  return res.json()
+  try {
+    const res = await axios.get(`/apis/posts/${id}`, {
+      withCredentials: true,
+    })
+    return res.data
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 404) throw new Error('NOT_FOUND')
+      throw new Error(`Failed: ${err.response?.status ?? 'unknown'}`)
+    }
+    throw err
+  }
 }
 
 type GetPostsClient = {
@@ -12,19 +23,26 @@ type GetPostsClient = {
   signal?: AbortSignal
 }
 
+// 게시글 목록 조회
 export async function getPostsClient({ cursor, limit, q, signal }: GetPostsClient) {
   const qs = new URLSearchParams({
     ...(cursor && { cursor }),
     ...(limit && { limit: String(limit) }),
     ...(q && { q }),
   })
-  const res = await fetch(`/apis/posts?${qs.toString()}`, { signal, cache: 'no-store' })
 
-  if (res.status === 404) {
-    throw new Error('게시글 API 경로를 찾을 수 없습니다. (404)')
+  try {
+    const res = await axios.get(`/apis/posts?${qs.toString()}`, {
+      withCredentials: true,
+      signal,
+    })
+    return res.data
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 404)
+        throw new Error('게시글 API 경로를 찾을 수 없습니다. (404)')
+      throw new Error(`API 요청 실패: ${err.response?.status ?? 'unknown'}`)
+    }
+    throw err
   }
-  if (!res.ok) {
-    throw new Error(`API 요청 실패: ${res.status}`)
-  }
-  return res.json()
 }
