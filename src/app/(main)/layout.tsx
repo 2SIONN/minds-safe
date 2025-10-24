@@ -17,9 +17,9 @@ export default function HomePage({children}: {children: ReactNode}) {
         <Header
           variant='back'
           title="마이페이지"
-          titleClassName="text-xl sm:text-2xl font-extrabold gradient-text left-1/6"
-          containerClassName="gap-4 mb-8"
-          className="glass-card"/>
+          titleClassName="text-xl sm:text-2xl font-extrabold gradient-text"
+          containerClassName="gap-4 mb-8 h-auto pt-4"
+          className="bg-background"/>
       ) : (
         <Header
           variant='main' // back 으로 바꾸면 뒤로가기 헤더로 동작
