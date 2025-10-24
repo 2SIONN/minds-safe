@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import MyReplyItem, { Reply } from './MyReplyItem';
+import MyReplyItem, { Reply } from '@/components/mypage/MyReplyItem';
 
 
 type MyRepliesProps = {
