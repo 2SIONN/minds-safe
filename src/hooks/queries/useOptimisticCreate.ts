@@ -1,10 +1,5 @@
-import { Post } from '@/types/post'
+import { Snapshot } from '@/types/post'
 import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
-
-export type Snapshot = {
-  key: QueryKey
-  data: Post[]
-}
 
 type Ctx<T> = {
   snapshots?: Snapshot[]
