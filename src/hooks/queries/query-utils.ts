@@ -1,6 +1,5 @@
-import { Post } from '@/types/post'
+import { Post, Snapshot } from '@/types/post'
 import { InfiniteData, QueryClient, QueryKey } from '@tanstack/react-query'
-import { Snapshot } from './useOptimisticCreate'
 
 type PageData = {
   data: {
@@ -38,7 +37,7 @@ export function patchAllPostsLists(
   updater: (p: Post) => Post
 ) {
   const hits = queryClient.getQueriesData({ queryKey: postsKey})
-  
+
   const snapshots = hits.map(([key, data]) => ({ key, data }))
 
   for (const [ key, data ] of hits) {
