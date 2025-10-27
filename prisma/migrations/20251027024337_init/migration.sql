@@ -12,7 +12,7 @@ CREATE TABLE "Post" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "authorId" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "tags" JSONB NOT NULL,
+    "tags" JSONB NOT NULL DEFAULT [],
     "imageUrl" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
