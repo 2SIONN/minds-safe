@@ -5,7 +5,10 @@ import { Post } from '@/types/post'
 export default function FeedTags({ tags }: { tags: Post['tags'] }) {
   if (!tags || tags.length === 0) return null
 
-  const visibleTags = tags.slice(0, 3)
+  const visibleTags = Array.isArray(tags)
+    ? tags.filter((t) => typeof t === 'string' && t.trim() !== '')
+    : []
+
   const hiddenCount = tags.length - visibleTags.length
 
   return (

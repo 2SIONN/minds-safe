@@ -1,6 +1,7 @@
 'use client'
 
-import { ComponentPropsWithRef, ReactNode, useEffect, useRef } from 'react'
+import { ComponentPropsWithRef, ReactNode, useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { cn } from '@/lib/utils/utils'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 
@@ -11,7 +12,6 @@ interface ModalProps extends ComponentPropsWithRef<'div'> {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'
   closeOnBackdrop?: boolean
   closeOnEscape?: boolean
-  closable?: boolean
 }
 
 export function Modal({
@@ -21,12 +21,16 @@ export function Modal({
   size = 'md',
   closeOnBackdrop = false,
   closeOnEscape = true,
-  closable = true,
   className,
   ...props
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null)
   const scrollYRef = useRef<number>(0)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // ESC 키로 모달 닫기
   useEffect(() => {
@@ -75,7 +79,7 @@ export function Modal({
     firstElement?.focus()
   }, [open])
 
-  if (!open) return null
+  if (!open || !mounted) return null
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (closeOnBackdrop && e.target === e.currentTarget) {
@@ -93,28 +97,36 @@ export function Modal({
     full: 'max-w-full mx-4',
   }
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={handleBackdropClick}
-      role="dialog"
-      aria-modal="true"
-    >
+  const modalContent = (
+    <>
       {/* Backdrop - 뒤 콘텐츠가 흐릿하게 보임 */}
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm pointer-events-none" />
+      <div
+        className="fixed inset-0 z-99 bg-background/80 backdrop-blur-sm"
+        onClick={handleBackdropClick}
+      />
 
-      {/* Modal Content - Card 컴포넌트 재사용 */}
-      <Card
-        ref={modalRef}
-        closable={closable}
-        onClose={onClose}
-        className={cn('relative w-full pointer-events-auto', sizeClasses[size], className)}
-        {...props}
+      <div
+        className="fixed inset-0 z-100 flex items-center justify-center pointer-events-none"
+        role="dialog"
+        aria-modal="true"
       >
-        {children}
-      </Card>
-    </div>
+        {/* Modal Content - Card 컴포넌트 재사용 */}
+        <Card
+          ref={modalRef}
+          className={cn(
+            'relative w-full mx-4 my-8 max-h-[90vh] pointer-events-auto',
+            sizeClasses[size],
+            className
+          )}
+          {...props}
+        >
+          {children}
+        </Card>
+      </div>
+    </>
   )
+
+  return createPortal(modalContent, document.body)
 }
 
 export { CardHeader as ModalHeader }
