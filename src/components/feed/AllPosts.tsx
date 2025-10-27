@@ -87,12 +87,9 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
 
   return (
     <>
-      <div className="space-y-4">
-        {items.map((p) => (
-          <FeedItem key={p.id} post={p} currentUserId={currentUserId} onOpen={handleOpen} />
-        ))}
-      </div>
-
+      {items.map((p) => (
+        <FeedItem key={p.id} post={p} currentUserId={currentUserId} onOpen={handleOpen} />
+      ))}
       <div ref={bottomRef} aria-hidden />
 
       {isFetchingNextPage && <FeedListSkeleton count={3} />}

@@ -38,7 +38,9 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           <div></div>
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
-        <ServerPage q={q || ''} />
+        <div className="space-y-4">
+          <ServerPage q={q || ''} />
+        </div>
       </main>
 
       {/* 변경: 기존 <Fab .../> 대신 */}
