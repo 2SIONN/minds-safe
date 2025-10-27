@@ -6,42 +6,95 @@ import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 
+/**
+ * Query Params:
+ * - limit: number (기본 10, 최대 100)
+ * - cursor?: string (다음 페이지 시작 anchor로 쓰이는 마지막 post id)
+ * - tag?: string (단일 태그 필터)
+ * - q?: string (본문 검색)
+ * - sort?: 'latest' | 'popular' (정렬 기준, 기본 latest)
+ *
+ * /apis/posts?limit=10&cursor=abc123&tag=happy&q=강아지&sort=popular
+ */
 const QuerySchema = z.object({
-  q: z.string().default(''),
-  cursor: z.string().nullish(),
   limit: z.coerce.number().int().positive().max(100).default(10),
+  cursor: z.string().optional(), // 이전 응답에서 받은 nextCursor
+  tag: z.string().trim().optional(),
+  q: z.string().default(''),
+  sort: z.enum(['latest', 'popular']).default('latest'),
 })
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
-  const { q, cursor, limit } = QuerySchema.parse(Object.fromEntries(searchParams))
+  const { limit, cursor, tag, q, sort } = QuerySchema.parse(Object.fromEntries(searchParams))
 
-  const where: Prisma.PostWhereInput | undefined = q
-    ? { OR: [{ content: { contains: q } }, { tags: { string_contains: q } }] }
-    : undefined
+  const and: Prisma.PostWhereInput[] = []
+  if (q) {
+    and.push({ content: { contains: q } })
+  }
+  if (tag) {
+    and.push({ tags: { string_contains: tag } as any })
+  }
+  const where: Prisma.PostWhereInput | undefined = and.length ? { AND: and } : undefined
+
+  const orderByLatest: Prisma.PostOrderByWithRelationInput = {
+    createdAt: 'desc',
+  }
+
+  const orderByPopular: Prisma.PostOrderByWithRelationInput[] = [
+    { empathies: { _count: 'desc' } as any },
+    { replies: { _count: 'desc' } as any },
+    { createdAt: 'desc' },
+  ]
+
+  const orderBy = sort === 'popular' ? orderByPopular : orderByLatest
 
   const list = await prisma.post.findMany({
     take: limit + 1,
-    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    ...(cursor
+      ? {
+          skip: 1,
+          cursor: { id: cursor },
+        }
+      : {}),
     where,
-    orderBy: { createdAt: 'desc' },
-    include: { empathies: true, replies: true },
+    orderBy,
+    include: {
+      empathies: true,
+      replies: true,
+      _count: { select: { empathies: true, replies: true } },
+    },
   })
 
   const hasMore = list.length > limit
   const sliced = hasMore ? list.slice(0, -1) : list
+
   const nextCursor = hasMore ? (sliced[sliced.length - 1]?.id ?? null) : null
 
-  return NextResponse.json({ ok: true, data: { items: sliced, nextCursor } })
+  return NextResponse.json({
+    ok: true,
+    data: {
+      items: sliced,
+      nextCursor,
+      limit,
+      sort,
+      q,
+      tag: tag ?? null,
+    },
+  })
 }
 
 export async function POST(req: Request) {
   try {
     const cookie = (await cookies()).get('session')?.value
     const session = await verifySession<{ uid: string }>(cookie)
-    if (!session?.uid) return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
+    if (!session?.uid) {
+      return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
+    }
+
     const body = await req.json()
     const parsed = postCreateSchema.parse(body)
+
     const post = await prisma.post.create({
       data: {
         authorId: session.uid,
@@ -50,6 +103,7 @@ export async function POST(req: Request) {
         imageUrl: parsed.imageUrl || null,
       },
     })
+
     return NextResponse.json(post, { status: 201 })
   } catch (e: any) {
     return NextResponse.json({ message: e?.message || 'error' }, { status: 400 })
