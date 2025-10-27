@@ -7,6 +7,7 @@ import LikeButton from '@/components/posts/LikeButton'
 import NickName from '@/components/posts/NickName'
 import PostDetailCard from '@/components/posts/PostDetailCard'
 import { getPostDetailClient } from '@/lib/client'
+import { useAuthStore } from '@/store/useAuthStore'
 import { Post } from '@/types/post'
 import { formatRelativeDate } from '@/utils/date'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -18,7 +19,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
  */
 export default function FeedCard(props: Post) {
   const { id, authorId, content, tags, empathies, replies, createdAt } = props
-
+  const { user } = useAuthStore()
   const [currentUserId, setCurrentUserId] = useState<string>('')
   useEffect(() => {
     try {
@@ -28,10 +29,17 @@ export default function FeedCard(props: Post) {
     }
   }, [])
 
+  // 기존 코드
+  // const initiallyLiked = useMemo(() => {
+  //   if(!empathies || !currentUserId) return false
+  //   return empathies.some((e) => e.userId === currentUserId)
+  // }, [empathies, currentUserId])
+
+  // 변경 코드 (useAuthStore 사용)
   const initiallyLiked = useMemo(() => {
-    if (!empathies || !currentUserId) return false
-    return empathies.some((e) => e.userId === currentUserId)
-  }, [empathies, currentUserId])
+    if (!empathies || !user) return false
+    return empathies.some((e) => e.userId === user.id)
+  }, [empathies, user?.id])
 
   const likeCount = useMemo(() => empathies?.length ?? 0, [empathies])
   const replyCount = useMemo(() => replies?.length ?? 0, [replies])
@@ -40,6 +48,7 @@ export default function FeedCard(props: Post) {
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<Post | null>(null)
 
+  // 리액트 쿼리로 변경 필요
   const fetchDetail = useCallback(async () => {
     setDetail(null)
     try {
@@ -80,7 +89,7 @@ export default function FeedCard(props: Post) {
           <NickName nickname={nickname} />
           <div className="flex items-center gap-4">
             <div onClick={stopPropagation}>
-              <LikeButton id={id} initialActive={initiallyLiked} initialCount={likeCount} />
+              <LikeButton type='POST' id={id} active={initiallyLiked} count={likeCount} />
             </div>
             <ActionToggle
               variant="comment"

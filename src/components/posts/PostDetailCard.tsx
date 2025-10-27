@@ -8,6 +8,7 @@ import { Modal } from '../common/Modal'
 import ReplyForm from './ReplyForm'
 import LikeButton from './LikeButton'
 import NickName from './NickName'
+import { useAuthStore } from '@/store/useAuthStore'
 
 type Props = {
   open: boolean
@@ -16,7 +17,8 @@ type Props = {
 }
 
 export default function PostDetailCard({ open, onClose, post }: Props) {
-  const currentUserId = localStorage.getItem('userId') || ''
+  const {user} = useAuthStore();
+  const currentUserId = localStorage.getItem('userId') || user?.id || ''
   const initiallyLiked = post?.empathies?.some((e) => e.userId === currentUserId) ?? false
   return (
     <Modal open={open} onClose={onClose} size="2xl" closeOnBackdrop>
@@ -41,7 +43,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
             {(() => {
               const likeCount = post.empathies?.length ?? 0 // 기본값 0
               return (
-                <LikeButton id={post.id} initialActive={initiallyLiked} initialCount={likeCount} />
+                <LikeButton type='POST' id={post.id} active={initiallyLiked} count={likeCount} />
               )
             })()}
           </CardContent>

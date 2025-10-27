@@ -1,49 +1,48 @@
 'use client'
 
-import { useState } from 'react'
 import ActionToggle from '../common/ActionToggle'
+import { TargetType } from '@/types/post'
+import { useToggleLike } from '@/hooks/queries/useToggleLike'
+import { useAuthStore } from '@/store/useAuthStore'
 
 type LikeButtonProps = {
-  id?: string
-  initialActive?: boolean
-  initialCount?: number
+  id: string
+  // targetId: 댓글 토글의 경우에 사용
+  targetId?: string
+  active?: boolean
+  count?: number
   disabled?: boolean
   className?: string
   wrapperClassName?: string
+  type: TargetType
 }
-
-type LikeState = { active: boolean; count: number }
 
 export default function LikeButton({
   id,
-  initialActive = false,
-  initialCount = 0,
-  disabled = false,
+  active = false,
+  count = 0,
   className,
   wrapperClassName,
+  type,
+  targetId,
 }: LikeButtonProps) {
-  const [state, setState] = useState<LikeState>({
-    active: initialActive,
-    count: initialCount,
-  })
+  const { user } = useAuthStore();
 
   const handleToggle = () => {
-    if (disabled) return
-
-    setState((prev) => {
-      const nextActive = !prev.active
-      const nextCount = nextActive ? prev.count + 1 : Math.max(0, prev.count - 1)
-      return { active: nextActive, count: nextCount }
-    })
+    if (!user) return
+    toggleLike({ userId: user.id, targetType: type, targetId: type === 'POST' ? id : targetId! })
+    console.log(user.id);
   }
+
+  const { mutate: toggleLike } = useToggleLike(type, id)
 
   return (
     <ActionToggle
       variant="like"
-      active={state.active}
-      count={state.count}
+      active={active}
+      count={count}
       onToggle={handleToggle}
-      disabled={disabled}
+      disabled={!user}
       className={className}
       wrapperClassName={wrapperClassName}
     />
