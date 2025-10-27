@@ -18,8 +18,8 @@ export default function FeedItem({
   // 구조 분해 할당으로 변경 필요 - 성준님 부탁드립니다..
   const likeCount = post.empathies?.length ?? 0
   const replyCount = post.replies?.length ?? 0
-  const nickname = post.authorId ?? '익명'
-
+  const nickname = post.author.nickname ?? '익명'
+  
   // 기존 코드
   // const initiallyLiked = useMemo(() => {
   //   if(!empathies || !currentUserId) return false
