@@ -40,7 +40,6 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
 }: UseOptimisticToggleLikeParams<T>) {
   const queryClient = useQueryClient()
   const MUTATION_KEY = [...(detailKey ?? listKey ?? ['like']), 'toggle']
-
   const readList = () => (listKey ? queryClient.getQueryData<T[]>(listKey) : undefined)
   const writeList = (updater: (old: T[]) => T[]) => {
     if (!listKey) return
@@ -128,7 +127,6 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
         tempEmpathy = buildTempEmpathy(payload)
         tempId = tempEmpathy.id
       }
-
       // POST: 무한 스크롤 전역 패치
       if (type === 'POST' && listKey) {
         prevList = patchAllPostsLists(listKey, queryClient, payload.targetId, (p) =>
