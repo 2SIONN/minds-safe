@@ -88,15 +88,8 @@ export default function PostWriteModal() {
   })
 
   return (
-    <Modal
-      open={open}
-      onClose={closeModal}
-      size="2xl"
-      closeOnBackdrop={false}
-      closeOnEscape
-      closable
-    >
-      <ModalHeader>
+    <Modal open={open} onClose={closeModal} size="2xl" closeOnBackdrop={false} closeOnEscape>
+      <ModalHeader closable onClose={closeModal}>
         <h1 className="text-2xl font-semibold text-primary">고민 남기기</h1>
       </ModalHeader>
 

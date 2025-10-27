@@ -27,7 +27,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
         </CardContent>
       ) : (
         <>
-          <CardHeader className="p-6 pb-3 text-slate-100">
+          <CardHeader className="p-6 pb-3 text-slate-100" closable onClose={onClose}>
             <h2 className="text-xl font-semibold">{post.content}</h2>
           </CardHeader>
 
