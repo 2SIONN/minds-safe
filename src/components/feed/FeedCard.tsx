@@ -1,29 +1,46 @@
 'use client'
 
+import ActionToggle from '@/components/common/ActionToggle'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
-import { default as FeedButtonGroup } from '@/components/feed/FeedButtonGroup'
 import FeedTags from '@/components/feed/FeedTags'
+import LikeButton from '@/components/posts/LikeButton'
+import NickName from '@/components/posts/NickName'
 import PostDetailCard from '@/components/posts/PostDetailCard'
 import { getPostDetailClient } from '@/lib/client'
 import { Post } from '@/types/post'
 import { formatRelativeDate } from '@/utils/date'
-import { useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 /**
  * 게시글 목록 전용 카드
- * @param { id, content, tags, empathies, replies, createdAt }: Posts
+ * @param { id, authorId, content, tags, empathies, replies, createdAt }: Posts
  * @returns ReactNode
  */
 export default function FeedCard(props: Post) {
-  const { id, content, tags, empathies, replies, createdAt } = props
-  const likeCount = empathies?.length ?? 0
-  const replyCount = replies?.length ?? 0
+  const { id, authorId, content, tags, empathies, replies, createdAt } = props
+
+  const [currentUserId, setCurrentUserId] = useState<string>('')
+  useEffect(() => {
+    try {
+      setCurrentUserId(localStorage.getItem('userId') || '')
+    } catch {
+      setCurrentUserId('')
+    }
+  }, [])
+
+  const initiallyLiked = useMemo(() => {
+    if (!empathies || !currentUserId) return false
+    return empathies.some((e) => e.userId === currentUserId)
+  }, [empathies, currentUserId])
+
+  const likeCount = useMemo(() => empathies?.length ?? 0, [empathies])
+  const replyCount = useMemo(() => replies?.length ?? 0, [replies])
+  const nickname = useMemo(() => authorId ?? '익명', [authorId])
 
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<Post | null>(null)
 
-  const handleOpen = async () => {
-    setOpen(true)
+  const fetchDetail = useCallback(async () => {
     setDetail(null)
     try {
       const data = await getPostDetailClient(id)
@@ -32,28 +49,47 @@ export default function FeedCard(props: Post) {
     } catch (e) {
       console.error(e)
     }
-  }
+  }, [id])
 
-  const handleClose = () => {
+  const handleOpen = useCallback(() => {
+    setOpen(true)
+    if (!detail) void fetchDetail()
+  }, [detail, fetchDetail])
+
+  const handleClose = useCallback(() => {
     setOpen(false)
     setDetail(null)
+  }, [])
+
+  const stopPropagation: React.MouseEventHandler = (e) => {
+    e.stopPropagation()
   }
 
   return (
     <>
-      <Card key={id} onClick={handleOpen} className="p-5">
+      <Card onClick={handleOpen} className="p-5 cursor-pointer select-none">
         <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
           {content}
         </CardHeader>
+
         <CardContent className="p-0 mb-4">
           <FeedTags tags={tags} />
         </CardContent>
+
         <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">
-          {/* TODO: 닉네임이 있는 경우 닉네임 노출, 아닌 경우 "익명"으로 노출 */}
-          <div>익명</div>
+          <NickName nickname={nickname} />
           <div className="flex items-center gap-4">
-            <FeedButtonGroup empathiesCount={likeCount} repliesCount={replyCount} />
-            <span>{formatRelativeDate(createdAt)}</span>
+            <div onClick={stopPropagation}>
+              <LikeButton id={id} initialActive={initiallyLiked} initialCount={likeCount} />
+            </div>
+            <ActionToggle
+              variant="comment"
+              active={false}
+              onToggle={() => {}}
+              count={replyCount}
+              aria-label="댓글 보기"
+            />
+            <span aria-label="작성일시">{formatRelativeDate(createdAt)}</span>
           </div>
         </CardFooter>
       </Card>
