@@ -1,33 +1,22 @@
-import { ComponentPropsWithRef, ReactNode, createContext, useContext } from 'react'
+import { ComponentPropsWithRef, ReactNode } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils/utils'
 
-interface CardContextType {
-  closable?: boolean
-  onClose?: () => void
-}
-
-const CardContext = createContext<CardContextType>({})
-
 interface CardProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
-  closable?: boolean
-  onClose?: () => void
 }
 
-export function Card({ className, children, closable, onClose, ...props }: CardProps) {
+export function Card({ className, children, ...props }: CardProps) {
   return (
-    <CardContext.Provider value={{ closable, onClose }}>
-      <div
-        className={cn(
-          'relative rounded-2xl border border-border glass-card text-card-foreground shadow-sm',
-          className
-        )}
-        {...props}
-      >
-        {children}
-      </div>
-    </CardContext.Provider>
+    <div
+      className={cn(
+        'relative rounded-2xl border border-border glass-card text-card-foreground shadow-sm',
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </div>
   )
 }
 
@@ -35,11 +24,11 @@ interface CardHeaderProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
   left?: ReactNode
   right?: ReactNode
+  closable?: boolean
+  onClose?: () => void
 }
 
-export function CardHeader({ className, children, left, right, ...props }: CardHeaderProps) {
-  const { closable, onClose } = useContext(CardContext)
-
+export function CardHeader({ className, children, left, right, closable, onClose, ...props }: CardHeaderProps) {
   return (
     <div
       className={cn('flex items-center justify-between p-6 text-card-foreground', className)}
