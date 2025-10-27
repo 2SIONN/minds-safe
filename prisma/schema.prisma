@@ -28,7 +28,7 @@ model Post {
   authorId  String
   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   content   String
-  tags      Json
+  tags      String
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

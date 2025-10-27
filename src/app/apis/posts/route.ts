@@ -10,8 +10,8 @@ import { z } from 'zod'
  * Query Params:
  * - limit: number (기본 10, 최대 100)
  * - cursor?: string (다음 페이지 시작 anchor로 쓰이는 마지막 post id)
- * - tag?: string (단일 태그 필터)
- * - q?: string (본문 검색)
+ * - tag?: string (단일 태그 필터: tags 배열에 이 문자열이 포함된 글만)
+ * - q?: string (본문 검색 - content LIKE)
  * - sort?: 'latest' | 'popular' (정렬 기준, 기본 latest)
  *
  * /apis/posts?limit=10&cursor=abc123&tag=happy&q=강아지&sort=popular
@@ -24,26 +24,45 @@ const QuerySchema = z.object({
   sort: z.enum(['latest', 'popular']).default('latest'),
 })
 
+function tagsArrayToCsv(arr: string[]): string {
+  const cleaned = arr.map((t) => t.trim()).filter(Boolean)
+
+  return cleaned.length > 0 ? `,${cleaned.join(',')},` : ',' // 최소 ',' 유지해서 contains 검색 가능하게
+}
+function csvToTagsArray(csv: string): string[] {
+  return csv
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean)
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const { limit, cursor, tag, q, sort } = QuerySchema.parse(Object.fromEntries(searchParams))
 
   const and: Prisma.PostWhereInput[] = []
+
   if (q) {
-    and.push({ content: { contains: q } })
+    and.push({
+      content: { contains: q },
+    })
   }
+
   if (tag) {
-    and.push({ tags: { string_contains: tag } as any })
+    and.push({
+      tags: { contains: `,${tag},` },
+    })
   }
-  const where: Prisma.PostWhereInput | undefined = and.length ? { AND: and } : undefined
+
+  const where: Prisma.PostWhereInput | undefined = and.length > 0 ? { AND: and } : undefined
 
   const orderByLatest: Prisma.PostOrderByWithRelationInput = {
     createdAt: 'desc',
   }
 
   const orderByPopular: Prisma.PostOrderByWithRelationInput[] = [
-    { empathies: { _count: 'desc' } as any },
-    { replies: { _count: 'desc' } as any },
+    { empathies: { _count: 'desc' } },
+    { replies: { _count: 'desc' } },
     { createdAt: 'desc' },
   ]
 
@@ -62,19 +81,26 @@ export async function GET(req: Request) {
     include: {
       empathies: true,
       replies: true,
-      _count: { select: { empathies: true, replies: true } },
+      _count: {
+        select: {
+          empathies: true,
+          replies: true,
+        },
+      },
     },
   })
 
   const hasMore = list.length > limit
   const sliced = hasMore ? list.slice(0, -1) : list
-
   const nextCursor = hasMore ? (sliced[sliced.length - 1]?.id ?? null) : null
-
+  const shaped = sliced.map((post) => ({
+    ...post,
+    tags: csvToTagsArray(post.tags),
+  }))
   return NextResponse.json({
     ok: true,
     data: {
-      items: sliced,
+      items: shaped,
       nextCursor,
       limit,
       sort,
@@ -88,18 +114,18 @@ export async function POST(req: Request) {
   try {
     const cookie = (await cookies()).get('session')?.value
     const session = await verifySession<{ uid: string }>(cookie)
+
     if (!session?.uid) {
       return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
     }
 
     const body = await req.json()
     const parsed = postCreateSchema.parse(body)
-
     const post = await prisma.post.create({
       data: {
         authorId: session.uid,
         content: parsed.content,
-        tags: parsed.tags,
+        tags: tagsArrayToCsv(parsed.tags ?? []),
         imageUrl: parsed.imageUrl || null,
       },
     })
