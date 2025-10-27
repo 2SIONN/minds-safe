@@ -5,13 +5,15 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Pencil } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-// import { Card, CardContent } from '@/components/common/Card'
+//import { Card, CardContent } from '@/components/common/Card'
 
 interface NicknameSectionProps {
   initialName?: string
 }
 
-type MeResponse = { id: string; email: string; nickname: string | null } | null
+type MeResponse =
+  | { id: string; email: string; nickname: string | null }
+  | null
 
 export default function NicknameSection({ initialName = '익명' }: NicknameSectionProps) {
   const router = useRouter()
