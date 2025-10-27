@@ -1,5 +1,5 @@
 import { ComponentPropsWithRef } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface InputProps extends ComponentPropsWithRef<'input'> {
   label?: string
@@ -31,7 +31,7 @@ export default function Input({
         name={name}
         className={cn(
           'w-full px-4 py-3 rounded-lg',
-          'bg-input border border-input',
+          'bg-background border border-input',
           'text-foreground text-base',
           'placeholder:text-muted-foreground',
           'transition-all duration-200',

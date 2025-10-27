@@ -1,8 +1,10 @@
-import { User } from "./user"
+import { User } from "@prisma/client"
+import { QueryKey } from "@tanstack/react-query"
 
 export type Post = {
   id: string
   authorId: string
+  author: User
   content: string
   tags: string[]
   imageUrl: string | null
@@ -12,23 +14,29 @@ export type Post = {
   replies: Reply[] | null
 }
 
-export type Reply = {
-  id: string
+export interface ReplyPayload {
   postId: string
   authorId: string
   body: string
+}
+
+export interface Reply extends ReplyPayload {
+  id: string
   createdAt: string
   updatedAt: string
   empathies: Empathy[]
   author: User
 }
 
-export type Empathy = {
-  id: string
+export interface EmpathyPayload {
   userId: string
-  user: User
   targetType: TargetType
   targetId: string
+}
+
+export interface Empathy extends EmpathyPayload {
+  id: string
+  user: User
   createdAt: string
   Post?: Post
   postId?: string
@@ -36,7 +44,9 @@ export type Empathy = {
   replyId?: string
 }
 
-export enum TargetType {
-  POST,
-  REPLY,
+export type TargetType = 'POST' | 'REPLY'
+
+export type Snapshot = {
+  key: QueryKey
+  data: Post[]
 }

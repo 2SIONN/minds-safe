@@ -6,11 +6,11 @@ import MyReplies from '@/components/mypage/MyReplies.tsx'
 
 export default function Page() {
   return (
-    <main className="min-h-screen text-zinc-100">
-      <div className="mx-auto max-w-5xl px-6 py-10">
+    <main className="min-h-screen pb-4">
+      <div className="max-w-4xl px-4 sm:px-6 mx-auto">
         <NicknameSection initialName="익명" />
         <MypagePostCard />
-      <MyReplies />
+        <MyReplies />
       </div>
     </main>
   )
