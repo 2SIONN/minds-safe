@@ -11,6 +11,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/comm
 import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
 import { useRouter } from 'next/navigation'
+import { toast } from '@/store/useToast'
 
 type FormValues = z.input<typeof postCreateSchema>
 
@@ -67,21 +68,20 @@ export default function PostWriteModal() {
       const json = await res.json().catch(() => ({}))
 
       if (res.status === 401) {
-        alert('로그인이 필요합니다.')
-        router.push('/auth/login')
+        toast.error('로그인이 필요합니다.')
         setSubmitting(false)
         return
       }
 
-      if (!res.ok) throw new Error(json?.message || `등록 실패(${res.status})`)
+      if (!res.ok) toast.error(json?.message || `등록 실패(${res.status})`)
 
-      alert('등록되었습니다.')
+      toast.success('등록되었습니다.')
       form.reset()
       setTagsInput('')
       closeModal()
       router.refresh()
     } catch (e: any) {
-      alert(e?.message || '작성 실패')
+      toast.error(e?.message || '작성 실패')
     } finally {
       setSubmitting(false)
     }
