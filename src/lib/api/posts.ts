@@ -3,7 +3,6 @@ import type { Post } from '@/types/post'
 export type CreatePostDto = {
   content: string
   tags: string[]
-  imageUrl?: string | null
 }
 
 export async function createPost(body: CreatePostDto): Promise<Post> {

@@ -64,7 +64,7 @@ export function useCreatePostOptimistic() {
       authorId: 'me',
       content: v.content,
       tags: v.tags,
-      imageUrl: v.imageUrl ?? null,
+      imageUrl: null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       empathies: [],

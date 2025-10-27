@@ -50,8 +50,3 @@ export type Snapshot = {
   key: QueryKey
   data: Post[]
 }
-
-export type Snapshot = {
-  key: QueryKey
-  data: Post[]
-}
