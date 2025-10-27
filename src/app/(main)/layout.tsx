@@ -1,13 +1,13 @@
 'use client'
 
 // app/page.tsx
-import Link from 'next/link'
 import Header from '@/components/common/Header'
-import SearchFilter from '@/components/common/SearchFilter'
+import Toast from '@/components/common/Toast'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ReactNode } from 'react'
-import {usePathname} from "next/navigation";
 
-export default function HomePage({children}: {children: ReactNode}) {
+export default function HomePage({ children }: { children: ReactNode }) {
   const pathname = usePathname()
 
   return (
@@ -15,40 +15,32 @@ export default function HomePage({children}: {children: ReactNode}) {
       {/* 헤더 */}
       {pathname === '/mypage' ? (
         <Header
-          variant='back'
+          variant="back"
           title="마이페이지"
-          titleClassName="text-xl sm:text-2xl font-extrabold gradient-text"
-          containerClassName="gap-4 mb-8 h-auto pt-4"
-          className="bg-background"/>
+          titleClassName="text-xl sm:text-2xl font-extrabold gradient-text left-1/6"
+          containerClassName="gap-4 mb-8"
+          className="glass-card"
+        />
       ) : (
         <Header
-          variant='main' // back 으로 바꾸면 뒤로가기 헤더로 동작
+          variant="main" // back 으로 바꾸면 뒤로가기 헤더로 동작
           title="고민타파"
           titleClassName="text-xl sm:text-2xl font-extrabold gradient-text"
           right={
             <div className="flex items-center gap-3 text-muted-foreground">
               <span className="hidden sm:inline">익명</span>
-              <Link
-                href="/mypage"
-                className="text-primary hover:underline underline-offset-4"
-              >
+              <Link href="/mypage" className="text-primary hover:underline underline-offset-4">
                 마이페이지
               </Link>
-              <Link
-                href="/login"
-                className="p-2 rounded-lg hover:bg-muted/40"
-              >
+              <Link href="/login" className="p-2 rounded-lg hover:bg-muted/40">
                 로그인
               </Link>
             </div>
           }
-
         />
       )}
-
+      <Toast />
       <div>{children}</div>
-
-     
     </>
   )
 }
