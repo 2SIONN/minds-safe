@@ -3,5 +3,5 @@ type NickNameProps = {
 }
 
 export default function NickName({ nickname }: NickNameProps) {
-  return <div>{nickname}</div>
+  return <div className="text-sm text-muted-foreground font-medium">{nickname}</div>
 }
