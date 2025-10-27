@@ -1,4 +1,4 @@
-import { Reply, ReplyPayload } from '@/types/post'
+import { ReplyPayload } from '@/types/post'
 
 export async function getReplies(id: string) {
   const res = await fetch(`/apis/posts/${id}/replies`, { cache: 'no-store' })
