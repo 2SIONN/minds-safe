@@ -1,3 +1,4 @@
+import { QueryKey } from '@tanstack/react-query'
 import { Author, User } from './user'
 
 export type Post = {
@@ -42,4 +43,9 @@ export type Empathy = {
 export enum TargetType {
   POST,
   REPLY,
+}
+
+export type Snapshot = {
+  key: QueryKey
+  data: Post[]
 }

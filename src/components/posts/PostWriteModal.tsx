@@ -11,6 +11,10 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/comm
 import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
 import { useRouter } from 'next/navigation'
+import { toast } from '@/store/useToast'
+
+//추가: 낙관 전용 훅
+import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
 
 type FormValues = z.input<typeof postCreateSchema>
 
@@ -28,7 +32,6 @@ function parseTags(input: string, max = 5) {
 
 export default function PostWriteModal() {
   const { open, closeModal } = usePostWriteModal()
-  const [submitting, setSubmitting] = useState(false)
   const [tagsInput, setTagsInput] = useState('')
   const router = useRouter()
 
@@ -53,38 +56,25 @@ export default function PostWriteModal() {
     form.setValue('tags', next, { shouldValidate: true })
   }
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    try {
-      setSubmitting(true)
+  //낙관 훅 사용
+  const { mutate, isPending } = useCreatePostOptimistic()
 
-      const res = await fetch('/apis/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ content: values.content, tags: values.tags }),
-      })
-
-      const json = await res.json().catch(() => ({}))
-
-      if (res.status === 401) {
-        alert('로그인이 필요합니다.')
-        router.push('/auth/login')
-        setSubmitting(false)
-        return
+  const onSubmit = form.handleSubmit((values) => {
+    mutate(
+      { content: values.content, tags: values.tags ?? [], imageUrl: null },
+      {
+        onSuccess: () => {
+          toast.success('등록되었습니다.')
+          form.reset()
+          setTagsInput('')
+          closeModal()
+          router.refresh()
+        },
+        onError: (err: any) => {
+          toast.error(err?.message || '작성 실패')
+        },
       }
-
-      if (!res.ok) throw new Error(json?.message || `등록 실패(${res.status})`)
-
-      alert('등록되었습니다.')
-      form.reset()
-      setTagsInput('')
-      closeModal()
-      router.refresh()
-    } catch (e: any) {
-      alert(e?.message || '작성 실패')
-    } finally {
-      setSubmitting(false)
-    }
+    )
   })
 
   return (
@@ -139,9 +129,9 @@ export default function PostWriteModal() {
       <ModalFooter className="gap-2">
         <Button
           onClick={onSubmit}
-          disabled={submitting || content.length === 0 || content.length > 1000}
+          disabled={isPending || content.length === 0 || content.length > 1000}
         >
-          {submitting ? '게시 중…' : '게시하기'}
+          {isPending ? '게시 중…' : '게시하기'}
         </Button>
       </ModalFooter>
     </Modal>
