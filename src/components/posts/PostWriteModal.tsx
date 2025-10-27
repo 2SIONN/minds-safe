@@ -1,3 +1,4 @@
+// src/components/posts/PostWriteModal.tsx
 'use client'
 
 import { useState } from 'react'
@@ -10,8 +11,13 @@ import { usePostWriteModal } from '@/store/postWriteModal'
 import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/common/Modal'
 import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
-import { useRouter } from 'next/navigation'
 import { toast } from '@/store/useToast'
+
+import { useSearchParams, useRouter, usePathname } from 'next/navigation' // ✅ 추가
+import type { Post } from '@/types/post'
+
+// ✅ 전용 래퍼 훅 사용 (무한스크롤 안전 처리)
+import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
 
 type FormValues = z.input<typeof postCreateSchema>
 
@@ -31,7 +37,6 @@ export default function PostWriteModal() {
   const { open, closeModal } = usePostWriteModal()
   const [submitting, setSubmitting] = useState(false)
   const [tagsInput, setTagsInput] = useState('')
-  const router = useRouter()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(postCreateSchema),
@@ -54,37 +59,34 @@ export default function PostWriteModal() {
     form.setValue('tags', next, { shouldValidate: true })
   }
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    try {
-      setSubmitting(true)
+  // 목록 쿼리 키에 쓰는 검색어 동기화
+  const searchParams = useSearchParams()
+  const q = searchParams.get('q') ?? ''
+  const router = useRouter() // ✅ 추가
+  const pathname = usePathname()
+  // ✅ 낙관적 생성(무한스크롤 1페이지 맨 앞 삽입 → 성공 시 교체)
+  const createMutation = useCreatePostOptimistic(q)
 
-      const res = await fetch('/apis/posts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ content: values.content, tags: values.tags }),
-      })
-
-      const json = await res.json().catch(() => ({}))
-
-      if (res.status === 401) {
-        toast.error('로그인이 필요합니다.')
-        setSubmitting(false)
-        return
+  const onSubmit = form.handleSubmit((values) => {
+    setSubmitting(true)
+    createMutation.mutate(
+      { content: values.content, tags: values.tags ?? [] },
+      {
+        onSuccess: (_post: Post) => {
+          toast.success('등록되었습니다.')
+          form.reset()
+          setTagsInput('')
+          closeModal()
+        },
+        onError: (err: any) => {
+          if (err.loginRequire) {
+            router.push(`/login`)
+          }
+          toast.error(err.message || '작성 실패')
+        },
+        onSettled: () => setSubmitting(false),
       }
-
-      if (!res.ok) toast.error(json?.message || `등록 실패(${res.status})`)
-
-      toast.success('등록되었습니다.')
-      form.reset()
-      setTagsInput('')
-      closeModal()
-      router.refresh()
-    } catch (e: any) {
-      toast.error(e?.message || '작성 실패')
-    } finally {
-      setSubmitting(false)
-    }
+    )
   })
 
   return (
@@ -97,7 +99,7 @@ export default function PostWriteModal() {
       closable
       className="!p-0"
     >
-      {/* 헤더: 좌측 타이틀 */}
+      {/* 헤더 */}
       <ModalHeader className="px-6 py-5 border-b border-border/60">
         <h1 className="text-[22px] font-extrabold bg-gradient-to-r from-[#6AA5FF] to-[#A875FF] bg-clip-text text-transparent">
           고민 남기기
@@ -105,7 +107,7 @@ export default function PostWriteModal() {
       </ModalHeader>
 
       <ModalContent className="px-6 pb-2 pt-5 space-y-8">
-        {/* 내용 입력 영역 */}
+        {/* 내용 입력 */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <label className="text-[15px] font-semibold">무슨 고민이 있나요?</label>
@@ -119,7 +121,7 @@ export default function PostWriteModal() {
           />
         </div>
 
-        {/* 태그 입력 영역 */}
+        {/* 태그 입력 (콤마 구분) */}
         <div className="space-y-2">
           <label className="text-[15px] font-semibold">태그</label>
           <input
@@ -147,7 +149,7 @@ export default function PostWriteModal() {
         </div>
       </ModalContent>
 
-      {/* 푸터: 풀폭 버튼 */}
+      {/* 푸터 */}
       <ModalFooter className="px-6 pb-6 pt-0">
         <Button
           onClick={onSubmit}

@@ -42,27 +42,43 @@ export function useOptimisticCreate<T, V>({
 }: UseOptimisticCreateParams<T, V>) {
   const queryClient = useQueryClient()
   const MUTATION_KEY = [...listKey, 'create']
+
   return useMutation<T, Error, V, Ctx<T>>({
     mutationKey: MUTATION_KEY,
     mutationFn,
+
     onMutate: async (payload) => {
       // postKey 있을 시 포스트 리스트 관련 쿼리 취소
       await Promise.all([
         queryClient.cancelQueries({ queryKey: listKey }),
         postsKey ? queryClient.cancelQueries({ queryKey: postsKey }) : undefined,
       ])
-      const prev = queryClient.getQueryData<T[]>(listKey)
+
+      // ✅ 배열/무한스크롤 모두 대비
+      const prev = queryClient.getQueryData(listKey) as any
+
       // 낙관적 업데이트를 위한 임시 아이템 삽입 (리스트 상단)
       const temp = buildTempItem(payload)
+
       // 게시글 리스트 패치 이전 값
       let snapshots: Snapshot[] | undefined
+      let didCustomPatch = false
       if (prePatchPosts) {
         snapshots = prePatchPosts(queryClient, temp)
+        didCustomPatch = Array.isArray(snapshots) && snapshots.length > 0
       }
-      // 리스트 업데이트
-      queryClient.setQueryData(listKey, (old: T[]) => [temp, ...(old ?? [])])
+
+      // ✅ 기본 리스트 업데이트는 '배열 캐시'일 때만 수행
+      if (!didCustomPatch) {
+        queryClient.setQueryData(listKey, (old: any) => {
+          if (Array.isArray(old)) return [temp, ...(old ?? [])]
+          return old
+        })
+      }
+
       return { snapshots, prev, tempId: temp.id } satisfies Ctx<T>
     },
+
     onError: (_err, _payload, ctx) => {
       // 실패 시 복구
       if (ctx?.prev) {
@@ -74,17 +90,25 @@ export function useOptimisticCreate<T, V>({
         }
       }
     },
+
     onSuccess: (res, _payload, ctx) => {
       const replace = replaceItem ?? ((item: any, c: Ctx<T>) => item?.id === c.tempId)
       const merge = mergeServerItem ?? ((_o: T, s: T) => s)
-      // 성공 시 임시 아이템 교체
-      queryClient.setQueryData(listKey, (old: T[]) => {
-        return (old ?? []).map((item) => (replace(item, ctx) ? merge(item, res) : item))
+
+      // ✅ 기본 교체도 '배열 캐시'일 때만 수행
+      queryClient.setQueryData(listKey, (old: any) => {
+        if (Array.isArray(old)) {
+          return (old ?? []).map((item: any) => (replace(item, ctx) ? merge(item, res) : item))
+        }
+        return old
       })
-      if (ctx.tempId && postPatchPosts) {
+
+      // 무한스크롤/특수 구조는 외부 postPatchPosts가 처리
+      if (ctx?.tempId && postPatchPosts) {
         postPatchPosts(queryClient, ctx.tempId, res)
       }
     },
+
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: listKey })
     },
