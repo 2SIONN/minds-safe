@@ -24,18 +24,6 @@ const QuerySchema = z.object({
   sort: z.enum(['latest', 'popular']).default('latest'),
 })
 
-function tagsArrayToCsv(arr: string[]): string {
-  const cleaned = arr.map((t) => t.trim()).filter(Boolean)
-
-  return cleaned.length > 0 ? `,${cleaned.join(',')},` : ',' // 최소 ',' 유지해서 contains 검색 가능하게
-}
-function csvToTagsArray(csv: string): string[] {
-  return csv
-    .split(',')
-    .map((t) => t.trim())
-    .filter(Boolean)
-}
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const { limit, cursor, tag, q, sort } = QuerySchema.parse(Object.fromEntries(searchParams))
@@ -45,12 +33,6 @@ export async function GET(req: Request) {
   if (q) {
     and.push({
       content: { contains: q },
-    })
-  }
-
-  if (tag) {
-    and.push({
-      tags: { contains: `,${tag},` },
     })
   }
 
@@ -91,16 +73,25 @@ export async function GET(req: Request) {
   })
 
   const hasMore = list.length > limit
-  const sliced = hasMore ? list.slice(0, -1) : list
-  const nextCursor = hasMore ? (sliced[sliced.length - 1]?.id ?? null) : null
-  const shaped = sliced.map((post) => ({
-    ...post,
-    tags: csvToTagsArray(post.tags),
-  }))
+  const slicedRaw = hasMore ? list.slice(0, -1) : list
+
+  const filteredByTag = tag
+    ? slicedRaw.filter((post) => {
+        // 안전하게 가드
+        if (!Array.isArray(post.tags)) return false
+        return post.tags.includes(tag)
+      })
+    : slicedRaw
+
+  const nextCursor =
+    hasMore && filteredByTag.length > 0
+      ? (filteredByTag[filteredByTag.length - 1]?.id ?? null)
+      : null
+
   return NextResponse.json({
     ok: true,
     data: {
-      items: shaped,
+      items: filteredByTag,
       nextCursor,
       limit,
       sort,
@@ -125,7 +116,7 @@ export async function POST(req: Request) {
       data: {
         authorId: session.uid,
         content: parsed.content,
-        tags: tagsArrayToCsv(parsed.tags ?? []),
+        tags: parsed.tags ?? [], // ✅ String[]
         imageUrl: parsed.imageUrl || null,
       },
     })
