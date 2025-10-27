@@ -47,7 +47,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
         className="flex items-center justify-between px-6 py-1.5 min-w-[120px]
-                   rounded-[var(--radius)] border border-border
+                   rounded-(--radius) border border-border
                    bg-popover text-popover-foreground
                    hover:bg-muted transition"
       >
@@ -60,7 +60,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
         <ul
           role="listbox"
           className="absolute right-0 mt-1 w-full min-w-[120px]
-                     rounded-[var(--radius)] border border-border
+                     rounded-(--radius) border border-border
                      bg-popover text-popover-foreground
                      shadow-lg overflow-hidden z-10"
         >
@@ -70,7 +70,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
               <li
                 key={opt.value}
                 onClick={() => handleSelect(opt.value)}
-                className="flex items-center px-3 py-2 cursor-pointer transition rounded-[var(--radius)]
+                className="flex items-center px-3 py-2 cursor-pointer transition rounded-(--radius)
                            hover:bg-accent hover:text-accent-foreground"
               >
                 {/* 선택된 항목은 체크 아이콘만 표시 */}

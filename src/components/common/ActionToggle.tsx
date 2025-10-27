@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils/utils'
-import Button from './Button'
 import { Heart, MessageCircle } from 'lucide-react'
 
 type Variant = 'like' | 'comment'
@@ -13,7 +12,7 @@ interface ActionToggleProps {
   // 숫자 표시 (like 카운트나 댓글 수)
   count?: number
   // 토글 핸들러
-  onToggle: () => void
+  onToggle?: () => void
 
   // 아이콘 커스텀 (없으면 기본 Heart/MessageCircle 사용)
   icon?: ReactNode
