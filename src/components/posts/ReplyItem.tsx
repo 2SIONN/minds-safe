@@ -61,6 +61,7 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
           active={liked}
           count={likeCount}
           disabled={!user}
+          className='cursor-pointer'
         />
         {user?.id === reply.authorId && (
           <button onClick={() => deleteReply(reply)}

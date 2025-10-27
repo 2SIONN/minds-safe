@@ -43,7 +43,12 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
               {(() => {
                 const likeCount = post.empathies?.length ?? 0 // 기본값 0
                 return (
-                  <LikeButton type="POST" id={post.id} active={initiallyLiked} count={likeCount} />
+                  <LikeButton
+                    type='POST'
+                    id={post.id}
+                    active={initiallyLiked}
+                    count={likeCount}
+                  />
                 )
               })()}
             </div>
