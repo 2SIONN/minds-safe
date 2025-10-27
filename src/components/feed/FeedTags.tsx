@@ -5,11 +5,14 @@ import { Post } from '@/types/post'
 export default function FeedTags({ tags }: { tags: Post['tags'] }) {
   if (!tags || tags.length === 0) return null
 
-  const visibleTags = Array.isArray(tags)
-    ? tags.filter((t) => typeof t === 'string' && t.trim() !== '')
+  let tagArr = tags.split(',')
+  tagArr = tagArr.slice(1, tagArr.length - 1)
+
+  const visibleTags = Array.isArray(tagArr)
+    ? tagArr.filter((t) => typeof t === 'string' && t.trim() !== '')
     : []
 
-  const hiddenCount = tags.length - visibleTags.length
+  const hiddenCount = tagArr.length - visibleTags.length
 
   return (
     <CardContent className="p-0 mb-4">

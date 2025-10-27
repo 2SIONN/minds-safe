@@ -6,7 +6,7 @@ export type Post = {
   authorId: string
   author: User
   content: string
-  tags: string[]
+  tags: string
   imageUrl: string | null
   createdAt: string
   updatedAt: string

@@ -8,7 +8,7 @@ type Props = {
   content: string
   createdAt: string
   nickname: string
-  tags?: string[]
+  tags?: string
   onClick?: () => void
   children?: React.ReactNode
 }
@@ -19,7 +19,7 @@ type Props = {
  * @returns ReactNode
  */
 function FeedCardBase(props: Props) {
-  const { content, createdAt, nickname, tags = [], onClick, children } = props
+  const { content, createdAt, nickname, tags = '', onClick, children } = props
   return (
     <Card onClick={onClick} className="p-5 select-none">
       <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">

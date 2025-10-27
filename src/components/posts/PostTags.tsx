@@ -5,9 +5,12 @@ import { Post } from '@/types/post'
 export default function PostTags({ tags }: { tags: Post['tags'] }) {
   if (!tags || tags.length === 0) return null
 
-  const visibleTags = tags.slice(0, 3)
-  const hiddenCount = tags.length - visibleTags.length
+  let tagArr = tags.split(',')
+  tagArr = tagArr.slice(1, tagArr.length - 1)
 
+  const visibleTags = tagArr.slice(0, 3)
+  const hiddenCount = tagArr.length - visibleTags.length
+  
   return (
     <CardContent className="p-0 mb-4">
       {visibleTags.map((tag) => (
