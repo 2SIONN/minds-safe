@@ -12,7 +12,7 @@ export function Card({ className, children, closable, onClose, ...props }: CardP
   return (
     <div
       className={cn(
-        'relative rounded-lg border border-border glass-card text-card-foreground shadow-sm',
+        'relative rounded-2xl border border-border glass-card text-card-foreground shadow-sm',
         className
       )}
       {...props}
@@ -20,10 +20,10 @@ export function Card({ className, children, closable, onClose, ...props }: CardP
       {closable && (
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-md hover:bg-muted transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-1 rounded-full hover:bg-muted transition-colors cursor-pointer"
           aria-label="닫기"
         >
-          <X className="size-4" />
+          <X className="size-5" />
         </button>
       )}
       {children}
