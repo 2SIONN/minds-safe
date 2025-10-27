@@ -40,8 +40,8 @@ export default function LikeButton({
       active={active}
       count={count}
       onToggle={handleToggle}
-      className="cursor-pointer"
       disabled={!user}
+      className="cursor-pointer"
       wrapperClassName={wrapperClassName}
     />
   )
