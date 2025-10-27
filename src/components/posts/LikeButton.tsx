@@ -12,7 +12,6 @@ type LikeButtonProps = {
   active?: boolean
   count?: number
   disabled?: boolean
-  className?: string
   wrapperClassName?: string
   type: TargetType
 }
@@ -21,7 +20,6 @@ export default function LikeButton({
   id,
   active = false,
   count = 0,
-  className,
   wrapperClassName,
   type,
   targetId,
@@ -43,7 +41,7 @@ export default function LikeButton({
       count={count}
       onToggle={handleToggle}
       disabled={!user}
-      className={className}
+      className={"cursor-pointer"}
       wrapperClassName={wrapperClassName}
     />
   )
