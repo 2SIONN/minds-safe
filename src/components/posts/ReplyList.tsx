@@ -2,7 +2,7 @@
 
 import Spinner from "../common/Spinner";
 import ReplyItem from "./ReplyItem";
-import { useGetReplies } from "@/hooks/queries/useGetReplies";
+import { useGetReplies } from "@/hooks/queries/replies/useGetReplies";
 
 interface ReplyListProps {
   id: string

@@ -11,7 +11,7 @@ import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/comm
 import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
+import { toast } from '@/store/useToast'
 
 type FormValues = z.input<typeof postCreateSchema>
 
@@ -58,41 +58,44 @@ export default function PostWriteModal() {
     try {
       setSubmitting(true)
 
-      // axios는 JSON 본문/헤더 자동 설정
-      await axios.post(
-        '/apis/posts',
-        { content: values.content, tags: values.tags },
-        { withCredentials: true }
-      )
+      const res = await fetch('/apis/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ content: values.content, tags: values.tags }),
+      })
 
-      alert('등록되었습니다.')
+      const json = await res.json().catch(() => ({}))
+
+      if (res.status === 401) {
+        toast.error('로그인이 필요합니다.')
+        setSubmitting(false)
+        return
+      }
+
+      if (!res.ok) toast.error(json?.message || `등록 실패(${res.status})`)
+
+      toast.success('등록되었습니다.')
       form.reset()
       setTagsInput('')
       closeModal()
       router.refresh()
-    } catch (e: unknown) {
-      if (axios.isAxiosError(e)) {
-        if (e.response?.status === 401) {
-          alert('로그인이 필요합니다.')
-          router.push('/auth/login')
-        } else {
-          const msg =
-            (e.response?.data as any)?.message ||
-            e.message ||
-            `등록 실패(${e.response?.status ?? '알 수 없음'})`
-          alert(msg)
-        }
-      } else {
-        alert('작성 실패')
-        console.error(e)
-      }
+    } catch (e: any) {
+      toast.error(e?.message || '작성 실패')
     } finally {
       setSubmitting(false)
     }
   })
 
   return (
-    <Modal open={open} onClose={closeModal} size="2xl" closeOnBackdrop={false} closeOnEscape closable>
+    <Modal
+      open={open}
+      onClose={closeModal}
+      size="2xl"
+      closeOnBackdrop={false}
+      closeOnEscape
+      closable
+    >
       <ModalHeader>
         <h1 className="text-2xl font-semibold text-primary">고민 남기기</h1>
       </ModalHeader>
@@ -127,12 +130,17 @@ export default function PostWriteModal() {
               </button>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">{tags.length}/5개 (콤마로 구분, 클릭 제거)</p>
+          <p className="text-xs text-muted-foreground">
+            {tags.length}/5개 (콤마로 구분, 클릭 제거)
+          </p>
         </div>
       </ModalContent>
 
       <ModalFooter className="gap-2">
-        <Button onClick={onSubmit} disabled={submitting || content.length === 0 || content.length > 1000}>
+        <Button
+          onClick={onSubmit}
+          disabled={submitting || content.length === 0 || content.length > 1000}
+        >
           {submitting ? '게시 중…' : '게시하기'}
         </Button>
       </ModalFooter>
