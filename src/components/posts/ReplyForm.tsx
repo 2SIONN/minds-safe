@@ -25,15 +25,14 @@ export default function ReplyForm({ id }: { id: string }) {
   const len = watch('body').trim().length
   const isDisabled = len === 0 || isSubmitting;
 
-  const onSubmit = () => {
-    if(!user) return;
-    const body = getValues('body');
+  const onSubmit = ({ body }: { body: string }) => {
+    if (!user) return;
     reset();
-    postReply({ body: body, authorId: user.id, postId: id })
+    postReply({ body, authorId: user.id, postId: id })
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full py-6 border-y border-white/10"> {/*Submit handler 추가 예정*/}
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full py-6 border-y border-white/10">
       <div className="flex items-end gap-4 ">
         <Textarea
           wrapperClassName="flex-1"
