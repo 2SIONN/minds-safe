@@ -7,7 +7,7 @@ import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
 import { getPostDetailClient, getPostsClient } from '@/lib/client'
 import type { Post } from '@/types/post'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: number }) {
   // 무한스크롤 쿼리
@@ -37,17 +37,7 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
     threshold: 0.01,
   })
 
-  // 현재 사용자 id
-  const [currentUserId, setCurrentUserId] = useState<string>('')
-  useEffect(() => {
-    try {
-      setCurrentUserId(localStorage.getItem('userId') || '')
-    } catch {
-      setCurrentUserId('')
-    }
-  }, [])
-
-  // 상세 모달
+  // 상세 모달 - 쿼리 적용 필요
   const [open, setOpen] = useState(false)
   const [detail, setDetail] = useState<Post | null>(null)
 
@@ -87,7 +77,7 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
   return (
     <>
       {items.map((p) => (
-        <FeedItem key={p.id} post={p} currentUserId={currentUserId} onOpen={handleOpen} />
+        <FeedItem key={p.id} post={p} onOpen={handleOpen} />
       ))}
       <div ref={bottomRef} aria-hidden />
 

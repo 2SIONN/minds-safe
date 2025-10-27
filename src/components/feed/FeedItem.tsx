@@ -1,28 +1,36 @@
 'use client'
 
 import FeedCard from '@/components/feed/FeedCard'
+import LikeButton from '@/components/posts/LikeButton'
+import { useAuthStore } from '@/store/useAuthStore'
 import type { Post } from '@/types/post'
 import { useCallback, useMemo } from 'react'
-import { ActionToggle } from '../common'
-import LikeButton from '../posts/LikeButton'
+import { ActionToggle } from '@/components/common'
 
 export default function FeedItem({
   post,
-  currentUserId,
   onOpen,
 }: {
   post: Post
-  currentUserId: string | null
   onOpen: (id: string) => void
 }) {
+  const { user } = useAuthStore()
+  // 구조 분해 할당으로 변경 필요 - 성준님 부탁드립니다..
   const likeCount = post.empathies?.length ?? 0
   const replyCount = post.replies?.length ?? 0
   const nickname = post.authorId ?? '익명'
 
-  const initiallyLiked = useMemo(
-    () => !!currentUserId && !!post.empathies?.some((e) => e.userId === currentUserId),
-    [currentUserId, post.empathies]
-  )
+  // 기존 코드
+  // const initiallyLiked = useMemo(() => {
+  //   if(!empathies || !currentUserId) return false
+  //   return empathies.some((e) => e.userId === currentUserId)
+  // }, [empathies, currentUserId])
+
+  // 변경 코드 (useAuthStore 사용)
+  const initiallyLiked = useMemo(() => {
+    if (!post.empathies || !user) return false
+    return post.empathies.some((e) => e.userId === user.id)
+  }, [post.empathies, user?.id])
 
   const stopPropagation = useCallback<React.MouseEventHandler>((e) => {
     e.stopPropagation()
@@ -38,7 +46,7 @@ export default function FeedItem({
       tags={post.tags}
     >
       <div onClick={stopPropagation}>
-        <LikeButton id={post.id} initialActive={initiallyLiked} initialCount={likeCount} />
+        <LikeButton type="POST" id={post.id} active={initiallyLiked} count={likeCount} />
       </div>
       <ActionToggle
         variant="comment"
