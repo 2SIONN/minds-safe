@@ -34,7 +34,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
           </CardHeader>
 
           <CardContent className="p-6 pt-3 pb-0">
-            <FeedTags tags={post.tags} />
+            <FeedTags all={true} tags={post.tags} />
             <div className="flex justify-between">
               {(() => {
                 const nickname = post.authorId ?? '익명'
