@@ -10,5 +10,3 @@ export type User = {
   replies: Reply[]
   empathies: Empathy[]
 }
-
-export type Author = Omit<User, 'posts' | 'replies' | 'empathies'>

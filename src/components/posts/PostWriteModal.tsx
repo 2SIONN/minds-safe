@@ -12,7 +12,6 @@ import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
 import { useRouter } from 'next/navigation'
 import { toast } from '@/store/useToast'
-
 //추가: 낙관 전용 훅
 import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
 
@@ -61,7 +60,7 @@ export default function PostWriteModal() {
 
   const onSubmit = form.handleSubmit((values) => {
     mutate(
-      { content: values.content, tags: values.tags ?? [], imageUrl: null },
+      { content: values.content, tags: values.tags ?? [] },
       {
         onSuccess: () => {
           toast.success('등록되었습니다.')
