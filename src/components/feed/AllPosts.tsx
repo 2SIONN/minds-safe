@@ -1,6 +1,6 @@
 'use client'
 
-import FeedListSkeleton from '@/components/feed/FeedListSkeleton'
+import { FeedItem, FeedListSkeleton } from '@/components/feed'
 import PostDetailCard from '@/components/posts/PostDetailCard'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
@@ -8,7 +8,6 @@ import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
 import { getPostDetailClient, getPostsClient } from '@/lib/client'
 import type { Post } from '@/types/post'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import FeedItem from './FeedItem'
 
 export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: number }) {
   // 무한스크롤 쿼리
@@ -101,7 +100,7 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
       )}
 
       {/* 상세 모달 */}
-      {open && <PostDetailCard open={open} onClose={handleClose} post={detail} />}
+      {open && detail && <PostDetailCard open={open} onClose={handleClose} post={detail} />}
     </>
   )
 }
