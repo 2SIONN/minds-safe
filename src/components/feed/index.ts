@@ -1,4 +1,4 @@
-export { default as AllPosts } from '@/components/feed/AllPosts'
+export { default as AllPosts } from '@/components/feed/FeedAll'
 export { default as FeedCard } from '@/components/feed/FeedCard'
 export { default as FeedItem } from '@/components/feed/FeedItem'
 export { default as FeedListSkeleton } from '@/components/feed/FeedListSkeleton'

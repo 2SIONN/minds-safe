@@ -6,21 +6,19 @@ export default function FeedTags({ tags }: { tags: Post['tags'] }) {
   if (!tags || tags.length === 0) return null
 
   // 라우트 형식 재지정후 로직 수정 필요 - 현재 string 혹은 string[]로 들어옴
-  let tagArr: String | String[] = tags
-  if (!Array.isArray(tags)) {
-    const tagsSplit = tags.split(',')
-    tagArr = tagsSplit.slice(1, tagArr.length - 1)
-  }
+  let tagArr: string[] = Array.isArray(tags) ? tags : tags.split(',').slice(1, -1)
 
-  const visibleTags = Array.isArray(tagArr)
-    ? tagArr.filter((t) => typeof t === 'string' && t.trim() !== '')
-    : []
+  const visibleTags = tagArr.filter((t) => typeof t === 'string' && t.trim() !== '')
 
-  const hiddenCount = tagArr.length - visibleTags.length
+  // 최대 3개만 노출
+  const displayTags = visibleTags.slice(0, 3)
+
+  // 숨겨진 태그 수 계산
+  const hiddenCount = visibleTags.length > 3 ? visibleTags.length - 3 : 0
 
   return (
     <CardContent className="p-0 mb-4">
-      {visibleTags.map((tag, idx) => (
+      {displayTags.map((tag, idx) => (
         <TagBadge key={`feedTag-${tag}-${idx}`} size="sm" className="mr-2">
           {tag}
         </TagBadge>
