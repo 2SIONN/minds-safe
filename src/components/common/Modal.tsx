@@ -12,7 +12,6 @@ interface ModalProps extends ComponentPropsWithRef<'div'> {
   size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | 'full'
   closeOnBackdrop?: boolean
   closeOnEscape?: boolean
-  closable?: boolean
 }
 
 export function Modal({
@@ -22,7 +21,6 @@ export function Modal({
   size = 'md',
   closeOnBackdrop = false,
   closeOnEscape = true,
-  closable = true,
   className,
   ...props
 }: ModalProps) {
@@ -115,8 +113,6 @@ export function Modal({
         {/* Modal Content - Card 컴포넌트 재사용 */}
         <Card
           ref={modalRef}
-          closable={closable}
-          onClose={onClose}
           className={cn(
             'relative w-full mx-4 my-8 max-h-[90vh] pointer-events-auto',
             sizeClasses[size],

@@ -90,20 +90,10 @@ export default function PostWriteModal() {
   })
 
   return (
-    <Modal
-      open={open}
-      onClose={closeModal}
-      size="2xl"
-      closeOnBackdrop={false}
-      closeOnEscape
-      closable
-      className="!p-0"
-    >
-      {/* 헤더 */}
-      <ModalHeader className="px-6 py-5 border-b border-border/60">
-        <h1 className="text-[22px] font-extrabold bg-gradient-to-r from-[#6AA5FF] to-[#A875FF] bg-clip-text text-transparent">
-          고민 남기기
-        </h1>
+
+    <Modal open={open} onClose={closeModal} size="2xl" closeOnBackdrop={false} closeOnEscape>
+      <ModalHeader closable onClose={closeModal}>
+        <h1 className="text-2xl font-semibold text-primary">고민 남기기</h1>
       </ModalHeader>
 
       <ModalContent className="px-6 pb-2 pt-5 space-y-8">
