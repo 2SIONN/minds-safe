@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
 import { cn } from '@/lib/utils/utils'
 import { Heart, MessageCircle } from 'lucide-react'
+import { ReactNode } from 'react'
 
 type Variant = 'like' | 'comment'
 
