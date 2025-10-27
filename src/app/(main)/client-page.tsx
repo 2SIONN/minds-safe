@@ -5,7 +5,7 @@ import type { Post } from '@/types/post'
 import { useQueryClient } from '@tanstack/react-query'
 import { lazy, useEffect, useMemo } from 'react'
 
-const AllPosts = lazy(() => import('@/components/feed/AllPosts'))
+const AllPosts = lazy(() => import('@/components/feed/FeedAll'))
 
 type Props = {
   q?: string
