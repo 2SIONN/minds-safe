@@ -5,14 +5,13 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Pencil } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
+// import { Card, CardContent } from '@/components/common/Card'
 
 interface NicknameSectionProps {
   initialName?: string
 }
 
-type MeResponse =
-  | { id: string; email: string; nickname: string | null }
-  | null
+type MeResponse = { id: string; email: string; nickname: string | null } | null
 
 export default function NicknameSection({ initialName = '익명' }: NicknameSectionProps) {
   const router = useRouter()
@@ -110,7 +109,9 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
       if (!res.ok) {
         let msg = ''
-        try { msg = (await res.json())?.message || '' } catch {}
+        try {
+          msg = (await res.json())?.message || ''
+        } catch {}
         throw new Error(msg || `닉네임 저장 실패 (status: ${res.status})`)
       }
 
@@ -134,9 +135,7 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
             <>
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground mb-1">닉네임</p>
-                <p className="text-xl font-semibold truncate">
-                  {isLoading ? '로딩 중…' : value}
-                </p>
+                <p className="text-xl font-semibold truncate">{isLoading ? '로딩 중…' : value}</p>
               </div>
               <Button
                 variant="ghost"
@@ -160,11 +159,7 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? '저장중…' : '저장'}
               </Button>
-              <Button
-                variant="ghost"
-                onClick={handleCancel}
-                disabled={isSaving}
-              >
+              <Button variant="ghost" onClick={handleCancel} disabled={isSaving}>
                 취소
               </Button>
             </>
