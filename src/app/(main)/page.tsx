@@ -1,9 +1,10 @@
 // src/app/(main)/page.tsx
 import TagBadge from '@/components/common/TagBadge'
 import { DEFAULT_TAGS } from '@/constants/tags'
+import 'server-only'
 
 // 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
-import ClientPage from '@/app/(main)/client-page'
+import ServerPage from '@/app/(main)/server-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 import SearchInput from '@/components/search/SearchInput'
@@ -37,7 +38,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           <div></div>
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
-        <ClientPage q={q || ''} />
+        <ServerPage q={q || ''} />
       </main>
 
       {/* 변경: 기존 <Fab .../> 대신 */}
