@@ -48,5 +48,19 @@ export type TargetType = 'POST' | 'REPLY'
 
 export type Snapshot = {
   key: QueryKey
-  data: Post[]
+  data: Page[]
 }
+
+export type PageData = {
+  data: {
+    items: Post[]
+    nextCursor: string
+  }
+  ok: boolean
+}
+
+export type Page = {
+  pageParams: any[]
+  pages: PageData[]
+}
+
