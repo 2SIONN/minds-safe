@@ -1,10 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "@/hooks/queries/query-keys";
-import { getReplies } from "@/lib/api/replies";
-import { Reply } from "@/types/post";
+import { queryKeys } from '@/hooks/queries/query-keys'
+import { getReplies } from '@/lib/api/replies'
+import { useInfiniteCursorQuery } from '../useInfiniteCursorQuery'
 
-export const useGetReplies = (postId: string) => useQuery<unknown, Error, Reply[]>({
-  queryKey: queryKeys.replies.list(postId),
-  queryFn: () => getReplies(postId),
-  retry: (cnt) => cnt < 3
-});
+export const useGetReplies = (postId: string, limit?: number) =>
+  useInfiniteCursorQuery({
+    queryKey: queryKeys.replies.list(postId),
+    queryFn: ({ pageParam, signal }) =>
+      getReplies(postId, { cursor: pageParam ?? undefined, limit: limit ?? 10, signal }),
+    getNextPageParam: (last) => last?.data?.nextCursor ?? null,
+    staleTime: 30_000,
+    suspense: false,
+  })

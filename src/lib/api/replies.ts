@@ -1,7 +1,17 @@
 import { ReplyPayload } from '@/types/post'
 
-export async function getReplies(id: string) {
-  const res = await fetch(`/apis/posts/${id}/replies`, { cache: 'no-store' })
+type GetReplies = {
+  cursor?: string | null
+  limit?: number
+  signal?: AbortSignal
+}
+
+export async function getReplies(id: string, { cursor, limit, signal }: GetReplies) {
+  const qs = new URLSearchParams({
+    ...(cursor && { cursor }),
+    ...(limit && { limit: String(limit) }),
+  })
+  const res = await fetch(`/apis/posts/${id}/replies?${qs.toString()}`, { signal, cache: 'no-store' })
   if (!res.ok) throw new Error(`작업 실패: ${res.status}`)
   return res.json()
 }
