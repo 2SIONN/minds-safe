@@ -59,9 +59,9 @@ export default function Button({
         />
       )}
       <span className={cn(isLoading && 'invisible')}>
-        {leftIcon && <span className="flex-shrink-0">{leftIcon}</span>}
+        {leftIcon && <span className="shrink-0">{leftIcon}</span>}
         {children}
-        {rightIcon && <span className="flex-shrink-0">{rightIcon}</span>}
+        {rightIcon && <span className="shrink-0">{rightIcon}</span>}
       </span>
     </button>
   )
