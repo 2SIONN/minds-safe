@@ -2,19 +2,28 @@
 
 import { FeedItem, FeedListSkeleton } from '@/components/feed'
 import PostDetailCard from '@/components/posts/PostDetailCard'
+import { SORT } from '@/constants/search'
+import { useCallback, useMemo, useState } from 'react'
+
+// hook
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
-import { getPostDetailClient, getPostsClient } from '@/lib/client'
-import type { Post } from '@/types/post'
-import { useCallback, useMemo, useState } from 'react'
 
-export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: number }) {
+// lib & type
+import { getFeedClient } from '@/lib/api/feed'
+import { getPostDetailClient } from '@/lib/client'
+import type { Post } from '@/types/post'
+import type { Filter } from '@/types/search'
+
+export default function FeedAll({ q = '', sort = SORT.LATEST }: Filter) {
+  const filters = useMemo(() => JSON.stringify({ q, sort }), [q, sort])
+
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({
-    queryKey: queryKeys.posts.list(q),
+    queryKey: queryKeys.posts.list(filters),
     queryFn: ({ pageParam, signal }) =>
-      getPostsClient({ cursor: pageParam ?? undefined, limit, q, signal }),
+      getFeedClient({ cursor: pageParam ?? undefined, q, sort, signal }),
     getNextPageParam: (last) => last?.data?.nextCursor ?? null,
     staleTime: 30_000,
     suspense: false,
