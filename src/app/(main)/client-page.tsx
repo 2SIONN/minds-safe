@@ -1,13 +1,28 @@
 'use client'
 
-import FeedListSkeleton from '@/components/feed/FeedListSkeleton'
-import dynamic from 'next/dynamic'
+import { queryKeys } from '@/hooks/queries/query-keys'
+import type { Post } from '@/types/post'
+import { useQueryClient } from '@tanstack/react-query'
+import { lazy, useEffect, useMemo } from 'react'
 
-const AllPosts = dynamic(() => import('@/components/feed/AllPosts'), {
-  ssr: false,
-  loading: () => <FeedListSkeleton count={3} />,
-})
+const AllPosts = lazy(() => import('@/components/feed/FeedAll'))
 
-export default function ClientPage({ q }: { q?: string }) {
-  return <AllPosts q={q || ''} />
+type Props = {
+  q?: string
+  initialItems: Post[]
+  initialNextCursor: string | null
+}
+
+export default function ClientPage({ q = '', initialItems, initialNextCursor }: Props) {
+  const qc = useQueryClient()
+  const key = useMemo(() => queryKeys.posts.list(q), [q])
+
+  useEffect(() => {
+    qc.setQueryData(key, {
+      pageParams: [null],
+      pages: [{ data: { items: initialItems, nextCursor: initialNextCursor } }],
+    })
+  }, [key, initialItems, initialNextCursor, qc])
+
+  return <AllPosts q={q} />
 }
