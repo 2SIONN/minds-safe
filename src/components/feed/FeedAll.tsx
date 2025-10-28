@@ -19,8 +19,8 @@ import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 
 export default function FeedAll({ filter }: { filter: Filter }) {
-  const { q = '', sort = SORT.LATEST, tags } = filter
-  const filters = useMemo(() => JSON.stringify({ q, sort, tags }), [q, sort, tags])
+  const { q = '', sort = SORT.LATEST, tag } = filter
+  const filters = useMemo(() => JSON.stringify({ q, sort, tag }), [q, sort, tag])
 
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({

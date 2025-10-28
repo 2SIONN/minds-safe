@@ -6,19 +6,19 @@ import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 import 'server-only'
 
-function buildPostsUrl(base: string, { q = '', sort, tags }: Required<Omit<Filter, 'limit'>>) {
+function buildPostsUrl(base: string, { q = '', sort, tag }: Required<Omit<Filter, 'limit'>>) {
   const url = new URL('/apis/posts', base)
   if (q) url.searchParams.set('q', q)
-  if (tags.length) url.searchParams.set('tags', JSON.stringify(tags))
+  if (tag.length) url.searchParams.set('tag', tag)
   url.searchParams.set('sort', sort)
   return url
 }
 
 async function getPostsServer(filter: Omit<Filter, 'limit'>) {
-  const { q = '', sort = SORT.LATEST, tags = [] } = filter
+  const { q = '', sort = SORT.LATEST, tag = '' } = filter
 
   const base = await getBaseUrl()
-  const url = buildPostsUrl(base, { q, sort, tags })
+  const url = buildPostsUrl(base, { q, sort, tag })
 
   try {
     const res = await fetch(url.toString(), { cache: 'no-store' })
