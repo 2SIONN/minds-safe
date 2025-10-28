@@ -12,7 +12,7 @@ export default function SearchFilter({
   return (
     <div
       className={`h-12 w-full px-5 mt-4 flex items-center rounded-[--radius]
-                  border-1 backdrop-blur-xl ${containerClassName}`}
+                  border backdrop-blur-xl ${containerClassName}`}
     >
       <input
         {...inputProps} // ← 전달받은 표준 input 속성 전부 적용
