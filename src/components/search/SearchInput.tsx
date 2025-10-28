@@ -17,7 +17,11 @@ export default function SearchInput({ q }: { q: string }) {
   }, [q])
 
   useEffect(() => {
-    router.replace(`?q=${debouncedSearch}`)
+    if (debouncedSearch === '') {
+      router.replace('/')
+    } else {
+      router.replace(`?q=${debouncedSearch}`)
+    }
   }, [debouncedSearch, router])
 
   const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
