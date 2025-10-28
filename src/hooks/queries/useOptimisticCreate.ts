@@ -69,7 +69,7 @@ export function useOptimisticCreate<T, V>({
       }
 
       // ✅ 기본 리스트 업데이트는 '배열 캐시'일 때만 수행
-      if (!didCustomPatch) {
+      if (!didCustomPatch || (listKey && postsKey)) {
         queryClient.setQueryData(listKey, (old: any) => {
           if (Array.isArray(old)) return [temp, ...(old ?? [])]
           return old
