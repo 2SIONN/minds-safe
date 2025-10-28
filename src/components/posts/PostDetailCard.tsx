@@ -9,6 +9,9 @@ import ReplyForm from '@/components/posts/ReplyForm'
 import ReplyList from '@/components/posts/ReplyList'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Post } from '@/types/post'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
+import { useMemo } from 'react'
+import { queryKeys } from '@/hooks/queries/query-keys'
 
 type Props = {
   open: boolean
@@ -18,47 +21,48 @@ type Props = {
 
 export default function PostDetailCard({ open, onClose, post }: Props) {
   const { user } = useAuthStore()
-  const currentUserId = localStorage.getItem('userId') || user?.id || ''
-  const initiallyLiked = post?.empathies?.some((e) => e.userId === currentUserId) ?? false
-  return (
-    <Modal open={open} onClose={onClose} size="2xl" closeOnBackdrop>
-      {!post ? (
-        // 로딩 or 비어있는 상태 처리
+  const queryClient = useQueryClient()
+
+  if (!post) {
+    return (
+      <Modal open={open} onClose={onClose} size="2xl" closeOnBackdrop>
         <CardContent className="p-6 text-center text-muted-foreground">
           <p>게시글을 불러오는 중...</p>
         </CardContent>
-      ) : (
-        <>
-          <CardHeader className="!pb-2 text-slate-100" closable onClose={onClose}>
-            <h2 className="text-xl font-semibold">{post.content}</h2>
-          </CardHeader>
+      </Modal>
+    )
+  }
 
-          <CardContent className="p-6 pt-3 pb-0">
-            <FeedTags all={true} tags={post.tags} />
-            <div className="flex justify-between">
-              {(() => {
-                const nickname = post.authorId ?? '익명'
-                return <NickName nickname={nickname} />
-              })()}
-              {(() => {
-                const likeCount = post.empathies?.length ?? 0 // 기본값 0
-                return (
-                  <LikeButton
-                    type='POST'
-                    id={post.id}
-                    active={initiallyLiked}
-                    count={likeCount}
-                  />
-                )
-              })()}
-            </div>
-          </CardContent>
-          <CardFooter className="flex-col items-start">
-            <ReplyForm id={post.id} />
-            <ReplyList id={post.id} postAuthorId={post.authorId} />
-          </CardFooter>
-        </>
-      )}
+  const { data: cachedPost } = useQuery({
+    queryKey: queryKeys.posts.detail(post.id),
+    queryFn: async () => post, // 이미 받은 post를 초기 데이터로 사용
+    initialData: () => queryClient.getQueryData(queryKeys.posts.detail(post.id)) ?? post,
+  })
+
+  const currentPost = cachedPost ?? post
+  const liked = currentPost.empathies?.some((e) => e.userId === user?.id) ?? false
+  const likeCount = currentPost.empathies?.length ?? 0
+
+  return (
+    <Modal open={open} onClose={onClose} size="2xl" closeOnBackdrop>
+      <CardHeader className="!pb-2 text-slate-100" closable onClose={onClose}>
+        <h2 className="text-xl font-semibold">{post.content}</h2>
+      </CardHeader>
+
+      <CardContent className="p-6 pt-3 pb-0">
+        <FeedTags all={true} tags={post.tags} size="md" />
+
+        <div className="flex justify-between items-center mt-2">
+          <NickName nickname={post.author.nickname ?? '익명'} />
+
+          <LikeButton type="POST" id={currentPost.id} active={liked} count={likeCount} />
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex-col items-start">
+        <ReplyList id={post.id} postAuthorId={post.authorId} />
+        <ReplyForm id={post.id} />
+      </CardFooter>
     </Modal>
   )
 }

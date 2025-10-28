@@ -34,10 +34,13 @@ export default function ReplyList({ id, postAuthorId }: ReplyListProps) {
   }
   if (!replies || replies.length === 0) {
     return (
-      <div className="w-full text-center text-gray-400 p-10">
-        응원이 첫 걸음이 돼요.
+      <div className="w-full flex items-center justify-center h-[10vh]">
+        <Spinner />
       </div>
     )
+  }
+  if (!replies || replies.length === 0) {
+    return <div className="w-full text-center text-gray-400 p-10">응원이 첫 걸음이 돼요.</div>
   }
   return (
     <ul className="w-full max-h-[50vh] overflow-x-hidden">

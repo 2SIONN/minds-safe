@@ -24,7 +24,7 @@ export default function LikeButton({
   type,
   targetId,
 }: LikeButtonProps) {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore()
 
   const handleToggle = () => {
     if (!user) return
