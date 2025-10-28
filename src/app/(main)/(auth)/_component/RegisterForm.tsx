@@ -39,11 +39,14 @@ export default function RegisterForm({
   handleSubmit,
 }: RegisterFormProps) {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Card className="mt-8 w-full max-w-lg shadow-lg">
-        <CardContent>
+    <main className="flex min-h-screen flex-col items-center justify-center  px-4">
+      <Card className="w-full max-w-md p-8 ">
+        <CardContent className="p-0">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-2xl font-semibold text-center mb-4">회원가입</h2>
+            <div className=" mb-6">
+              <h2 className="text-3xl font-semibold text-sky-400">시작하기</h2>
+              <p className="text-sm text-gray-400 mt-1">익명으로도 시작할 수 있어요</p>
+            </div>
 
             {/* 이메일 */}
             <div>
@@ -69,7 +72,6 @@ export default function RegisterForm({
                 value={formData.password || ''}
                 onChange={handleChange}
                 placeholder="최소 8자 이상 (영문, 숫자, 특수문자 포함)"
-                
                 required
               />
               <FieldErrors messages={errors.password} />
@@ -99,6 +101,9 @@ export default function RegisterForm({
                 onChange={handleChange}
                 placeholder="비워두면 '익명'으로 표시해요"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                닉네임을 비워두면 ‘익명’으로 표시돼요. 실제 식별은 UID로만 합니다.
+              </p>
               <FieldErrors messages={errors.nickname} />
             </div>
 
@@ -109,9 +114,8 @@ export default function RegisterForm({
             </Button>
 
             <p className="text-sm text-center">
-              이미 계정이 있으신가요?{' '}
-              <Link href="/login" className="text-blue-500 hover:underline">
-                로그인
+              <Link href="/login" className="text-sky-400 hover:underline">
+                이미 계정이 있나요?
               </Link>
             </p>
           </form>
