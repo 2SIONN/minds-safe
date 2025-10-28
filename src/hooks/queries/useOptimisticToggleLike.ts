@@ -1,7 +1,6 @@
-import { useAuthStore } from '@/store/useAuthStore'
 import { Empathy, EmpathyPayload, Post, Snapshot, TargetType } from '@/types/post'
-import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
-import { patchAllPostsLists } from './query-utils'
+import { QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
+import { findPostInSnapshots, patchAllPostsLists } from './query-utils'
 
 interface Likable {
   id: string
@@ -13,8 +12,6 @@ interface WithEmpathies {
   id: string
   empathies: Empathy[]
 }
-
-type Updater<T> = (p: T) => T
 
 interface UseOptimisticToggleLikeParams<T extends WithEmpathies> {
   type: TargetType
@@ -43,7 +40,7 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
 }: UseOptimisticToggleLikeParams<T>) {
   const queryClient = useQueryClient()
   const MUTATION_KEY = [...(detailKey ?? listKey ?? ['like']), 'toggle']
-  const { user } = useAuthStore()
+
   const readList = () => (listKey ? queryClient.getQueryData<T[]>(listKey) : undefined)
   const writeList = (updater: (old: T[]) => T[]) => {
     if (!listKey) return
@@ -110,17 +107,28 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
       const { userId, targetId } = payload
       const prevListArr = readList()
       const prevDetail = readDetail()
-      console.log(prevDetail)
+      let prevList = detailKey
+        ? (queryClient
+            .getQueriesData({ queryKey: listKey })
+            .map(([key, data]) => ({ key, data })) as Snapshot[])
+        : prevListArr
+
       const current =
-        type === 'POST' ? prevDetail : prevListArr?.find((item) => getId(item as T) === targetId)
+        type === 'POST'
+          ? prevDetail
+            ? prevDetail
+            : findPostInSnapshots(listKey!, queryClient, payload.targetId)
+          : prevList?.find((item) => getId(item as T) === targetId)
       const willAdd = !(current ? hasMe(current as T, userId) : false)
+
       let tempId: string | undefined = undefined
       let tempEmpathy: Empathy | undefined = undefined
-      let prevList: Snapshot[] | T[] | undefined = undefined
+
       if (willAdd) {
         tempEmpathy = buildTempEmpathy(payload)
         tempId = tempEmpathy.id
       }
+
       // POST: 무한 스크롤 전역 패치
       if (type === 'POST' && listKey) {
         prevList = patchAllPostsLists(listKey, queryClient, payload.targetId, (p) =>
@@ -132,7 +140,6 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
       }
       if (prevDetail) {
         writeDetail((item) => applyLocalToggle(item, payload, willAdd))
-        console.log(readDetail())
       }
 
       return { prevDetail, prevList, targetId, nextLiked: willAdd, tempId }

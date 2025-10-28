@@ -63,6 +63,7 @@ export async function GET(req: Request) {
     include: {
       empathies: true,
       replies: true,
+      author: true,
       _count: {
         select: {
           empathies: true,

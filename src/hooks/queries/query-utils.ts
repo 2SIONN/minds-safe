@@ -1,18 +1,5 @@
-import { Post, Snapshot } from '@/types/post'
+import { Page, PageData, Post, Snapshot } from '@/types/post'
 import { InfiniteData, QueryClient, QueryKey } from '@tanstack/react-query'
-
-type PageData = {
-  data: {
-    items: Post[]
-    nextCursor: string
-  }
-  ok: boolean
-}
-
-type Page = {
-  pageParams: any[]
-  pages: PageData[]
-}
 
 // postId에 해당하는 게시글만 updater 적용
 function patchPostsListData(data: Page, postId: string, updater: (p: Post) => Post) {
@@ -36,14 +23,35 @@ export function patchAllPostsLists(
   postId: string,
   updater: (p: Post) => Post
 ) {
-  const hits = queryClient.getQueriesData({ queryKey: postsKey})
+  const hits = queryClient.getQueriesData({ queryKey: postsKey })
 
   const snapshots = hits.map(([key, data]) => ({ key, data }))
 
-  for (const [ key, data ] of hits) {
+  for (const [key, data] of hits) {
     const next = patchPostsListData(data as Page, postId, updater)
-    if(next !== data) queryClient.setQueryData(key, next)
+    if (next !== data) queryClient.setQueryData(key, next)
   }
 
   return snapshots as Snapshot[]
+}
+
+export function findPostInSnapshots(
+  postsKey: QueryKey,
+  queryClient: QueryClient,
+  targetId: string
+): Post | null {
+  const hits = queryClient.getQueriesData({ queryKey: postsKey })
+  const snapshots = hits.map(([key, data]) => ({ key, data }))
+  for (const s of snapshots) {
+    const data = s.data as InfiniteData<PageData> | undefined
+    if (!data?.pages) continue
+    for (let pi = 0; pi < data.pages.length; pi++) {
+      const items = data.pages[pi]?.data?.items ?? []
+      const ii = items.findIndex((it) => it.id === targetId)
+      if (ii !== -1) {
+        return items[ii]
+      }
+    }
+  }
+  return null
 }
