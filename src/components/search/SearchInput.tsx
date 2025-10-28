@@ -10,7 +10,7 @@ type DebounceTimer = ReturnType<typeof setTimeout> | null
 export default function SearchInput({ q }: { q: string }) {
   const [search, setSearch] = useState(q || '')
   const router = useRouter()
-  const debouncedSearch = useDebounce(search, 1000)
+  const debouncedSearch = useDebounce(search, 300)
 
   useEffect(() => {
     setSearch(q && q.length < 100 ? q : '')
