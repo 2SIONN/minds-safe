@@ -87,7 +87,7 @@ export default function FeedAll({ filter }: { filter: Filter }) {
     return <div className="py-24 text-center">{MESSAGES.INFO.FILTER_EMPTY}</div>
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !isLoading) {
     return (
       <div className="text-center py-24 text-muted-foreground">
         <p className="text-lg mb-2">{MESSAGES.INFO.EMPTY_STATE}</p>
