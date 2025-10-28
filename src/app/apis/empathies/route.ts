@@ -19,23 +19,29 @@ export async function POST(req: Request) {
       },
     })
     let liked = false
+    let id: string
     if (existing) {
       await prisma.empathy.delete({ where: { id: existing.id } })
       liked = false
+      id = existing.id
     } else {
-      await prisma.empathy.create({
+      const target = parsed.targetType === 'POST' ?
+      {postId: parsed.targetId} : {replyId: parsed.targetId}
+      const created = await prisma.empathy.create({
         data: {
           userId: session.uid,
           targetType: parsed.targetType as any,
           targetId: parsed.targetId,
+          ...target
         },
       })
+      id = created.id
       liked = true
     }
     const likeCount = await prisma.empathy.count({
       where: { targetType: parsed.targetType as any, targetId: parsed.targetId },
     })
-    return NextResponse.json({ liked, likeCount })
+    return NextResponse.json({ id, liked, likeCount })
   } catch (e: any) {
     return NextResponse.json({ message: e?.message || 'error' }, { status: 400 })
   }

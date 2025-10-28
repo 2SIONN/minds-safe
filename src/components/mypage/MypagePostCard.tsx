@@ -13,6 +13,7 @@ interface Post {
 
 export default function MypagePostCard() {
   const [posts, setPosts] = useState<Post[]>([])
+  const [loading, setLoading] = useState<Boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,13 +45,15 @@ export default function MypagePostCard() {
     fetchData()
   }, [])
 
-  //TODO : 삭제 API 완료 후 수정 필요
   async function handleDelete(id: string | undefined) {
     try {
-      const res = await fetch(`apis/me/posts`, { method: 'DELETE' })
+      setLoading(true)
+      const res = await fetch(`apis/posts/${id}`, { method: 'DELETE' })
       setPosts((prev) => prev.filter((post) => post.id !== id))
     } catch (err) {
       console.error(err)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -68,6 +71,7 @@ export default function MypagePostCard() {
                   <p className="flex-1 line-clamp-2">{post?.content}</p>
                   <button
                     onClick={() => handleDelete(post?.id)}
+                    disabled={loading}
                     className="p-2 hover:bg-destructive/20 hover:text-destructive rounded-lg transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />

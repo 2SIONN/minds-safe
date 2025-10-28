@@ -13,11 +13,11 @@ export default function CardSkeleton() {
       </CardContent>
       <CardFooter className="gitp-5 pt-0 text-muted-foreground text-sm">
         <div className="w-full flex justify-between">
-          <div className="h-[20px] px-[16px] bg-muted/50 rounded-[14px]"></div>
+          <div className="h-5 px-4 bg-muted/50 rounded-[14px]"></div>
           <div className="flex gap-4">
-            <div className="mr-[-1] h-[20px] px-[12px] bg-muted/50 rounded-[14px]"></div>
-            <div className="h-[20px] px-[18px] bg-muted/50 rounded-[14px]"></div>
-            <div className="h-[20px] px-[18px] bg-muted/50 rounded-[14px]"></div>
+            <div className="mr-[-1] h-5 px-3 bg-muted/50 rounded-[14px]"></div>
+            <div className="h-5 px-[18px] bg-muted/50 rounded-[14px]"></div>
+            <div className="h-5 px-[18px] bg-muted/50 rounded-[14px]"></div>
           </div>
         </div>
       </CardFooter>

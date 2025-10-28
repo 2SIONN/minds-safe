@@ -1,63 +1,48 @@
-'use client'
-
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
-import { default as FeedButtonGroup } from '@/components/feed/FeedButtonGroup'
-import FeedTags from '@/components/feed/FeedTags'
-import PostDetailCard from '@/components/posts/PostDetailCard'
-import { getPostDetailClient } from '@/lib/client'
-import { Post } from '@/types/post'
+import { FeedTags } from '@/components/feed'
+import NickName from '@/components/posts/NickName'
 import { formatRelativeDate } from '@/utils/date'
-import { useState } from 'react'
+import { memo } from 'react'
+
+type Props = {
+  content: string
+  createdAt: string
+  nickname: string
+  tags?: string
+  onClick?: () => void
+  children?: React.ReactNode
+}
 
 /**
- * 게시글 목록 전용 카드
- * @param { id, content, tags, empathies, replies, createdAt }: Posts
+ * 게시글 목록 카드
+ * @param Props
  * @returns ReactNode
  */
-export default function FeedCard(props: Post) {
-  const { id, content, tags, empathies, replies, createdAt } = props
-  const likeCount = empathies?.length ?? 0
-  const replyCount = replies?.length ?? 0
-
-  const [open, setOpen] = useState(false)
-  const [detail, setDetail] = useState<Post | null>(null)
-
-  const handleOpen = async () => {
-    setOpen(true)
-    setDetail(null)
-    try {
-      const data = await getPostDetailClient(id)
-      setDetail(data)
-      console.log(data)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-    setDetail(null)
-  }
-
+function FeedCardBase(props: Props) {
+  const { content, createdAt, nickname, tags = '', onClick, children } = props
   return (
-    <>
-      <Card key={id} onClick={handleOpen} className="p-5">
-        <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
-          {content}
-        </CardHeader>
-        <CardContent className="p-0 mb-4">
-          <FeedTags tags={tags} />
-        </CardContent>
-        <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">
-          {/* TODO: 닉네임이 있는 경우 닉네임 노출, 아닌 경우 "익명"으로 노출 */}
-          <div>익명</div>
-          <div className="flex items-center gap-4">
-            <FeedButtonGroup empathiesCount={likeCount} repliesCount={replyCount} />
-            <span>{formatRelativeDate(createdAt)}</span>
-          </div>
-        </CardFooter>
-      </Card>
-      {open && <PostDetailCard open={open} onClose={handleClose} post={detail} />}
-    </>
+    <Card
+      onClick={onClick}
+      className="glass-card p-5 rounded-2xl hover-lift cursor-pointer relative overflow-hidden"
+    >
+      <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
+        {content}
+      </CardHeader>
+
+      <CardContent className="p-0 mb-4">
+        <FeedTags all={false} tags={tags} />
+      </CardContent>
+
+      <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">
+        <NickName nickname={nickname} />
+        <div className="flex items-center gap-4">
+          {children}
+          <span aria-label="작성일시">{formatRelativeDate(createdAt)}</span>
+        </div>
+      </CardFooter>
+    </Card>
   )
 }
+
+const FeedCard = memo(FeedCardBase)
+export default FeedCard
