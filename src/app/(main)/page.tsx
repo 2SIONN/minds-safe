@@ -9,11 +9,7 @@ import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 import SearchInput from '@/components/search/SearchInput'
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams?: Promise<{ q?: string }>
-}) {
+export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
   const q = (await searchParams)?.q
 
   return (
