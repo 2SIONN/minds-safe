@@ -8,9 +8,16 @@ import ServerPage from '@/app/(main)/server-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 import SearchInput from '@/components/search/SearchInput'
+import SortSearch from '@/components/search/SortSearch'
+import { SORT } from '@/constants/search'
+import type { Filter } from '@/types/search'
 
-export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
-  const q = (await searchParams)?.q
+type props = {
+  searchParams?: Promise<Omit<Filter, 'limit'>>
+}
+
+export default async function Home({ searchParams }: props) {
+  const { q = '', sort = SORT.LATEST } = (await searchParams) ?? {}
 
   return (
     <div>
@@ -32,14 +39,14 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
         </div>
       </section>
 
-      <main className="mx-auto max-w-4xl px-4 sm:px-6">
+      <main className="mx-auto max-w-4xl p-4 sm:px-6">
         <div className="flex justify-end mb-4">
           {/* 정렬 */}
-          <div></div>
+          <SortSearch />
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
         <div className="space-y-4">
-          <ServerPage q={q || ''} />
+          <ServerPage q={q || ''} sort={sort} />
         </div>
       </main>
 
