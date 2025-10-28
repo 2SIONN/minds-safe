@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/utils'
+import cn from '@/utils/cn'
 import { Heart, MessageCircle } from 'lucide-react'
 import { ComponentPropsWithRef, ReactNode } from 'react'
 
