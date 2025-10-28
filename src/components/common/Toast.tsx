@@ -8,7 +8,7 @@ export default function Toast() {
 
   return (
     // 토스트 전체 컨테이너 (화면 우측 하단 고정)
-    <div className="fixed bottom-6 right-6 z-[9999] space-y-3">
+    <div className="fixed bottom-6 right-6 z-9999 space-y-3">
       {items.map((t) => (
         // 개별 토스트 카드
         <div
