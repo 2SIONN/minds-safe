@@ -21,10 +21,7 @@ type Props = {
 function FeedCardBase(props: Props) {
   const { content, createdAt, nickname, tags = '', onClick, children } = props
   return (
-    <Card
-      onClick={onClick}
-      className="glass-card p-5 rounded-2xl hover-lift cursor-pointer relative overflow-hidden"
-    >
+    <Card onClick={onClick} className="glass-card p-5 rounded-2xl hover-lift cursor-pointer">
       <CardHeader className="p-0 mb-4 overflow-hidden text-ellipsis line-clamp-3">
         {content}
       </CardHeader>
