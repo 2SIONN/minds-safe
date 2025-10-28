@@ -1,18 +1,21 @@
 'use client'
 
-import Button from "../common/Button";
-import Textarea from "../common/Textarea";
+import Button from "@/components/common/Button";
+import Textarea from "@/components/common/Textarea";
 import { z } from "zod";
 import { replyCreateSchema } from "@/lib/validators";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePostReplies } from "@/hooks/queries/replies/usePostReplies";
 import { useAuthStore } from "@/store/useAuthStore";
+import { toast } from "@/store/useToast";
+import { useRouter } from "next/navigation";
 
 type ReplyInput = z.infer<typeof replyCreateSchema>
 
 export default function ReplyForm({ id }: { id: string }) {
   const { user } = useAuthStore();
+  const router = useRouter()
   const { register, handleSubmit, formState: { errors, isSubmitting }, watch, reset, getValues } = useForm<ReplyInput>({
     resolver: zodResolver(replyCreateSchema),
     defaultValues: {
@@ -27,8 +30,18 @@ export default function ReplyForm({ id }: { id: string }) {
 
   const onSubmit = ({ body }: { body: string }) => {
     if (!user) return;
-    reset();
-    postReply({ body, authorId: user.id, postId: id })
+    postReply({ body, authorId: user.id, postId: id }, {
+      onSuccess: () => {
+        reset()
+        toast.success('응원을 남겼어요 💙')
+      },
+      onError: (err: any) => {
+        if(err.loginRequired){
+          router.push('/login')
+        }
+        toast.error(err.message || '댓글 작성에 실패했어요 ❌')
+      },
+    })
   }
 
   return (

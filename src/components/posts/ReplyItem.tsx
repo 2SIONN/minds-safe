@@ -7,6 +7,7 @@ import { Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
 import LikeButton from './LikeButton'
+import { toast } from '@/store/useToast'
 
 interface TruncatedBodyProps {
   body: string
@@ -36,6 +37,17 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
 
   const handleToggle = () => setIsShown((prev) => !prev)
 
+  const handleClick = (reply: Reply) => {
+    deleteReply(reply, {
+      onSuccess: () => {
+        toast.success('성공적으로 삭제되었어요 ✅')
+      },
+      onError: (err) => {
+        toast.error(err.message || '삭제에 실패했어요 ❌')
+      },
+    })
+  }
+
   return (
     <li className="flex justify-between items-start px-2 py-4">
       <div className="flex flex-col overflow-hidden gap-1 items-start">
@@ -63,7 +75,7 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
           disabled={!user}
         />
         {user?.id === reply.authorId && (
-          <button onClick={() => deleteReply(reply)}
+          <button onClick={() => handleClick(reply)}
             className='cursor-pointer'
           >
             <Trash2 className="text-red-700 size-4" />
