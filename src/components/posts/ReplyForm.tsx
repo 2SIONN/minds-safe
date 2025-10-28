@@ -36,7 +36,7 @@ export default function ReplyForm({ id }: { id: string }) {
       <div className="flex items-end gap-4 ">
         <Textarea
           wrapperClassName="flex-1"
-          textareaClassName="rounded-md"
+          textareaClassName="rounded-xl focus-visible:ring-2 focus-visible:ring-ring/40"
           placeholder="따뜻한 응원을 남겨보세요..."
           disabled={!user}
           {...register('body')}

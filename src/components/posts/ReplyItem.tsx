@@ -39,10 +39,10 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
   return (
     <li className="flex justify-between items-start px-2 py-4">
       <div className="flex flex-col overflow-hidden gap-1 items-start">
-        <div className="flex gap-2 text-sm">
+        <div className="flex gap-4 text-sm">
           <span className="font-semibold">
             {reply.author.nickname ?? '익명'}
-            &nbsp;
+            &nbsp;&nbsp;
             {reply.authorId === postAuthorId && <span className="text-muted-foreground">글쓴이</span>}
           </span>
           <span className="text-gray-400">{formatRelativeDate(reply.createdAt)}</span>
@@ -53,7 +53,7 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
           <span>{reply.body}</span>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2 sm:gap-4">
         <LikeButton
           type='REPLY'
           id={reply.postId}
