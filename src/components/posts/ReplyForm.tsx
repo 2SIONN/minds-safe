@@ -45,7 +45,7 @@ export default function ReplyForm({ id }: { id: string }) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="w-full py-6 border-y border-white/10">
+    <form onSubmit={handleSubmit(onSubmit)} className="w-full pt-6">
       <div className="flex items-end gap-4 ">
         <Textarea
           wrapperClassName="flex-1"
