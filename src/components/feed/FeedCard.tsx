@@ -30,7 +30,7 @@ function FeedCardBase(props: Props) {
       </CardHeader>
 
       <CardContent className="p-0 mb-4">
-        <FeedTags all={false} tags={tags} />
+        <FeedTags all={false} tags={tags} size="sm" />
       </CardContent>
 
       <CardFooter className="p-0 flex items-center justify-between text-muted-foreground text-sm">

@@ -24,12 +24,12 @@ export default function LikeButton({
   type,
   targetId,
 }: LikeButtonProps) {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore()
 
   const handleToggle = () => {
     if (!user) return
     toggleLike({ userId: user.id, targetType: type, targetId: type === 'POST' ? id : targetId! })
-    console.log(user.id);
+    console.log(user.id)
   }
 
   const { mutate: toggleLike } = useToggleLike(type, id)

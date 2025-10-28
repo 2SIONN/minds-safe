@@ -194,8 +194,13 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
       }
     },
     onSettled: () => {
-      if (detailKey) queryClient.invalidateQueries({ queryKey: detailKey })
-      if (listKey) queryClient.invalidateQueries({ queryKey: listKey })
+      if (type === 'REPLY') {
+        // 댓글 리스트는 서버와 한번 동기화 필요
+        if (listKey) {
+          queryClient.invalidateQueries({ queryKey: listKey })
+        }
+        // detailKey는 REPLY에선 없으므로 호출 X
+      }
     },
   })
 }
