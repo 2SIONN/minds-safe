@@ -16,14 +16,15 @@ import { getPostDetailClient } from '@/lib/client'
 import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 
-export default function FeedAll({ q = '', sort = SORT.LATEST }: Filter) {
-  const filters = useMemo(() => JSON.stringify({ q, sort }), [q, sort])
+export default function FeedAll({ filter }: { filter: Filter }) {
+  const { q = '', sort = SORT.LATEST, tags } = filter
+  const filters = useMemo(() => JSON.stringify({ q, sort, tags }), [q, sort, tags])
 
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({
     queryKey: queryKeys.posts.list(filters),
     queryFn: ({ pageParam, signal }) =>
-      getFeedClient({ cursor: pageParam ?? undefined, q, sort, signal }),
+      getFeedClient({ cursor: pageParam ?? undefined, filter, signal }),
     getNextPageParam: (last) => last?.data?.nextCursor ?? null,
     staleTime: 30_000,
     suspense: false,

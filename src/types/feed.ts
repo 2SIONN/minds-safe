@@ -6,7 +6,8 @@ import type { Filter } from '@/types/search'
 export type GetFeedClient = {
   cursor?: string | null
   signal?: AbortSignal
-} & Omit<Filter, 'limit'>
+  filter: Omit<Filter, 'limit'>
+}
 
 export type GetFeedServerPayload = {
   ok: true

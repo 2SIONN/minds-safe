@@ -17,7 +17,7 @@ type props = {
 }
 
 export default async function Home({ searchParams }: props) {
-  const { q = '', sort = SORT.LATEST } = (await searchParams) ?? {}
+  const { q = '', sort = SORT.LATEST, tags } = (await searchParams) ?? {}
 
   return (
     <div>
@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: props) {
           <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
 
           {/* 검색창 */}
-          <SearchInput q={q || ''} />
+          <SearchInput q={q} />
 
           {/* 태그 리스트 */}
           <div className="flex flex-wrap gap-2 mt-4 pb-6">
@@ -46,7 +46,7 @@ export default async function Home({ searchParams }: props) {
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
         <div className="space-y-4">
-          <ServerPage q={q || ''} sort={sort} />
+          <ServerPage q={q} sort={sort} tags={tags} />
         </div>
       </main>
 

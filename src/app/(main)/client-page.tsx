@@ -10,15 +10,20 @@ import { lazy, useEffect, useMemo } from 'react'
 const FeedAll = lazy(() => import('@/components/feed/FeedAll'))
 
 type Props = {
+  filter: Omit<Filter, 'limit'>
   initialItems: Post[]
   initialNextCursor: string | null
-} & Omit<Filter, 'limit'>
+}
 
 export default function ClientPage(props: Props) {
-  const { q = '', sort = SORT.LATEST, initialItems, initialNextCursor } = props
+  const { filter, initialItems, initialNextCursor } = props
+  const { q = '', sort = SORT.LATEST, tags } = filter
 
   const qc = useQueryClient()
-  const key = useMemo(() => queryKeys.posts.list(JSON.stringify({ q, sort })), [q, sort])
+  const key = useMemo(
+    () => queryKeys.posts.list(JSON.stringify({ q, sort, tags })),
+    [q, sort, tags]
+  )
 
   useEffect(() => {
     qc.setQueryData(key, {
@@ -27,5 +32,5 @@ export default function ClientPage(props: Props) {
     })
   }, [key, initialItems, initialNextCursor, qc])
 
-  return <FeedAll q={q} sort={sort} />
+  return <FeedAll filter={filter} />
 }

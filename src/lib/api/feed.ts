@@ -1,10 +1,13 @@
 import type { GetFeedClient } from '@/types/feed'
 
-export async function getFeedClient({ cursor, q, sort, signal }: GetFeedClient) {
+export async function getFeedClient({ cursor, filter, signal }: GetFeedClient) {
+  const { q, sort, tags } = filter
+  const tagString = JSON.stringify(tags)
   const qs = new URLSearchParams({
     ...(cursor && { cursor }),
     ...(q && { q }),
-    ...(q && { sort }),
+    ...(sort && { sort }),
+    ...(tags && { tagString }),
   })
   const res = await fetch(`/apis/posts?${qs.toString()}`, { signal, cache: 'no-store' })
 
