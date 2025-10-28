@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import TagBadge from '@/components/common/TagBadge'
+import { useSearchParams } from 'next/navigation'
 
 type TagType = {
   tag: string
@@ -9,7 +10,10 @@ type TagType = {
 
 export default function TagSearch() {
   const [tags, setTags] = useState<TagType[]>([])
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTag, setSelectedTag] = useState<string[]>(['전체'])
+  const searchParams = useSearchParams()
+  const q = searchParams.get('q')
+  const MaxSelect = 5
 
   useEffect(() => {
     async function fetchTags() {
@@ -18,7 +22,8 @@ export default function TagSearch() {
         const data = await res.json()
 
         if (data.success) {
-          setTags(data.items)
+          const topTags = data.items.slice(0)
+          setTags([{ tag: '전체', count: 0 }, ...topTags])
         }
       } catch (e) {
         console.error(e)
@@ -27,9 +32,7 @@ export default function TagSearch() {
     fetchTags()
   }, [])
 
-  const onClickTag = (tag: string) => {
-    setSelectedTag(tag === selectedTag ? null : tag) //선택 해제 기능 포함
-  }
+  const onClickTag = (tag: string) => {}
   return (
     <>
       {/* 태그 리스트 */}
@@ -39,7 +42,7 @@ export default function TagSearch() {
             key={t.tag}
             size="md"
             onClick={() => onClickTag(t.tag)}
-            selected={selectedTag === t.tag}
+            selected={selectedTag.includes(t.tag)}
           >
             {t.tag}
           </TagBadge>
