@@ -1,11 +1,11 @@
-import { queryKeys } from '../query-keys'
+import { queryKeys } from '@/hooks/queries/query-keys'
 import { postReplies } from '@/lib/api/replies'
 import { Reply, ReplyPayload } from '@/types/post'
 import { useAuthStore } from '@/store/useAuthStore'
-import { useOptimisticCreate } from '../useOptimisticCreate'
+import { useOptimisticCreate } from '@/hooks/queries/useOptimisticCreate'
 import { User } from '@prisma/client'
-import { patchAllPostsLists } from '../query-utils'
-import { QueryClient, QueryKey } from '@tanstack/react-query'
+import { patchAllPostsLists } from '@/hooks/queries/query-utils'
+import { QueryClient } from '@tanstack/react-query'
 
 export const usePostReplies = (postId: string) => {
   const { user } = useAuthStore()

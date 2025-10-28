@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "../query-keys";
+import { queryKeys } from "@/hooks/queries/query-keys";
 import { getReplies } from "@/lib/api/replies";
 import { Reply } from "@/types/post";
 

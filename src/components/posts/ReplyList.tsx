@@ -1,6 +1,6 @@
 'use client'
 
-import Spinner from "../common/Spinner";
+import Spinner from "@/components/common/Spinner";
 import ReplyItem from "./ReplyItem";
 import { useGetReplies } from "@/hooks/queries/replies/useGetReplies";
 
