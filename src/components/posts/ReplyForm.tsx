@@ -16,7 +16,7 @@ type ReplyInput = z.infer<typeof replyCreateSchema>
 export default function ReplyForm({ id }: { id: string }) {
   const { user } = useAuthStore();
   const router = useRouter()
-  const { register, handleSubmit, formState: { errors, isSubmitting }, watch, reset, getValues } = useForm<ReplyInput>({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, watch, reset } = useForm<ReplyInput>({
     resolver: zodResolver(replyCreateSchema),
     defaultValues: {
       body: ''
@@ -56,7 +56,7 @@ export default function ReplyForm({ id }: { id: string }) {
         />
         <Button type="submit" disabled={isDisabled}>전송</Button>
       </div>
-      {errors?.body && <span className="text-destructive">{errors.body.message}</span>}
+      {(!isDisabled && errors?.body) && <span className="text-destructive">{errors.body.message}</span>}
     </form>
   )
 }
