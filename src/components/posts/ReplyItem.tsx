@@ -5,9 +5,8 @@ import { Reply } from '@/types/post'
 import { formatRelativeDate } from '@/utils/date'
 import { Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import ActionToggle from '../common/ActionToggle'
-import LikeButton from './LikeButton'
 import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
+import LikeButton from './LikeButton'
 
 interface TruncatedBodyProps {
   body: string
@@ -26,16 +25,16 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
   const { user } = useAuthStore()
   const [isShown, setIsShown] = useState(false)
 
-  const initiallyLiked = useMemo(() => {
-    if(!reply.empathies || !user)return false
+  const liked = useMemo(() => {
+    if (!reply.empathies || !user) return false
     return reply.empathies.some((em) => user.id === em.userId)
   }, [reply.empathies, user?.id]);
 
   const likeCount = reply.empathies?.length ?? 0
 
-  const handleToggle = () => setIsShown((prev) => !prev)
-
   const { mutate: deleteReply } = useDeleteReplies(reply.postId)
+
+  const handleToggle = () => setIsShown((prev) => !prev)
 
   return (
     <li className="flex justify-between items-start px-2 py-4">
@@ -56,13 +55,15 @@ export default function ReplyItem({ reply, postAuthorId }: ReplyItemProps) {
       </div>
       <div className="flex gap-2">
         <LikeButton
-          id={reply.id}
-          initialActive={initiallyLiked}
-          initialCount={likeCount}
+          type='REPLY'
+          id={reply.postId}
+          targetId={reply.id}
+          active={liked}
+          count={likeCount}
           disabled={!user}
         />
         {user?.id === reply.authorId && (
-          <button onClick={() => deleteReply(reply)} 
+          <button onClick={() => deleteReply(reply)}
             className='cursor-pointer'
           >
             <Trash2 className="text-red-700 size-4" />
