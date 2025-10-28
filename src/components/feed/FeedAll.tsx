@@ -70,8 +70,18 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
     )
   }
 
-  if (isLoading && items.length === 0) {
+  if (isLoading) {
     return <FeedListSkeleton count={3} />
+  }
+
+  if (items.length === 0 && q.length) {
+    return (
+      <div className="py-24 text-center">조건에 맞는 고민이 없어요.{(error as Error)?.message}</div>
+    )
+  }
+
+  if (items.length === 0) {
+    return <div className="py-24 text-center">첫 고민을 남겨주세요!{(error as Error)?.message}</div>
   }
 
   return (
