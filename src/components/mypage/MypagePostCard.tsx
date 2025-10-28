@@ -47,13 +47,13 @@ export default function MypagePostCard() {
 
   async function handleDelete(id: string | undefined) {
     try {
-      setLoading(true);
+      setLoading(true)
       const res = await fetch(`apis/posts/${id}`, { method: 'DELETE' })
       setPosts((prev) => prev.filter((post) => post.id !== id))
     } catch (err) {
       console.error(err)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
