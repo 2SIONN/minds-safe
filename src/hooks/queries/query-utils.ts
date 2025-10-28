@@ -35,12 +35,12 @@ export function patchAllPostsLists(
   return snapshots as Snapshot[]
 }
 
-export function findPostInSnapshots(
-  postsKey: QueryKey,
+export function findItemInSnapshots(
+  listKey: QueryKey,
   queryClient: QueryClient,
   targetId: string
-): Post | null {
-  const hits = queryClient.getQueriesData({ queryKey: postsKey })
+): Post | Reply | null {
+  const hits = queryClient.getQueriesData({ queryKey: listKey })
   const snapshots = hits.map(([key, data]) => ({ key, data }))
   for (const s of snapshots) {
     const data = s.data as InfiniteData<PageData> | undefined
@@ -48,6 +48,7 @@ export function findPostInSnapshots(
     for (let pi = 0; pi < data.pages.length; pi++) {
       const items = data.pages[pi]?.data?.items ?? []
       const ii = items.findIndex((it) => it.id === targetId)
+      console.log(ii)
       if (ii !== -1) {
         return items[ii]
       }
@@ -56,13 +57,13 @@ export function findPostInSnapshots(
   return null
 }
 
-export function prePatchDeleteReply(qc: QueryClient, key: QueryKey, removeId: string): Snapshot[]{
+export function prePatchDeleteReply(qc: QueryClient, key: QueryKey, removeId: string): Snapshot[] {
   const prev = qc.getQueryData<any>(key)
-  if(!prev) return []
+  if (!prev) return []
   const backup = [{ key, data: prev }]
-  if(prev?.pages?.[0]?.data?.items){
+  if (prev?.pages?.[0]?.data?.items) {
     const next = structuredClone(prev)
-    next.pages[0].data.items = next.pages[0].data.items.filter((item) => item.id !== removeId )
+    next.pages[0].data.items = next.pages[0].data.items.filter((item) => item.id !== removeId)
     qc.setQueryData(key, next)
     return backup
   }
@@ -102,7 +103,7 @@ export function postPatchReplaceByReplyId(
   if (curr?.pages?.[0]?.data?.items) {
     const next = structuredClone(curr)
     next.pages[0].data.items = next.pages[0].data.items.map((it: any) =>
-      it?.id === tempId ? {...res, author: it.author} : it
+      it?.id === tempId ? { ...res, author: it.author } : it
     )
     qc.setQueryData(key, next)
     return backup
@@ -110,8 +111,32 @@ export function postPatchReplaceByReplyId(
   if (Array.isArray(curr)) {
     qc.setQueryData(
       key,
-      curr.map((it: any) => (it?.id === tempId ? {...res, author: it.author} : it))
+      curr.map((it: any) => (it?.id === tempId ? { ...res, author: it.author } : it))
     )
+    return backup
+  }
+  return []
+}
+
+export function prePatchToggleReply(
+  qc: QueryClient,
+  key: QueryKey,
+  targetId: string,
+  updater: (r: Reply) => Reply
+): Snapshot[] {
+  const prev = qc.getQueryData<any>(key)
+  
+  if (!prev) return []
+  const backup = [{ key, data: prev }]
+
+  if (prev?.pages?.[0]?.data?.items) {
+    const next = structuredClone(prev)
+    next.pages[0].data.items = next.pages[0].data.items.map((item) =>
+      item.id === targetId
+        ? updater(item)
+        : item
+    )
+    qc.setQueryData(key, next)
     return backup
   }
   return []
