@@ -10,7 +10,7 @@ type TagType = {
 
 export default function TagSearch() {
   const [tags, setTags] = useState<TagType[]>([])
-  const [selectedTag, setSelectedTag] = useState<string | null>()
+  const [selectedTag, setSelectedTag] = useState<string>('')
   const searchParams = useSearchParams()
   const router = useRouter()
   const search = searchParams.get('q')
@@ -32,23 +32,21 @@ export default function TagSearch() {
     fetchTags()
   }, [])
   //selected를 받아온다
-  // useEffect(() => {
-  //   async function fetchPost() {
-  //     try {
-  //       const res = await fetch(`/apis/posts?tag=${encodeURIComponent(selectedTag)}`)
-  //       const data = await res.json()
-  //       console.log(data)
-  //     } catch (e) {
-  //       console.error(e)
-  //     }
-  //   }
-  //   fetchPost()
-  // }, [selectedTag])
+  useEffect(() => {
+    async function fetchPost() {
+      try {
+        const res = await fetch(`/apis/posts?tag=${encodeURIComponent(selectedTag)}`)
+        const data = await res.json()
+        console.log(data)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    fetchPost()
+  }, [selectedTag])
 
   const onClickTag = (tag: string) => {
-    const selec = selectedTag ? '전체' : tag
-    setSelectedTag(selec)
-    console.log(selec)
+    setSelectedTag(tag)
   }
   return (
     <>
