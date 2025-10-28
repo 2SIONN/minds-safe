@@ -30,7 +30,7 @@ export default function Input({
         id={inputId}
         name={name}
         className={cn(
-          'w-full px-4 py-3 rounded-2xl',
+          'w-full px-4 py-2 rounded-2xl',
           'bg-background border border-input',
           'text-foreground text-base',
           'placeholder:text-muted-foreground',
