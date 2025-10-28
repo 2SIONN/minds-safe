@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col">
       <div className="mt-20 flex justify-center">
         <h1 className="font-sans font-bold text-2xl min-sm:text-4xl min-lg:text-5xl">404 Not Found</h1>
-        <h1 className="min-sm:text-4xl min-lg:text-5xl text-[0px]">😢</h1>
+        <h1 className="invisible min-sm:visible min-sm:text-4xl min-lg:text-5xl">😢</h1>
       </div>
       
       <div className="-mt-12 flex flex-1 flex-col gap-10 items-center justify-center">
