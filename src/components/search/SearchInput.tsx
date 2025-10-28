@@ -1,33 +1,76 @@
 'use client'
+
 import SearchFilter from '@/components/common/SearchFilter'
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { useDebounce } from '@/hooks/useDebounce'
-import { Search } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
 
-type DebounceTimer = ReturnType<typeof setTimeout> | null
-
-export default function SearchInput({ q }: { q: string }) {
-  const [search, setSearch] = useState(q || '')
+export default function SearchInput() {
   const router = useRouter()
-  const debouncedSearch = useDebounce(search, 300)
+  const pathname = usePathname() // 주소 안꼬이게 하기 위한 용도
+  const searchParams = useSearchParams()
+
+  const q = searchParams.get('q') ?? ''
+  const [search, setSearch] = useState(q)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setSearch(q && q.length < 100 ? q : '')
+    if (q && q.length > 100) {
+      setSearch('')
+      setError('100자 이하로 작성해 주세요.')
+    } else {
+      setSearch(q)
+      setError(null)
+    }
   }, [q])
 
+  const debouncedSearch = useDebounce(search, 200)
+  const trimmed = useMemo(() => debouncedSearch.trim(), [debouncedSearch])
+
+  // 디바운스된 검색어로 url 변경
   useEffect(() => {
-    if (debouncedSearch === '') {
-      router.replace('/')
+    // 이전 코드 주석
+    // router.replace(`?q=${debouncedSearch}`)
+
+    // 에러 상태변 변경 안되도록
+    if (error) return
+
+    const params = new URLSearchParams(searchParams.toString())
+
+    if (trimmed.length === 0) {
+      // q 제거 - 다른 파라미터 유지
+      params.delete('q')
     } else {
-      router.replace(`?q=${debouncedSearch}`)
+      params.set('q', trimmed)
     }
-  }, [debouncedSearch, router])
+
+    const qs = params.toString()
+    const nextUrl = qs ? `${pathname}?${qs}` : pathname
+
+    // 검색 결과 동일하면 불필요한 replace 방지
+    const currentQs = searchParams.toString()
+    const currentUrl = currentQs ? `${pathname}?${currentQs}` : pathname
+    if (nextUrl !== currentUrl) {
+      router.replace(nextUrl, { scroll: false })
+    }
+  }, [error, pathname, router, searchParams, trimmed])
+
+  // 이전 코드 주석
+  // const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   // q 100자 초과 거부
+  //   if (e.currentTarget.value.length > 100) return
+  //   setSearch(e.currentTarget.value)
+  // }
 
   const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     // q 100자 초과 거부
-    if (e.currentTarget.value.length > 100) return
-    setSearch(e.currentTarget.value)
+    const value = e.currentTarget.value
+    if (value.length > 100) {
+      setError('100자 이하로 작성해 주세요.')
+      return
+    }
+    if (error) setError(null)
+    setSearch(value)
   }
 
   return (
@@ -39,7 +82,13 @@ export default function SearchInput({ q }: { q: string }) {
           placeholder="내용이나 태그로 검색..."
           value={search}
           onInput={onInputSearch}
-        ></SearchFilter>
+        />
+        {/* 에러 상태 노출 */}
+        {error && (
+          <p className="mt-2 text-sm text-red-500" role="alert">
+            {error}
+          </p>
+        )}
       </div>
     </>
   )

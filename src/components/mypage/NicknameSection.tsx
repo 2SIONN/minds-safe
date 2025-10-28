@@ -37,6 +37,7 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   // GET /apis/me — 닉네임 로드
   useEffect(() => {
     const ac = new AbortController()
+
     ;(async () => {
       try {
         setIsLoading(true)
@@ -55,22 +56,30 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
         const data: MeResponse = await res.json()
 
         if (!data) {
-          // 비로그인일 때 200 + null 반환하는 백엔드 대응
           onAuthRequired()
           return
         }
 
         const nickname = data.nickname ?? initialName
-        setValue(nickname || initialName)
-        setDraft(nickname || initialName)
-      } catch (e) {
+
+        // ✅ fetch가 중단되지 않았다면만 상태 업데이트
+        if (!ac.signal.aborted) {
+          setValue(nickname || initialName)
+          setDraft(nickname || initialName)
+        }
+      } catch (e: any) {
+        // ✅ AbortError는 무시
+        if (e?.name === 'AbortError' || ac.signal.aborted) return
         console.error(e)
       } finally {
-        setIsLoading(false)
+        // ✅ 중단되지 않은 경우에만 로딩 종료
+        if (!ac.signal.aborted) setIsLoading(false)
       }
     })()
+
     return () => ac.abort()
   }, [initialName])
+
 
   useEffect(() => {
     if (isEdit && inputRef.current) inputRef.current.focus()

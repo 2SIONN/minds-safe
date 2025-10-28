@@ -1,4 +1,3 @@
-
 import { prisma } from '@/lib/prisma'
 import { replyCreateSchema } from '@/lib/validators'
 import { cookies } from 'next/headers'
@@ -13,7 +12,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     if (!session?.uid) return NextResponse.json({ message: 'UNAUTHORIZED' }, { status: 401 })
     const body = await req.json()
     const parsed = replyCreateSchema.parse(body)
-    const reply = await prisma.reply.create({ data: { postId: id, authorId: session.uid, body: parsed.body } })
+    const reply = await prisma.reply.create({
+      data: { postId: id, authorId: session.uid, body: parsed.body },
+    })
     return NextResponse.json(reply, { status: 201 })
   } catch (e: any) {
     return NextResponse.json({ message: e?.message || 'error' }, { status: 400 })
@@ -22,6 +23,15 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const list = await prisma.reply.findMany({ where: { postId: id }, include: { empathies: true, author: true }, orderBy: { createdAt: 'desc' } })
+  const list = await prisma.reply.findMany({
+    where: { postId: id },
+    include: { empathies: true, author: true },
+    orderBy: { createdAt: 'desc' },
+  })
   return NextResponse.json(list)
+}
+
+export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+  await prisma.reply.delete({ where: { id: params.id } })
+  return NextResponse.json({ ok: true })
 }

@@ -8,9 +8,16 @@ import ServerPage from '@/app/(main)/server-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 import SearchInput from '@/components/search/SearchInput'
+import SortSearch from '@/components/search/SortSearch'
+import { SORT } from '@/constants/search'
+import type { Filter } from '@/types/search'
 
-export default async function Home({ searchParams }: { searchParams?: Promise<{ q?: string }> }) {
-  const q = (await searchParams)?.q
+type props = {
+  searchParams?: Promise<Omit<Filter, 'limit'>>
+}
+
+export default async function Home({ searchParams }: props) {
+  const { q = '', sort = SORT.LATEST, tags } = (await searchParams) ?? {}
 
   return (
     <div>
@@ -19,7 +26,7 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
           <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
 
           {/* 검색창 */}
-          <SearchInput q={q || ''} />
+          <SearchInput />
 
           {/* 태그 리스트 */}
           <div className="flex flex-wrap gap-2 mt-4 pb-6">
@@ -32,14 +39,14 @@ export default async function Home({ searchParams }: { searchParams?: Promise<{ 
         </div>
       </section>
 
-      <main className="mx-auto max-w-4xl px-4 sm:px-6">
+      <main className="mx-auto max-w-4xl p-4 sm:px-6">
         <div className="flex justify-end mb-4">
           {/* 정렬 */}
-          <div></div>
+          <SortSearch />
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
         <div className="space-y-4">
-          <ServerPage q={q || ''} />
+          <ServerPage q={q} sort={sort} tags={tags} />
         </div>
       </main>
 
