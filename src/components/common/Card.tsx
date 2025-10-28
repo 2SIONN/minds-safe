@@ -1,6 +1,6 @@
 import { ComponentPropsWithRef, ReactNode } from 'react'
 import { X } from 'lucide-react'
-import { cn } from '@/lib/utils/utils'
+import cn from '@/utils/cn'
 
 interface CardProps extends ComponentPropsWithRef<'div'> {
   children?: ReactNode
@@ -28,7 +28,15 @@ interface CardHeaderProps extends ComponentPropsWithRef<'div'> {
   onClose?: () => void
 }
 
-export function CardHeader({ className, children, left, right, closable, onClose, ...props }: CardHeaderProps) {
+export function CardHeader({
+  className,
+  children,
+  left,
+  right,
+  closable,
+  onClose,
+  ...props
+}: CardHeaderProps) {
   return (
     <div
       className={cn('flex items-center justify-between p-6 text-card-foreground', className)}
