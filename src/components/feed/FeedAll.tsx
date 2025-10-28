@@ -79,7 +79,7 @@ export default function FeedAll({ filter }: { filter: Filter }) {
     return <div className="py-24 text-center">{MESSAGES.ERROR.EMPTY_ERROR}</div>
   }
 
-  if (isLoading) {
+  if (items.length === 0 && isLoading) {
     return <FeedListSkeleton count={3} />
   }
 
@@ -97,7 +97,7 @@ export default function FeedAll({ filter }: { filter: Filter }) {
   }
 
   return (
-    <>
+    <div className="space-y-4">
       {items.map((p) => (
         <FeedItem key={p.id} post={p} onOpen={handleOpen} />
       ))}
@@ -113,6 +113,6 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
       {/* 상세 모달 */}
       {open && detail && <PostDetailCard open={open} onClose={handleClose} post={detail} />}
-    </>
+    </div>
   )
 }
