@@ -2,8 +2,8 @@
 
 import { ComponentPropsWithRef, ReactNode, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { cn } from '@/lib/utils/utils'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
+import cn from '@/utils/cn'
 
 interface ModalProps extends ComponentPropsWithRef<'div'> {
   open: boolean
