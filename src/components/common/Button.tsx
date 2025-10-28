@@ -1,5 +1,5 @@
 import { ComponentPropsWithRef, ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 
 interface ButtonProps extends ComponentPropsWithRef<'button'> {
   variant?: 'default' | 'ghost'
@@ -28,7 +28,7 @@ export default function Button({
     <button
       type={type}
       className={cn(
-        'inline-flex items-center justify-center gap-2 rounded-lg font-medium cursor-pointer',
+        'inline-flex items-center justify-center gap-2 rounded-xl font-medium cursor-pointer',
         'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         'disabled:pointer-events-none disabled:opacity-50',
         'relative',

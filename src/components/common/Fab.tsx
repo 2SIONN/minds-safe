@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/utils'
 import Button from '@/components/common/Button'
 
 interface FabButtonProps {
@@ -32,7 +32,7 @@ export default function Fab({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "fixed bottom-8 right-8 w-16 h-16 rounded-full bg-gradient-to-r from-primary to-secondary text-primary-foreground shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center",
+        'fixed bottom-8 right-8 w-16 h-16 rounded-full bg-linear-to-r from-primary to-secondary text-primary-foreground shadow-lg hover:shadow-xl hover:scale-110 transition-all flex items-center justify-center',
         positionClassName,
         className
       )}
