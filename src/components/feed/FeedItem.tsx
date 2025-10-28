@@ -51,9 +51,9 @@ export default function FeedItem({
       <ActionToggle
         variant="comment"
         active={false}
-        onToggle={() => {}}
         count={replyCount}
         aria-label="댓글 보기"
+        
       />
     </FeedCard>
   )
