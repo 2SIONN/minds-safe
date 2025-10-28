@@ -1,18 +1,18 @@
 import { cn } from '@/utils/cn'
 import { Heart, MessageCircle } from 'lucide-react'
-import { ReactNode } from 'react'
+import { ComponentPropsWithRef, ReactNode } from 'react'
 
 type Variant = 'like' | 'comment'
 
-interface ActionToggleProps {
+type ButtonBaseProps = Omit<ComponentPropsWithRef<'button'>, 'aria-pressed'>
+
+interface ActionToggleProps extends ButtonBaseProps {
   // like | comment
   variant: Variant
   // 현재 활성 상태 (좋아요 여부 / 코멘트 패널 열림 여부)
   active: boolean
   // 숫자 표시 (like 카운트나 댓글 수)
   count?: number
-  // 토글 핸들러
-  onToggle?: () => void
 
   // 아이콘 커스텀 (없으면 기본 Heart/MessageCircle 사용)
   icon?: ReactNode
@@ -20,20 +20,17 @@ interface ActionToggleProps {
   // 스타일 옵션
   className?: string
   wrapperClassName?: string
-
-  // 버튼 비활성화 여부
-  disabled?: boolean
 }
 
 export default function ActionToggle({
   variant,
   active,
   count,
-  onToggle,
   icon,
   className,
   wrapperClassName,
-  disabled = false,
+  type,
+  ...buttonProps // onClick, disabled등 Native button props
 }: ActionToggleProps) {
   const isLike = variant === 'like'
   const defaultIcon = isLike ? <Heart className="w-4 h-4" /> : <MessageCircle className="w-4 h-4" />
@@ -50,10 +47,9 @@ export default function ActionToggle({
   return (
     <div className={cn('flex items-center gap-1', wrapperClassName)}>
       <button
-        type="button"
+        {...buttonProps}
+        type={type ?? 'button'}
         aria-pressed={active}
-        onClick={onToggle}
-        disabled={disabled}
         className={cn(
           'w-8 h-8 flex items-center justify-center rounded-full transition-colors',
           colorClass,
