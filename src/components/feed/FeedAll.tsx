@@ -2,20 +2,30 @@
 
 import { FeedItem, FeedListSkeleton } from '@/components/feed'
 import PostDetailCard from '@/components/posts/PostDetailCard'
+import { SORT } from '@/constants/search'
+import { useCallback, useMemo, useState } from 'react'
+
+// hook
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
-import { getPostDetailClient, getPostsClient } from '@/lib/client'
-import type { Post } from '@/types/post'
-import { useCallback, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: number }) {
+// lib & type
+import { getFeedClient } from '@/lib/api/feed'
+import { getPostDetailClient } from '@/lib/client'
+import type { Post } from '@/types/post'
+import type { Filter } from '@/types/search'
+
+export default function FeedAll({ filter }: { filter: Filter }) {
+  const { q = '', sort = SORT.LATEST, tags } = filter
+  const filters = useMemo(() => JSON.stringify({ q, sort, tags }), [q, sort, tags])
+
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({
-    queryKey: queryKeys.posts.list(q),
+    queryKey: queryKeys.posts.list(filters),
     queryFn: ({ pageParam, signal }) =>
-      getPostsClient({ cursor: pageParam ?? undefined, limit, q, signal }),
+      getFeedClient({ cursor: pageParam ?? undefined, filter, signal }),
     getNextPageParam: (last) => last?.data?.nextCursor ?? null,
     staleTime: 30_000,
     suspense: false,
@@ -68,8 +78,18 @@ export default function AllPosts({ q = '', limit = 10 }: { q?: string; limit?: n
     )
   }
 
-  if (isLoading && items.length === 0) {
+  if (isLoading) {
     return <FeedListSkeleton count={3} />
+  }
+
+  if (items.length === 0 && q.length) {
+    return (
+      <div className="py-24 text-center">조건에 맞는 고민이 없어요.{(error as Error)?.message}</div>
+    )
+  }
+
+  if (items.length === 0) {
+    return <div className="py-24 text-center">첫 고민을 남겨주세요!{(error as Error)?.message}</div>
   }
 
   return (
