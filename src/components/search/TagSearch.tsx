@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import TagBadge from '@/components/common/TagBadge'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 type TagType = {
   tag: string
@@ -13,8 +13,8 @@ export default function TagSearch() {
   const [selectedTag, setSelectedTag] = useState<string>('')
   const searchParams = useSearchParams()
   const router = useRouter()
-  const search = searchParams.get('q')
-  const MaxSelect = 5
+  const search = searchParams.get('search')
+  const pathname = usePathname()
 
   useEffect(() => {
     async function fetchTags() {
@@ -31,22 +31,20 @@ export default function TagSearch() {
     }
     fetchTags()
   }, [])
-  //selected를 받아온다
-  useEffect(() => {
-    async function fetchPost() {
-      try {
-        const res = await fetch(`/apis/posts?tag=${encodeURIComponent(selectedTag)}`)
-        const data = await res.json()
-        console.log(data)
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    fetchPost()
-  }, [selectedTag])
 
+  //useCallback
   const onClickTag = (tag: string) => {
-    setSelectedTag(tag)
+    const next = selectedTag === tag ? '' : tag
+    setSelectedTag(next)
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (selectedTag === tag) {
+      params.delete('tag')
+    } else {
+      params.set('tag', tag)
+    }
+    console.log(params.get('tag'))
+    router.push(`${pathname}?${params}`)
   }
   return (
     <>
