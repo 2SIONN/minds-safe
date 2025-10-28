@@ -111,7 +111,9 @@ export const postCreateSchema = z.object({
 })
 
 export const replyCreateSchema = z.object({
-  body: z.string().min(1).max(1000),
+  body: z.string()
+  .min(1, {error: '1글자 이상 1000글자 미만으로 작성해주세요'})
+  .max(1000, {error: '1글자 이상 1000글자 미만으로 작성해주세요'}),
 })
 
 export const likeToggleSchema = z.object({
