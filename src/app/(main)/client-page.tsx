@@ -1,21 +1,24 @@
 'use client'
 
+import { SORT } from '@/constants/search'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import type { Post } from '@/types/post'
+import type { Filter } from '@/types/search'
 import { useQueryClient } from '@tanstack/react-query'
 import { lazy, useEffect, useMemo } from 'react'
 
-const AllPosts = lazy(() => import('@/components/feed/FeedAll'))
+const FeedAll = lazy(() => import('@/components/feed/FeedAll'))
 
 type Props = {
-  q?: string
   initialItems: Post[]
   initialNextCursor: string | null
-}
+} & Omit<Filter, 'limit'>
 
-export default function ClientPage({ q = '', initialItems, initialNextCursor }: Props) {
+export default function ClientPage(props: Props) {
+  const { q = '', sort = SORT.LATEST, initialItems, initialNextCursor } = props
+
   const qc = useQueryClient()
-  const key = useMemo(() => queryKeys.posts.list(q), [q])
+  const key = useMemo(() => queryKeys.posts.list(JSON.stringify({ q, sort })), [q, sort])
 
   useEffect(() => {
     qc.setQueryData(key, {
@@ -24,5 +27,5 @@ export default function ClientPage({ q = '', initialItems, initialNextCursor }: 
     })
   }, [key, initialItems, initialNextCursor, qc])
 
-  return <AllPosts q={q} />
+  return <FeedAll q={q} sort={sort} />
 }
