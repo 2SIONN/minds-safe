@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { Pencil } from 'lucide-react'
 import Button from '@/components/common/Button'
 import Input from '@/components/common/Input'
-//import { Card, CardContent } from '@/components/common/Card'
+import { Card, CardContent } from '@/components/common/Card'
 
 interface NicknameSectionProps {
   initialName?: string
@@ -34,7 +34,6 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   }
   const onAuthRequired = () => setAuthToastOpen(true)
 
-  // GET /apis/me — 닉네임 로드
   useEffect(() => {
     const ac = new AbortController()
 
@@ -62,17 +61,14 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
         const nickname = data.nickname ?? initialName
 
-        // ✅ fetch가 중단되지 않았다면만 상태 업데이트
         if (!ac.signal.aborted) {
           setValue(nickname || initialName)
           setDraft(nickname || initialName)
         }
       } catch (e: any) {
-        // ✅ AbortError는 무시
         if (e?.name === 'AbortError' || ac.signal.aborted) return
         console.error(e)
       } finally {
-        // ✅ 중단되지 않은 경우에만 로딩 종료
         if (!ac.signal.aborted) setIsLoading(false)
       }
     })()
@@ -100,7 +96,6 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
     setIsEdit(false)
   }
 
-  // PATCH /apis/me — 닉네임 저장
   const handleSave = async () => {
     const nickname = draft.trim()
 
@@ -128,7 +123,6 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
       setValue(nickname || '익명')
       setIsEdit(false)
-      // 필요 시 성공 토스트는 프로젝트 공통 토스트 훅 연결해서 추가
     } catch (e: any) {
       console.error(e)
       alert(e?.message ?? '닉네임 저장 중 오류가 발생했습니다.')
@@ -139,9 +133,8 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
   return (
     <>
-      {/* 섹션: 베이스와 동일한 카드 스타일 */}
-      <section className="glass-card rounded-3xl p-6 mb-6">
-        <div className="flex items-center gap-4">
+      <Card className="rounded-3xl mb-6">
+        <CardContent className="flex items-center gap-4">
           {!isEdit ? (
             <>
               <div className="flex-1">
@@ -159,14 +152,16 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
             </>
           ) : (
             <>
+            <div className='flex-1'>
               <Input
                 ref={inputRef}
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 onKeyDown={handleEnter}
                 placeholder="닉네임"
-                className="flex-1"
+                className="w-full"
               />
+              </div>
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving ? '저장중…' : '저장'}
               </Button>
@@ -175,10 +170,9 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
               </Button>
             </>
           )}
-        </div>
-      </section>
+        </CardContent>
+      </Card>
 
-      {/* 인증 필요 토스트(배너): 베이스 스타일만 사용 */}
       {authToastOpen && (
         <div
           className="
@@ -209,3 +203,4 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
     </>
   )
 }
+
