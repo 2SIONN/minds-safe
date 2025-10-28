@@ -63,7 +63,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
         }}
         className="flex items-center gap-6 px-4 py-2.5 min-w-[120px] 
                    rounded-(--radius) border border-border
-                   bg-popover text-popover-foreground
+                   bg-background text-popover-foreground
                    "
       >
         {selectedLabel}
