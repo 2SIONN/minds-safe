@@ -9,12 +9,11 @@ type TagType = {
 }
 
 export default function TagSearch() {
-  const [tags, setTags] = useState<TagType[]>([])
-  const [selectedTag, setSelectedTag] = useState<string>('')
   const searchParams = useSearchParams()
   const router = useRouter()
-  const search = searchParams.get('search')
   const pathname = usePathname()
+  const [tags, setTags] = useState<TagType[]>([])
+  const [selectedTag, setSelectedTag] = useState<string>(searchParams.get('tag') ?? '')
 
   useEffect(() => {
     async function fetchTags() {
@@ -23,10 +22,14 @@ export default function TagSearch() {
         const data = await res.json()
 
         if (data.success) {
-          const topTags = setTags(data.items.slice(0, 10))
+          console.log('데이터를 성공적으로 가져왔')
+        } else {
+          console.error('데이터를 성공적으로 가져오지 못 했습니다.')
         }
+        setTags(data.items.slice(0, 10))
+        return
       } catch (e) {
-        console.error(e)
+        console.error('호출 실패', e)
       }
     }
     fetchTags()
