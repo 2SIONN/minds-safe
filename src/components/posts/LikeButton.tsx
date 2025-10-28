@@ -29,7 +29,6 @@ export default function LikeButton({
   const handleToggle = () => {
     if (!user) return
     toggleLike({ userId: user.id, targetType: type, targetId: type === 'POST' ? id : targetId! })
-    console.log(user.id)
   }
 
   const { mutate: toggleLike } = useToggleLike(type, id)
@@ -40,8 +39,8 @@ export default function LikeButton({
       active={active}
       count={count}
       onToggle={handleToggle}
-      className="cursor-pointer"
       disabled={!user}
+      className="cursor-pointer"
       wrapperClassName={wrapperClassName}
     />
   )
