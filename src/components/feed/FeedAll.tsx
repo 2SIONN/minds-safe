@@ -1,5 +1,6 @@
 'use client'
 
+import { Spinner } from '@/components/common'
 import { FeedItem, FeedListSkeleton } from '@/components/feed'
 import PostDetailCard from '@/components/posts/PostDetailCard'
 import { SORT } from '@/constants/search'
@@ -79,15 +80,11 @@ export default function FeedAll({ filter }: { filter: Filter }) {
     return <div className="py-24 text-center">{MESSAGES.ERROR.EMPTY_ERROR}</div>
   }
 
-  if (isLoading) {
-    return <FeedListSkeleton count={3} />
-  }
-
   if (items.length === 0 && q.length) {
     return <div className="py-24 text-center">{MESSAGES.INFO.FILTER_EMPTY}</div>
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && !isLoading) {
     return (
       <div className="text-center py-24 text-muted-foreground">
         <p className="text-lg mb-2">{MESSAGES.INFO.EMPTY_STATE}</p>
@@ -98,6 +95,12 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
   return (
     <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="bg-background/40 backdrop-blur-sm absolute inset-0" />
+          <Spinner />
+        </div>
+      )}
       {items.map((p) => (
         <FeedItem key={p.id} post={p} onOpen={handleOpen} />
       ))}
