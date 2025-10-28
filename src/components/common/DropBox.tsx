@@ -13,7 +13,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
   // 정렬 옵션 (DropBox 내부에서 고정)
   const options = [
     { label: '최신순', value: 'latest' },
-    { label: '공감순', value: 'likes' },
+    { label: '공감순', value: 'popular' },
   ]
 
   // 드롭다운 열림 여부 + 선택 상태
