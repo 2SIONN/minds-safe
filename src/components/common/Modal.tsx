@@ -2,7 +2,7 @@
 
 import { ComponentPropsWithRef, ReactNode, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { cn } from '@/lib/utils/utils'
+import { cn } from '@/utils/utils'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/common/Card'
 
 interface ModalProps extends ComponentPropsWithRef<'div'> {

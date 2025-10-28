@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { cn } from '@/lib/utils/utils'
+import { cn } from '@/utils/utils'
 import Button from '@/components/common/Button'
 
 interface FabButtonProps {

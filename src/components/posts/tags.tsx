@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils/utils'
+import { cn } from '@/utils/utils'
 
 interface TagsProps {
   tags: string[]
