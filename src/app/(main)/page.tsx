@@ -26,7 +26,7 @@ export default async function Home({ searchParams }: props) {
           <p className="text-sm text-muted-foreground">지금 마음, 익명으로 털어놓아도 괜찮아요.</p>
 
           {/* 검색창 */}
-          <SearchInput q={q} />
+          <SearchInput />
 
           {/* 태그 리스트 */}
           <div className="flex flex-wrap gap-2 mt-4 pb-6">
