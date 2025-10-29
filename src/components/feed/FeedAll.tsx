@@ -9,16 +9,18 @@ import { useCallback, useMemo, useState } from 'react'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
+import { useQuery } from '@tanstack/react-query'
 
 // lib & type
+import { MESSAGES } from '@/constants/messages'
 import { getFeedClient } from '@/lib/api/feed'
 import { getPostDetailClient } from '@/lib/client'
 import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 
 export default function FeedAll({ filter }: { filter: Filter }) {
-  const { q = '', sort = SORT.LATEST, tags } = filter
-  const filters = useMemo(() => JSON.stringify({ q, sort, tags }), [q, sort, tags])
+  const { q = '', sort = SORT.LATEST, tag } = filter
+  const filters = useMemo(() => JSON.stringify({ q, sort, tag }), [q, sort, tag])
 
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({
@@ -30,7 +32,7 @@ export default function FeedAll({ filter }: { filter: Filter }) {
     suspense: false,
   })
 
-  const { data, status, error, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = query
+  const { data, error, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = query
 
   const items: Post[] = useMemo(
     () => data?.pages?.flatMap((p: any) => p?.data?.items ?? []) ?? [],
@@ -49,53 +51,51 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
   // 상세 모달 - 쿼리 적용 필요
   const [open, setOpen] = useState(false)
-  const [detail, setDetail] = useState<Post | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const fetchDetail = useCallback(async (id: string) => {
-    setDetail(null)
-    try {
-      const data = await getPostDetailClient(id)
-      setDetail(data)
-    } catch (e) {
-      console.error(e)
-    }
+  // React Query로 게시글 상세 가져오기
+  const { data: detail, isFetching: detailLoading } = useQuery({
+    queryKey: selectedId ? queryKeys.posts.detail(selectedId) : ['post', 'detail', 'idle'],
+    queryFn: () => getPostDetailClient(selectedId!),
+    enabled: !!selectedId && open, // 모달이 열려 있고 id가 있을 때만 fetch
+    staleTime: 0,
+  })
+
+  // 모달 열기
+  const handleOpen = useCallback((id: string) => {
+    setSelectedId(id)
+    setOpen(true)
   }, [])
 
-  const handleOpen = useCallback(
-    (id: string) => {
-      setOpen(true)
-      void fetchDetail(id)
-    },
-    [fetchDetail]
-  )
-
+  // 모달 닫기
   const handleClose = useCallback(() => {
     setOpen(false)
-    setDetail(null)
+    setSelectedId(null)
   }, [])
 
-  if (status === 'error') {
-    return (
-      <div className="py-24 text-center">목록을 불러오지 못했어요. {(error as Error)?.message}</div>
-    )
+  if (error) {
+    return <div className="py-24 text-center">{MESSAGES.ERROR.EMPTY_ERROR}</div>
   }
 
-  if (isLoading) {
+  if (items.length === 0 && isLoading) {
     return <FeedListSkeleton count={3} />
   }
 
   if (items.length === 0 && q.length) {
+    return <div className="py-24 text-center">{MESSAGES.INFO.FILTER_EMPTY}</div>
+  }
+
+  if (items.length === 0 && !isLoading) {
     return (
-      <div className="py-24 text-center">조건에 맞는 고민이 없어요.{(error as Error)?.message}</div>
+      <div className="text-center py-24 text-muted-foreground">
+        <p className="text-lg mb-2">{MESSAGES.INFO.EMPTY_STATE}</p>
+        <p>{MESSAGES.INFO.EMPTY_STATE_Q}</p>
+      </div>
     )
   }
 
-  if (items.length === 0) {
-    return <div className="py-24 text-center">첫 고민을 남겨주세요!{(error as Error)?.message}</div>
-  }
-
   return (
-    <>
+    <div className="space-y-4">
       {items.map((p) => (
         <FeedItem key={p.id} post={p} onOpen={handleOpen} />
       ))}
@@ -105,12 +105,12 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
       {!hasNextPage && items.length > 0 && (
         <div className="py-10 text-center text-sm text-muted-foreground">
-          마지막 글까지 모두 봤어요.
+          {MESSAGES.INFO.EMPTY_STATE_LAST}
         </div>
       )}
 
       {/* 상세 모달 */}
       {open && detail && <PostDetailCard open={open} onClose={handleClose} post={detail} />}
-    </>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import TagBadge from '@/components/common/TagBadge'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 type TagType = {
   tag: string
@@ -8,8 +9,11 @@ type TagType = {
 }
 
 export default function TagSearch() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
   const [tags, setTags] = useState<TagType[]>([])
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [selectedTag, setSelectedTag] = useState<string>(searchParams.get('tag') ?? '')
 
   useEffect(() => {
     async function fetchTags() {
@@ -18,22 +22,37 @@ export default function TagSearch() {
         const data = await res.json()
 
         if (data.success) {
-          setTags(data.items)
+          console.log('데이터를 성공적으로 가져왔')
+        } else {
+          console.error('데이터를 성공적으로 가져오지 못 했습니다.')
         }
+        setTags(data.items.slice(0, 10))
+        return
       } catch (e) {
-        console.error(e)
+        console.error('호출 실패', e)
       }
     }
     fetchTags()
   }, [])
 
+  //useCallback
   const onClickTag = (tag: string) => {
-    setSelectedTag(tag === selectedTag ? null : tag) //선택 해제 기능 포함
+    const next = selectedTag === tag ? '' : tag
+    setSelectedTag(next)
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (selectedTag === tag) {
+      params.delete('tag')
+    } else {
+      params.set('tag', tag)
+    }
+    console.log(params.get('tag'))
+    router.push(`${pathname}?${params}`)
   }
   return (
     <>
       {/* 태그 리스트 */}
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 flex flex-wrap gap-2 mt-4">
+      <div className="mx-auto max-w-4xl mb-4 flex flex-wrap gap-2 mt-4">
         {tags.map((t) => (
           <TagBadge
             key={t.tag}

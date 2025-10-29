@@ -13,7 +13,7 @@ interface Post {
 
 export default function MypagePostCard() {
   const [posts, setPosts] = useState<Post[]>([])
-  const [loading, setLoading] = useState<Boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
