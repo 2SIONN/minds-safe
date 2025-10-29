@@ -19,6 +19,13 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
   // 드롭다운 열림 여부 + 선택 상태
   const [isOpen, setIsOpen] = useState(false)
   const [selected, setSelected] = useState(defaultValue ?? options[0].value)
+
+  // 하이라이트 제어용 상태
+  // - hovered: 마우스로 올린 항목
+  // - showSelectedOnOpen: 메뉴를 연 직후에만 선택 항목을 강조
+  const [hovered, setHovered] = useState<string | null>(null)
+  const [showSelectedOnOpen, setShowSelectedOnOpen] = useState(false)
+
   const boxRef = useRef<HTMLDivElement>(null)
 
   // 항목 클릭 시 선택 상태 갱신
@@ -45,14 +52,24 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
       {/* 드롭다운 버튼 */}
       <button
         type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center justify-between px-6 py-1.5 min-w-[120px]
+        onClick={() => {
+          const next = !isOpen
+          setIsOpen(next)
+          if (next) {
+            // 메뉴를 여는 순간: 선택 항목을 강조 (hover 없을 때만)
+            setHovered(null)
+            setShowSelectedOnOpen(true)
+          }
+        }}
+        className="flex items-center gap-6 px-4 py-2.5 min-w-[120px] 
                    rounded-(--radius) border border-border
-                   bg-popover text-popover-foreground
-                   hover:bg-muted transition"
+                   bg-background text-popover-foreground
+                   "
       >
         {selectedLabel}
-        <ChevronDown className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`w-4 h-4 ml-3 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {/* 드롭다운 메뉴 */}
@@ -62,16 +79,33 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
           className="absolute right-0 mt-1 w-full min-w-[120px]
                      rounded-(--radius) border border-border
                      bg-popover text-popover-foreground
-                     shadow-lg overflow-hidden z-10"
+                     shadow-lg overflow-hidden z-10
+                     "
+          // 메뉴 밖으로 마우스를 빼면: 어떤 항목도 핑크 아님
+          onMouseLeave={() => {
+            setHovered(null)
+            setShowSelectedOnOpen(false)
+          }}
         >
           {options.map((opt) => {
             const isSelected = opt.value === selected
+            // 강조 규칙:
+            // 1) hover 중이면 hover한 항목만 강조
+            // 2) hover가 없고 방금 연 상태면(selected만 강조)
+            // 3) 나머지 경우는 강조 없음
+            const isActive = hovered ? hovered === opt.value : showSelectedOnOpen && isSelected
+
             return (
               <li
                 key={opt.value}
                 onClick={() => handleSelect(opt.value)}
-                className="flex items-center px-3 py-2 cursor-pointer transition rounded-(--radius)
-                           hover:bg-accent hover:text-accent-foreground"
+                onMouseEnter={() => setHovered(opt.value)}
+                className={`flex items-center px-3 py-2 cursor-pointer transition-colors rounded-(--radius)
+                           ${
+                             isActive
+                               ? 'bg-accent text-accent-foreground  '
+                               : 'hover:bg-accent hover:text-accent-foreground'
+                           }`}
               >
                 {/* 선택된 항목은 체크 아이콘만 표시 */}
                 {isSelected ? (
