@@ -99,14 +99,15 @@ export default function PostWriteModal() {
           <Textarea
             placeholder="익명으로 안전하게 털어놓을 수 있어요…"
             maxLength={1000}
-            className="min-h-[180px] rounded-2xl bg-background/60 border border-border/60 px-4 py-3 leading-relaxed focus-visible:ring-2 focus-visible:ring-ring/40"
+            wrapperClassName="rounded-2xl border border-border/60 bg-background/60 overflow-hidden"
+            textareaClassName="min-h-[200px] resize-none"
             {...form.register('content')}
           />
         </div>
 
         {/* 태그 입력 (콤마 구분) */}
         <div className="space-y-2">
-          <label className="text-[15px] font-semibold">태그</label>
+          <div className="text-[15px] font-semibold">태그</div>
           <input
             type="text"
             value={tagsInput}
@@ -133,7 +134,7 @@ export default function PostWriteModal() {
       </ModalContent>
 
       {/* 푸터 */}
-      <ModalFooter className="px-6 pb-6 pt-0">
+      <ModalFooter className="px-6 pb-6 pt-2">
         <Button
           onClick={onSubmit}
           disabled={submitting || content.length === 0 || content.length > 1000}
