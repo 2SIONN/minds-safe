@@ -20,9 +20,27 @@ const QuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(10),
   cursor: z.string().optional(), // 이전 응답에서 받은 nextCursor
   tag: z.string().trim().optional(),
-  q: z.string().default(''),
+  q: z.string().default('').optional(),
   sort: z.enum(['latest', 'popular']).default('latest'),
 })
+
+function normalizeTags(raw: unknown): string[] {
+  if (Array.isArray(raw)) {
+    return raw
+      .filter((t) => typeof t === 'string')
+      .map((t) => t.trim())
+      .filter(Boolean)
+  }
+
+  if (typeof raw === 'string') {
+    return raw
+      .split(',')
+      .map((t) => t.trim())
+      .filter(Boolean)
+  }
+
+  return []
+}
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -73,16 +91,33 @@ export async function GET(req: Request) {
     },
   })
 
+  // 무한스크롤 적용 안되는 코드
+  // const allPosts = await prisma.post.findMany({
+  //   where,
+  //   orderBy,
+  //   include: {
+  //     empathies: true,
+  //     replies: true,
+  //     author: true,
+  //     _count: {
+  //       select: {
+  //         empathies: true,
+  //         replies: true,
+  //       },
+  //     },
+  //   },
+  // })
+
   const hasMore = list.length > limit
-  const slicedRaw = hasMore ? list.slice(0, -1) : list
+  const postList = Object.values(list)
 
   const filteredByTag = tag
-    ? slicedRaw.filter((post) => {
-        // 안전하게 가드
-        if (!Array.isArray(post.tags)) return false
-        return post.tags.includes(tag)
+    ? postList.filter((post) => {
+        const normalized = normalizeTags(post.tags)
+
+        return normalized.includes(tag)
       })
-    : slicedRaw
+    : postList
 
   const nextCursor =
     hasMore && filteredByTag.length > 0
@@ -113,11 +148,14 @@ export async function POST(req: Request) {
 
     const body = await req.json()
     const parsed = postCreateSchema.parse(body)
+
     const post = await prisma.post.create({
       data: {
         authorId: session.uid,
         content: parsed.content,
-        tags: parsed.tags ?? [], // ✅ String[]
+        // parsed.tags 가 이미 string[]라고 가정.
+        // 만약 optional이면 []로 fallback
+        tags: parsed.tags ?? [],
         imageUrl: parsed.imageUrl || null,
       },
     })

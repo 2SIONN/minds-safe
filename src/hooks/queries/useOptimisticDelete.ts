@@ -1,20 +1,21 @@
 import { Snapshot } from '@/types/post'
 import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
 
-type Ctx<T> = {
-  snapshots?: Snapshot[]
-  prev?: T[]
+type Ctx = {
+  postSnapshots?: Snapshot[]
+  replySnapshots?: Snapshot[]
   removeId?: string
 }
 
-type PatchPosts = (queryClient: QueryClient, removeId: string) => Snapshot[]
+type PatchList = (queryClient: QueryClient, removeId: string) => Snapshot[]
 
 interface UseOptimisticDeleteParams<T> {
   postsKey?: QueryKey
   listKey: QueryKey
   mutationFn: (vars: T) => Promise<unknown>
   getId?: (item: T) => string
-  patchPosts?: PatchPosts
+  patchPosts?: PatchList
+  patchReplies?: PatchList
 }
 
 export function useOptimisticDelete<T extends { id: string }>({
@@ -23,11 +24,12 @@ export function useOptimisticDelete<T extends { id: string }>({
   mutationFn,
   getId = (item) => item.id,
   patchPosts,
+  patchReplies,
 }: UseOptimisticDeleteParams<T>) {
   const queryClient = useQueryClient()
   const MUTATION_KEY = [...listKey, 'delete']
 
-  return useMutation<unknown, Error, T, Ctx<T>>({
+  return useMutation<unknown, Error, T, Ctx>({
     mutationKey: MUTATION_KEY,
     mutationFn,
     onMutate: async (payload) => {
@@ -35,23 +37,25 @@ export function useOptimisticDelete<T extends { id: string }>({
         queryClient.cancelQueries({ queryKey: listKey }),
         postsKey ? queryClient.cancelQueries({ queryKey: postsKey }) : undefined,
       ])
-      const prev = queryClient.getQueryData<T[]>(listKey)
       const id = getId(payload)
-      queryClient.setQueryData(listKey, (old: T[]) => {
-        return (old ?? []).filter((item) => (item as any)?.id !== id)
-      })
-      let snapshots: Snapshot[] | undefined
-      if(patchPosts){
-        snapshots = patchPosts(queryClient, id)
+      let replySnapshots: Snapshot[] | undefined
+      if(patchReplies){
+        replySnapshots = patchReplies(queryClient, id)
       }
-      return { snapshots, prev, removeId: id } satisfies Ctx<T>
+      let postSnapshots: Snapshot[] | undefined
+      if(patchPosts){
+        postSnapshots = patchPosts(queryClient, id)
+      }
+      return { postSnapshots, replySnapshots, removeId: id } satisfies Ctx
     },
     onError: (_err, _payload, ctx) => {
-      if (ctx?.prev) {
-        queryClient.setQueryData(listKey, ctx.prev)
+      if (ctx?.replySnapshots) {
+        for(const { key, data } of ctx.replySnapshots){
+          queryClient.setQueryData(key, data)
+        }
       }
-      if(postsKey && ctx?.snapshots){
-        for(const { key, data } of ctx.snapshots){
+      if(postsKey && ctx?.postSnapshots){
+        for(const { key, data } of ctx.postSnapshots){
           queryClient.setQueryData(key, data)
         }
       }

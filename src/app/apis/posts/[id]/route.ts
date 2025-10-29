@@ -7,6 +7,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
     where: { id: id },
     include: {
       empathies: true,
+      author: true,
       replies: { include: { empathies: true, author: true }, orderBy: { createdAt: 'desc' } },
     },
   })

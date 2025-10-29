@@ -1,11 +1,15 @@
-import { queryKeys } from '../query-keys'
+import { queryKeys } from '@/hooks/queries/query-keys'
 import { postReplies } from '@/lib/api/replies'
-import { Reply, ReplyPayload } from '@/types/post'
+import { Post, Reply, ReplyPayload } from '@/types/post'
 import { useAuthStore } from '@/store/useAuthStore'
-import { useOptimisticCreate } from '../useOptimisticCreate'
+import { useOptimisticCreate } from '@/hooks/queries/useOptimisticCreate'
 import { User } from '@prisma/client'
-import { patchAllPostsLists } from '../query-utils'
-import { QueryClient, QueryKey } from '@tanstack/react-query'
+import {
+  patchAllPostsLists,
+  postPatchReplaceByReplyId,
+  prePatchReply,
+} from '@/hooks/queries/query-utils'
+import { QueryClient } from '@tanstack/react-query'
 
 export const usePostReplies = (postId: string) => {
   const { user } = useAuthStore()
@@ -29,10 +33,6 @@ export const usePostReplies = (postId: string) => {
       }
       return temp
     },
-    mergeServerItem: (optimistic, server) => ({
-      ...server,
-      author: server.author ?? optimistic.author,
-    }),
     prePatchPosts: (queryClient: QueryClient, temp: Reply) =>
       patchAllPostsLists(POST_KEY, queryClient, postId, (post) => ({
         ...post,
@@ -43,5 +43,9 @@ export const usePostReplies = (postId: string) => {
         ...post,
         replies: (post.replies ?? []).map((reply) => (reply.id === tempId ? res : reply)),
       })),
+    prePatchReplies: (queryClient: QueryClient, temp: Reply) =>
+      prePatchReply(queryClient, REPLY_KEY, temp),
+    postPatchReplies: (queryClient: QueryClient, tempId: string, res: Reply) =>
+      postPatchReplaceByReplyId(queryClient, REPLY_KEY, tempId, res),
   })
 }
