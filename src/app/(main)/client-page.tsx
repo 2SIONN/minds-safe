@@ -18,13 +18,10 @@ type Props = {
 
 export default function ClientPage(props: Props) {
   const { filter, initialItems, initialNextCursor } = props
-  const { q = '', sort = SORT.LATEST, tags } = filter
+  const { q = '', sort = SORT.LATEST, tag } = filter
 
   const qc = useQueryClient()
-  const key = useMemo(
-    () => queryKeys.posts.list(JSON.stringify({ q, sort, tags })),
-    [q, sort, tags]
-  )
+  const key = useMemo(() => queryKeys.posts.list(JSON.stringify({ q, sort, tag })), [q, sort, tag])
 
   const [isTransitioning, setIsTransitioning] = useState(false)
 
@@ -32,7 +29,7 @@ export default function ClientPage(props: Props) {
     setIsTransitioning(true)
     const timeout = setTimeout(() => setIsTransitioning(false), 200)
     return () => clearTimeout(timeout)
-  }, [q, sort, tags])
+  }, [q, sort, tag])
 
   useEffect(() => {
     qc.setQueryData(key, {
