@@ -34,15 +34,15 @@ export default function FeedItem({ post, onOpen }: { post: Post; onOpen: (id: st
       tags={tags}
     >
       <div onClick={stopPropagation}>
-        <LikeButton type="POST" id={id} active={initiallyLiked} count={likeCount} />
+        <LikeButton
+          type="POST"
+          id={id}
+          active={initiallyLiked}
+          count={likeCount}
+          withBackground={false}
+        />
       </div>
-      <ActionToggle
-        variant="comment"
-        active={false}
-        count={replyCount}
-        aria-label="댓글 보기"
-        
-      />
+      <ActionToggle variant="comment" active={false} count={replyCount} aria-label="댓글 보기" />
     </FeedCard>
   )
 }

@@ -5,13 +5,11 @@ import { Modal } from '@/components/common/Modal'
 import { FeedTags } from '@/components/feed'
 import LikeButton from '@/components/posts/LikeButton'
 import NickName from '@/components/posts/NickName'
-import ReplyForm from '@/components/posts/ReplyForm'
-import ReplyList from '@/components/posts/ReplyList'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Post } from '@/types/post'
 import { useQueryClient, useQuery } from '@tanstack/react-query'
-import { useMemo } from 'react'
 import { queryKeys } from '@/hooks/queries/query-keys'
+import ReplySection from './ReplySection'
 
 type Props = {
   open: boolean
@@ -60,8 +58,7 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
       </CardContent>
 
       <CardFooter className="flex-col items-start">
-        <ReplyList id={post.id} postAuthorId={post.authorId} />
-        <ReplyForm id={post.id} />
+        <ReplySection postId={post.id} postAuthorId={post.authorId}/>
       </CardFooter>
     </Modal>
   )

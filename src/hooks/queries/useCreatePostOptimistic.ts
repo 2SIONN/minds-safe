@@ -5,8 +5,9 @@ import { queryKeys } from '@/hooks/queries/query-keys'
 import type { Post } from '@/types/post'
 import type { User } from '@prisma/client'
 import { QueryClient, QueryKey } from '@tanstack/react-query'
+import { useSearchParams } from 'next/navigation'
 
-type Vars = { content: string; tags: string[] }
+type Vars = { content: string; tags: string[] | string }
 type Snapshot = { key: QueryKey; data: any }
 
 // 필요한 최소 필드만 채운 임시 author
@@ -67,8 +68,13 @@ function postPatchReplaceById(
   return []
 }
 
-export function useCreatePostOptimistic(q: string) {
-  const listKey = queryKeys.posts.list(q)
+export function useCreatePostOptimistic() {
+  const sp = useSearchParams()
+  const q = sp.get('q') ?? ''
+  const sort = sp.get('sort') ?? 'latest'
+  const tag = sp.get('tag') ?? ''
+  const filters = JSON.stringify({ q, sort, tag })
+  const listKey = queryKeys.posts.list(filters)
 
   return useOptimisticCreate<Post, Vars>({
     listKey,

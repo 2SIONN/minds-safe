@@ -3,9 +3,10 @@ import { useOptimisticDelete } from '@/hooks/queries/useOptimisticDelete'
 import { deleteReplies } from '@/lib/api/replies'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { patchAllPostsLists, prePatchDeleteReply } from '@/hooks/queries/query-utils'
+import { Sort } from '@/types/search'
 
-export const useDeleteReplies = (postId: string) => {
-  const REPLY_KEY = queryKeys.replies.list(postId)
+export const useDeleteReplies = (postId: string, sort: Sort) => {
+  const REPLY_KEY = [...queryKeys.replies.list(postId), sort]
   const POST_KEY = queryKeys.posts.lists()
   return useOptimisticDelete<Reply>({
     postsKey: POST_KEY,
