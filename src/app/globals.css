@@ -96,7 +96,19 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #1c252e 25%, #1f2831 50%, #1c252e 75%);
+  background: linear-gradient(90deg, #1C252E55 25%, #1F283188 50%, #1C252E55 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 2s infinite linear;
+}
+
+@utility card-header {
+  @apply h-6 w-full sm:w-135 bg-muted/50 rounded-[14px];
+}
+
+@utility card-tags {
+  @apply mr-2 pb-0.5 px-6.25 bg-muted/50 rounded-[14px];
+}
+
+@utility card-footer {
+  @apply h-5 bg-muted/50 rounded-[14px];
 }
