@@ -52,6 +52,7 @@ export default function TagSearch() {
   return (
     <>
       {/* 태그 리스트 */}
+      <h2 className="text-sm font-semibold text-foreground mb-2 mt-4">인기태그 TOP10</h2>
       <div className="mx-auto max-w-4xl mb-4 flex flex-wrap gap-2 mt-4">
         {tags.map((t) => (
           <TagBadge
