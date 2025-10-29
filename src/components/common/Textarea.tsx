@@ -18,7 +18,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, Props>(function Textarea(
   // 공통 스타일 (디자인 토큰 기반)
   const base =
     'w-full min-h-[100px] resize-none rounded-[--radius] border border-[--color-border] ' +
-    'bg-[--color-input] text-[--color-foreground] placeholder:text-[--color-muted-foreground] ' +
+    'bg-background text-[--color-foreground] placeholder:text-[--color-muted-foreground] ' +
     'px-4 py-3 text-sm transition-shadow'
 
   // 포커스/비활성 상태 스타일

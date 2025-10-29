@@ -26,6 +26,8 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   const [draft, setDraft] = useState(initialName)
   const [authToastOpen, setAuthToastOpen] = useState(false)
 
+  const [successToastOpen, setSuccessToastOpen] = useState(false)
+
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const goLogin = () => {
@@ -123,10 +125,13 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
 
       setValue(nickname || '익명')
       setIsEdit(false)
+
+      setSuccessToastOpen(true)
+      setTimeout(() => setSuccessToastOpen(false), 2000)
     } catch (e: any) {
       console.error(e)
       alert(e?.message ?? '닉네임 저장 중 오류가 발생했습니다.')
-    } finally {
+    }finally {
       setIsSaving(false)
     }
   }
@@ -200,6 +205,25 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
           </div>
         </div>
       )}
+      
+      {successToastOpen &&(
+        <div
+          className="
+          fixed bottom-6 left-1/2 -translate-x-1/2
+          glass-card rounded-3xl px-6 py-4
+          w-[min(90vW, 400px)]
+          text-center
+          font-semibold
+          text-foreground
+          z-50 animate-fade-in-up
+          "
+          role="status"
+          aria-live="polite"
+          >
+            닉네임이 변경되었습니다.
+          </div>
+      )
+      }
     </>
   )
 }
