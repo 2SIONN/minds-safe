@@ -21,8 +21,7 @@ export default function TagSearch() {
         const res = await fetch('/apis/tags')
         const data = await res.json()
 
-        if (data.success) {
-        } else {
+        if (!data.success) {
           console.error('데이터를 성공적으로 가져오지 못했습니다.')
         }
         setTags(data.items.slice(0, 10))
