@@ -34,19 +34,6 @@ export default function TagSearch() {
     }
     fetchTags()
   }, [])
-  //selected를 받아온다
-  // useEffect(() => {
-  //   async function fetchPost() {
-  //     try {
-  //       const res = await fetch(`/apis/posts?tag=${encodeURIComponent(selectedTag)}`)
-  //       const data = await res.json()
-  //       console.log(data)
-  //     } catch (e) {
-  //       console.error(e)
-  //     }
-  //   }
-  //   fetchPost()
-  // }, [selectedTag])
 
   //useCallback
   const onClickTag = (tag: string) => {
