@@ -35,7 +35,7 @@ function TagBadgeBase({
       data-variant = {variant}
       className={[
         'inline-flex items-center justify-center gap-1.5',
-        'rounded-[14px] select-none whitespace-nowrap',
+        'rounded-full select-none whitespace-nowrap',
         'cursor-pointer',
         tone,
         'transition-colors duration-200',

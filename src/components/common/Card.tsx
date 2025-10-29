@@ -43,14 +43,16 @@ export function CardHeader({
       {...props}
     >
       {left && <div className="mr-4">{left}</div>}
-      <div className="flex-1 min-w-0">{children}</div>
+      <div className="flex-1 min-w-0 whitespace-pre-line break-words [overflow-wrap:anywhere] hyphens-auto">
+        {children}
+      </div>
       {(right || closable) && (
         <div className="ml-4 flex items-center gap-2">
           {right}
           {closable && (
             <button
               onClick={onClose}
-              className="p-1 rounded-full hover:bg-muted transition-colors cursor-pointer"
+              className="absolute top-3 right-3 p-2 rounded-full hover:bg-muted transition-colors cursor-pointer z-10"
               aria-label="닫기"
             >
               <X className="size-5" />

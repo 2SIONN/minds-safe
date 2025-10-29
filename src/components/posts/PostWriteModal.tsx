@@ -13,10 +13,9 @@ import Button from '@/components/common/Button'
 import Textarea from '@/components/common/Textarea'
 import { toast } from '@/store/useToast'
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation' // ✅ 추가
+import { useRouter } from 'next/navigation'
 import type { Post } from '@/types/post'
 
-// ✅ 전용 래퍼 훅 사용 (무한스크롤 안전 처리)
 import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
 
 type FormValues = z.input<typeof postCreateSchema>
@@ -59,13 +58,8 @@ export default function PostWriteModal() {
     form.setValue('tags', next, { shouldValidate: true })
   }
 
-  // 목록 쿼리 키에 쓰는 검색어 동기화
-  const searchParams = useSearchParams()
-  const q = searchParams.get('q') ?? ''
-  const router = useRouter() // ✅ 추가
-  const pathname = usePathname()
-  // ✅ 낙관적 생성(무한스크롤 1페이지 맨 앞 삽입 → 성공 시 교체)
-  const createMutation = useCreatePostOptimistic(q)
+  const router = useRouter()
+  const createMutation = useCreatePostOptimistic()
 
   const onSubmit = form.handleSubmit((values) => {
     setSubmitting(true)
@@ -73,7 +67,7 @@ export default function PostWriteModal() {
       { content: values.content, tags: values.tags ?? [] },
       {
         onSuccess: (_post: Post) => {
-          toast.success('등록되었습니다.')
+          toast.success('게시물이 등록되었습니다💙')
           form.reset()
           setTagsInput('')
           closeModal()
@@ -82,7 +76,7 @@ export default function PostWriteModal() {
           if (err.loginRequire) {
             router.push(`/login`)
           }
-          toast.error(err.message || '작성 실패')
+          toast.error(err.message)
         },
         onSettled: () => setSubmitting(false),
       }
@@ -90,10 +84,9 @@ export default function PostWriteModal() {
   })
 
   return (
-
     <Modal open={open} onClose={closeModal} size="2xl" closeOnBackdrop={false} closeOnEscape>
       <ModalHeader closable onClose={closeModal}>
-        <h1 className="text-2xl font-semibold text-primary">고민 남기기</h1>
+        <h1 className="inline-block text-2xl font-extrabold gradient-text">고민 남기기</h1>
       </ModalHeader>
 
       <ModalContent className="px-6 pb-2 pt-5 space-y-8">
@@ -106,14 +99,15 @@ export default function PostWriteModal() {
           <Textarea
             placeholder="익명으로 안전하게 털어놓을 수 있어요…"
             maxLength={1000}
-            className="min-h-[180px] rounded-2xl bg-background/60 border border-border/60 px-4 py-3 leading-relaxed focus-visible:ring-2 focus-visible:ring-ring/40"
+            wrapperClassName="rounded-2xl border border-border/60 bg-background/60 overflow-hidden"
+            textareaClassName="min-h-[200px] resize-none"
             {...form.register('content')}
           />
         </div>
 
         {/* 태그 입력 (콤마 구분) */}
         <div className="space-y-2">
-          <label className="text-[15px] font-semibold">태그</label>
+          <div className="text-[15px] font-semibold">태그</div>
           <input
             type="text"
             value={tagsInput}
@@ -140,7 +134,7 @@ export default function PostWriteModal() {
       </ModalContent>
 
       {/* 푸터 */}
-      <ModalFooter className="px-6 pb-6 pt-0">
+      <ModalFooter className="px-6 pb-6 pt-2">
         <Button
           onClick={onSubmit}
           disabled={submitting || content.length === 0 || content.length > 1000}
