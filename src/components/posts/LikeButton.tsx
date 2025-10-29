@@ -4,6 +4,7 @@ import LikeAction from './LikeAction'
 import { TargetType } from '@/types/post'
 import { useToggleLike } from '@/hooks/queries/useToggleLike'
 import { useAuthStore } from '@/store/useAuthStore'
+import { Sort } from '@/types/search'
 
 type LikeButtonProps = {
   id: string
@@ -13,6 +14,8 @@ type LikeButtonProps = {
   disabled?: boolean
   wrapperClassName?: string
   type: TargetType
+  // 댓글 토글 전용 props
+  sort?: Sort
   /** 배경 유무 (FeedCard는 false, PostDetailCard는 기본 true) */
   withBackground?: boolean
 }
@@ -24,10 +27,11 @@ export default function LikeButton({
   wrapperClassName,
   type,
   targetId,
+  sort,
   withBackground = true,
 }: LikeButtonProps) {
   const { user } = useAuthStore()
-  const { mutate: toggleLike } = useToggleLike(type, id)
+  const { mutate: toggleLike } = useToggleLike(type, id, sort)
 
   const handleToggle = () => {
     if (!user) return

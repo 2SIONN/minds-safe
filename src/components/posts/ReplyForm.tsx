@@ -10,10 +10,11 @@ import { usePostReplies } from "@/hooks/queries/replies/usePostReplies";
 import { useAuthStore } from "@/store/useAuthStore";
 import { toast } from "@/store/useToast";
 import { useRouter } from "next/navigation";
+import { Sort } from "@/types/search";
 
 type ReplyInput = z.infer<typeof replyCreateSchema>
 
-export default function ReplyForm({ id }: { id: string }) {
+export default function ReplyForm({ id, sort }: { id: string, sort: Sort }) {
   const { user } = useAuthStore();
   const router = useRouter()
   const { register, handleSubmit, formState: { errors, isSubmitting }, watch, reset } = useForm<ReplyInput>({
@@ -23,7 +24,7 @@ export default function ReplyForm({ id }: { id: string }) {
     }
   })
 
-  const { mutate: postReply } = usePostReplies(id)
+  const { mutate: postReply } = usePostReplies(id, sort)
 
   const len = watch('body').trim().length
   const isDisabled = len === 0 || isSubmitting;
@@ -36,7 +37,7 @@ export default function ReplyForm({ id }: { id: string }) {
         toast.success('응원을 남겼어요 💙')
       },
       onError: (err: any) => {
-        if(err.loginRequired){
+        if (err.loginRequired) {
           router.push('/login')
         }
         toast.error(err.message || '댓글 작성에 실패했어요 ❌')
@@ -49,7 +50,11 @@ export default function ReplyForm({ id }: { id: string }) {
       <div className="flex items-end gap-4 ">
         <Textarea
           wrapperClassName="flex-1"
-          textareaClassName="rounded-xl focus-visible:ring-2 focus-visible:ring-ring/40"
+          textareaClassName={`
+            bg-background rounded-xl 
+            placeholder:text-muted-foreground 
+            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
+          `}
           placeholder="따뜻한 응원을 남겨보세요..."
           disabled={!user}
           {...register('body')}
