@@ -1,15 +1,17 @@
 import { ReplyPayload } from '@/types/post'
+import { Sort } from '@/types/search'
 
 type GetReplies = {
   cursor?: string | null
   limit?: number
+  sort: Sort
   signal?: AbortSignal
 }
 
-export async function getReplies(id: string, { cursor, limit, signal }: GetReplies) {
+export async function getReplies(id: string, { cursor, sort, signal }: GetReplies) {
   const qs = new URLSearchParams({
     ...(cursor && { cursor }),
-    ...(limit && { limit: String(limit) }),
+    ...(sort && { sort }),
   })
   const res = await fetch(`/apis/posts/${id}/replies?${qs.toString()}`, { signal, cache: 'no-store' })
   if (!res.ok) throw new Error(`작업 실패: ${res.status}`)

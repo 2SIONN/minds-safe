@@ -42,13 +42,13 @@ export function findItemInSnapshots(
 ): Post | Reply | null {
   const hits = queryClient.getQueriesData({ queryKey: listKey })
   const snapshots = hits.map(([key, data]) => ({ key, data }))
+  
   for (const s of snapshots) {
     const data = s.data as InfiniteData<PageData> | undefined
     if (!data?.pages) continue
     for (let pi = 0; pi < data.pages.length; pi++) {
       const items = data.pages[pi]?.data?.items ?? []
       const ii = items.findIndex((it) => it.id === targetId)
-      console.log(ii)
       if (ii !== -1) {
         return items[ii]
       }
