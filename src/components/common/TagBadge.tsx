@@ -30,7 +30,7 @@ function TagBadgeBase({
       data-selected={selected ? '' : undefined}
       className={[
         'inline-flex items-center justify-center gap-1.5',
-        'rounded-[14px] select-none whitespace-nowrap',
+        'rounded-full select-none whitespace-nowrap',
         'cursor-pointer',
         selected ? colorMap.primary : colorMap.neutral,
         'transition-colors duration-200',
