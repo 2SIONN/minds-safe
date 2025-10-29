@@ -53,7 +53,7 @@ export type Snapshot = {
 
 export type PageData = {
   data: {
-    items: Post[]
+    items: any[]
     nextCursor: string
   }
   ok: boolean

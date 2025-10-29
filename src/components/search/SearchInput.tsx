@@ -75,10 +75,10 @@ export default function SearchInput() {
 
   return (
     <>
-      <div className="mx-auto max-w-4xl mt-6">
+      <div className="mx-auto max-w-4xl mt-4">
         <SearchFilter
           className="text-base"
-          containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring/40"
+          containerClassName="h-12 w-full rounded-[16px] bg-background border border-border/60 focus-within:ring-2 ring-ring"
           placeholder="내용이나 태그로 검색..."
           value={search}
           onInput={onInputSearch}

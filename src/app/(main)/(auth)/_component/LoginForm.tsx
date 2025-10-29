@@ -24,11 +24,14 @@ export default function LoginForm({
   handleSubmit,
 }: LoginFormProps) {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-4">
-      <Card className="mt-8 w-full max-w-lg shadow-lg">
-        <CardContent>
+    <main className="flex min-h-screen flex-col items-center justify-center  px-4">
+      <Card className="w-full max-w-md p-8 ">
+        <CardContent className="p-0">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-2xl font-semibold text-center mb-4">로그인</h2>
+            <div className=" mb-6">
+              <h2 className="text-3xl font-semibold text-sky-400">다시 만나요</h2>
+              <p className="text-sm text-gray-400 mt-1">익명으로도 시작할 수 있어요</p>
+            </div>
 
             <Input
               label="이메일"
@@ -52,14 +55,13 @@ export default function LoginForm({
 
             {error && <p className="text-destructive text-sm text-center">{error}</p>}
 
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? '로그인 중...' : '로그인'}
+            <Button type="submit" disabled={loading} className="w-full py-2 ">
+              {loading ? '로딩 중...' : '로그인'}
             </Button>
 
             <p className="text-sm text-center">
-              아직 회원이 아니신가요?{' '}
-              <Link href="/register" className="text-blue-500 hover:underline">
-                회원가입
+              <Link href="/register" className="text-sky-400 hover:underline">
+                처음이신가요?
               </Link>
             </p>
           </form>

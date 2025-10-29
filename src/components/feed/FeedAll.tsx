@@ -9,6 +9,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
+import { useQuery } from '@tanstack/react-query'
 
 // lib & type
 import { MESSAGES } from '@/constants/messages'
@@ -18,8 +19,8 @@ import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 
 export default function FeedAll({ filter }: { filter: Filter }) {
-  const { q = '', sort = SORT.LATEST, tags } = filter
-  const filters = useMemo(() => JSON.stringify({ q, sort, tags }), [q, sort, tags])
+  const { q = '', sort = SORT.LATEST, tag } = filter
+  const filters = useMemo(() => JSON.stringify({ q, sort, tag }), [q, sort, tag])
 
   // 무한스크롤 쿼리
   const query = useInfiniteCursorQuery({
@@ -50,29 +51,26 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
   // 상세 모달 - 쿼리 적용 필요
   const [open, setOpen] = useState(false)
-  const [detail, setDetail] = useState<Post | null>(null)
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const fetchDetail = useCallback(async (id: string) => {
-    setDetail(null)
-    try {
-      const data = await getPostDetailClient(id)
-      setDetail(data)
-    } catch (e) {
-      console.error(e)
-    }
+  // React Query로 게시글 상세 가져오기
+  const { data: detail, isFetching: detailLoading } = useQuery({
+    queryKey: selectedId ? queryKeys.posts.detail(selectedId) : ['post', 'detail', 'idle'],
+    queryFn: () => getPostDetailClient(selectedId!),
+    enabled: !!selectedId && open, // 모달이 열려 있고 id가 있을 때만 fetch
+    staleTime: 0,
+  })
+
+  // 모달 열기
+  const handleOpen = useCallback((id: string) => {
+    setSelectedId(id)
+    setOpen(true)
   }, [])
 
-  const handleOpen = useCallback(
-    (id: string) => {
-      setOpen(true)
-      void fetchDetail(id)
-    },
-    [fetchDetail]
-  )
-
+  // 모달 닫기
   const handleClose = useCallback(() => {
     setOpen(false)
-    setDetail(null)
+    setSelectedId(null)
   }, [])
 
   if (error) {

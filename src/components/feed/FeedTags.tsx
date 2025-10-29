@@ -2,7 +2,15 @@ import { CardContent } from '@/components/common/Card'
 import TagBadge from '@/components/common/TagBadge'
 import { Post } from '@/types/post'
 
-export default function FeedTags({ tags, all = false }: { tags: Post['tags']; all: boolean }) {
+export default function FeedTags({
+  size = 'sm',
+  tags,
+  all = false,
+}: {
+  size?: 'sm' | 'md'
+  tags: Post['tags']
+  all: boolean
+}) {
   if (!tags || tags.length === 0) return null
 
   // 라우트 형식 재지정후 로직 수정 필요 - 현재 string 혹은 string[]로 들어옴
@@ -19,7 +27,7 @@ export default function FeedTags({ tags, all = false }: { tags: Post['tags']; al
   return (
     <CardContent className="p-0 mb-4">
       {displayTags.map((tag, idx) => (
-        <TagBadge key={`feedTag-${tag}-${idx}`} size="sm" className="mr-2">
+        <TagBadge key={`feedTag-${tag}-${idx}`} size={size} className="mr-2">
           {tag}
         </TagBadge>
       ))}

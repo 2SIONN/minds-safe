@@ -91,24 +91,25 @@ export async function GET(req: Request) {
     },
   })
 
-  const allPosts = await prisma.post.findMany({
-    where,
-    orderBy,
-    include: {
-      empathies: true,
-      replies: true,
-      author: true,
-      _count: {
-        select: {
-          empathies: true,
-          replies: true,
-        },
-      },
-    },
-  })
+  // 무한스크롤 적용 안되는 코드
+  // const allPosts = await prisma.post.findMany({
+  //   where,
+  //   orderBy,
+  //   include: {
+  //     empathies: true,
+  //     replies: true,
+  //     author: true,
+  //     _count: {
+  //       select: {
+  //         empathies: true,
+  //         replies: true,
+  //       },
+  //     },
+  //   },
+  // })
 
   const hasMore = list.length > limit
-  const postList = Object.values(allPosts)
+  const postList = Object.values(list)
 
   const filteredByTag = tag
     ? postList.filter((post) => {
