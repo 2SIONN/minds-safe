@@ -27,18 +27,21 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
   const [showSelectedOnOpen, setShowSelectedOnOpen] = useState(false)
 
   const boxRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   // 항목 클릭 시 선택 상태 갱신
   const handleSelect = (value: string) => {
     setSelected(value)
     onSelect?.(value) // 필터/정렬 함수 주입 포인트
     setIsOpen(false)
+    buttonRef.current?.focus()
   }
 
   // 컴포넌트 영역 밖 클릭 시 드롭박스 닫기
   useEffect(() => {
     const handleOutside = (e: MouseEvent) => {
       if (!boxRef.current?.contains(e.target as Node)) setIsOpen(false)
+      buttonRef.current?.focus()
     }
     if (isOpen) document.addEventListener('mousedown', handleOutside)
     return () => document.removeEventListener('mousedown', handleOutside)
@@ -52,6 +55,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
       {/* 드롭다운 버튼 */}
       <button
         type="button"
+        ref={buttonRef}
         onClick={() => {
           const next = !isOpen
           setIsOpen(next)
@@ -61,10 +65,10 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
             setShowSelectedOnOpen(true)
           }
         }}
-        className="flex items-center gap-6 px-4 py-2.5 min-w-[120px] 
-                   rounded-(--radius) border border-border
-                   bg-background text-popover-foreground
-                   "
+        onMouseDown={(e) => e.preventDefault()}
+        className="flex items-center gap-6 px-4 py-2.5 min-w-[120px]
+           rounded-(--radius) border border-border bg-background
+          text-popover-foreground focus:ring-2 ring-ring focus:outline-none"
       >
         {selectedLabel}
         <ChevronDown
@@ -76,7 +80,7 @@ export default function DropBox({ defaultValue, onSelect, className = '' }: Drop
       {isOpen && (
         <ul
           role="listbox"
-          className="absolute right-0 mt-1 w-full min-w-[120px]
+          className="absolute right-0 mt-1 w-full min-w-[120px] p-1
                      rounded-(--radius) border border-border
                      bg-popover text-popover-foreground
                      shadow-lg overflow-hidden z-10
