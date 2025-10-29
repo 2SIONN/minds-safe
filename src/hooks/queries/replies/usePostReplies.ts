@@ -10,10 +10,11 @@ import {
   prePatchReply,
 } from '@/hooks/queries/query-utils'
 import { QueryClient } from '@tanstack/react-query'
+import { Sort } from '@/types/search'
 
-export const usePostReplies = (postId: string) => {
+export const usePostReplies = (postId: string, sort: Sort) => {
   const { user } = useAuthStore()
-  const REPLY_KEY = queryKeys.replies.list(postId)
+  const REPLY_KEY = [...queryKeys.replies.list(postId), sort]
   const POST_KEY = queryKeys.posts.lists()
   return useOptimisticCreate<Reply, ReplyPayload>({
     postsKey: POST_KEY,
