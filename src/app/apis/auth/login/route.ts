@@ -25,10 +25,7 @@ export async function POST(req: Request) {
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 24 * 7,
     })
-    return NextResponse.json(
-      { user: { id: user.id, email: user.email, nickname: user.nickname } },
-      { status: 200 }
-    )
+    return NextResponse.redirect(new URL('/', req.url))
   } catch (e: any) {
     return NextResponse.json({ message: e?.message || 'error' }, { status: 400 })
   }

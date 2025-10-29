@@ -13,7 +13,6 @@ out/
 dist/
 build/
 *.tsbuildinfo
-next-env.d.ts
 
 # ── 번들러/도구 캐시
 .turbo/
