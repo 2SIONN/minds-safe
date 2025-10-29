@@ -4,6 +4,7 @@ import { queryKeys } from './query-keys'
 import { postToggleLikeClient } from '@/lib/client'
 import { useAuthStore } from '@/store/useAuthStore'
 import { User } from '@prisma/client'
+import { Sort } from '@/types/search'
 
 type LikeTargetMap<T extends TargetType> = T extends 'POST'
   ? Post
@@ -11,9 +12,9 @@ type LikeTargetMap<T extends TargetType> = T extends 'POST'
     ? Reply
     : never
 
-export function useToggleLike<T extends TargetType>(type: TargetType, postId: string) {
+export function useToggleLike<T extends TargetType>(type: TargetType, postId: string, sort?: Sort) {
   const { user } = useAuthStore()
-  const LIST_KEY = type === 'POST' ? queryKeys.posts.lists() : queryKeys.replies.list(postId)
+  const LIST_KEY = type === 'POST' ? queryKeys.posts.lists() : [...queryKeys.replies.list(postId), sort]
   const DETAIL_KEY = type === 'POST' ? queryKeys.posts.detail(postId) : undefined
   const target = (payload: EmpathyPayload) =>
     payload.targetType === 'POST' ? { postId: payload.targetId } : { replyId: payload.targetId }

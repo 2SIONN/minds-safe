@@ -11,6 +11,7 @@ import SearchInput from '@/components/search/SearchInput'
 import SortSearch from '@/components/search/SortSearch'
 import { SORT } from '@/constants/search'
 import type { Filter } from '@/types/search'
+import TagSearch from '@/components/search/TagSearch'
 
 type props = {
   searchParams?: Promise<Omit<Filter, 'limit'>>
@@ -29,13 +30,7 @@ export default async function Home({ searchParams }: props) {
           <SearchInput />
 
           {/* 태그 리스트 */}
-          <div className="flex flex-wrap gap-2 mt-4 pb-6">
-            {DEFAULT_TAGS.map((t) => (
-              <TagBadge key={t.value} size="md">
-                {t.label}
-              </TagBadge>
-            ))}
-          </div>
+          <TagSearch />
         </div>
       </section>
 

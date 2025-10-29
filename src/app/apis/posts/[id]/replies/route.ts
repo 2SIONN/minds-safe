@@ -27,7 +27,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
  * Query Params:
  * - limit: number (기본 10, 최대 100)
  * - cursor?: string (다음 페이지 시작 anchor로 쓰이는 마지막 reply id)
- *
+ * - sort: enum (정렬 기준: 최신순/공감순)
+ * - authorOnly: 글쓴이가 작성한 댓글만 보기
  * /apis/posts/[id]/replies?limit=5&cursor=abc123
  */
 

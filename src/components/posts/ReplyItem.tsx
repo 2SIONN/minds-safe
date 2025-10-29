@@ -1,14 +1,15 @@
 'use client'
 
 import { Card, CardContent, CardFooter, CardHeader, TagBadge } from '@/components/common'
+import LikeButton from '@/components/posts/LikeButton'
 import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
 import { useAuthStore } from '@/store/useAuthStore'
 import { toast } from '@/store/useToast'
 import { Reply } from '@/types/post'
+import { Sort } from '@/types/search'
 import { formatRelativeDate } from '@/utils/date'
 import { Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import LikeButton from './LikeButton'
 
 interface TruncatedBodyProps {
   body: string
@@ -20,11 +21,12 @@ interface ReplyItemProps {
   isBest?: boolean
   reply: Reply
   postAuthorId: string
+  sort: Sort
 }
 
 const MAX_LENGTH = 200
 
-export default function ReplyItem({ isBest, reply, postAuthorId }: ReplyItemProps) {
+export default function ReplyItem({ isBest, reply, postAuthorId, sort }: ReplyItemProps) {
   const { user } = useAuthStore()
   const [isShown, setIsShown] = useState(false)
 
@@ -35,7 +37,7 @@ export default function ReplyItem({ isBest, reply, postAuthorId }: ReplyItemProp
 
   const likeCount = reply.empathies?.length ?? 0
 
-  const { mutate: deleteReply } = useDeleteReplies(reply.postId)
+  const { mutate: deleteReply } = useDeleteReplies(reply.postId, sort)
 
   const handleToggle = () => setIsShown((prev) => !prev)
 
@@ -85,6 +87,7 @@ export default function ReplyItem({ isBest, reply, postAuthorId }: ReplyItemProp
           active={liked}
           count={likeCount}
           disabled={!user}
+          sort={sort}
         />
         {user?.id === reply.authorId && (
           <button onClick={() => handleClick(reply)} className="cursor-pointer">
@@ -100,7 +103,7 @@ function TruncatedBody({ body, isShown, onClick }: TruncatedBodyProps) {
   if (!isShown) {
     return (
       <div>
-        <span>{truncatedText}</span>
+        <p className="break-all">{truncatedText}</p>
         <button
           className="cursor-pointer underline text-gray-400 hover:text-gray-200"
           onClick={onClick}
@@ -112,7 +115,7 @@ function TruncatedBody({ body, isShown, onClick }: TruncatedBodyProps) {
   }
   return (
     <div>
-      <span>{body}</span>
+      <p className="break-all">{body}</p>
       <button
         className="cursor-pointer underline text-gray-400 hover:text-gray-200"
         onClick={onClick}
