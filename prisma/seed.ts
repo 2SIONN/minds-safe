@@ -31,11 +31,6 @@ function chunk<T>(arr: T[], size: number) {
   return out
 }
 
-function tagsArrayToCsv(arr: string[]): string {
-  const cleaned = arr.map((t) => t.trim()).filter(Boolean)
-  return cleaned.length > 0 ? `,${cleaned.join(',')},` : ','
-}
-
 // ===== 데이터 풀 =====
 const TAG_POOL = [
   '연애',
@@ -110,13 +105,12 @@ async function createPosts(users: { id: string }[]) {
   const postsData = Array.from({ length: N_POSTS }, () => {
     const author = choice(users)
     const content = choice(CONTENT_POOL)
-    const selectedTags = sample(TAG_POOL, randInt(1, 3))
-    const tags = tagsArrayToCsv(selectedTags)
+    const tags = sample(TAG_POOL, randInt(1, 3))
     const imageUrl = Math.random() < 0.35 ? choice(IMAGE_POOL) : null
     return { authorId: author.id, content, tags, imageUrl }
   })
 
-  // PRISMA: createMany는 tags CSV 문자열에 일부 드라이버에서 제한이 있을 수 있어
+  // PRISMA: createMany는 JSON 컬럼(tags)에 일부 드라이버에서 제한이 있을 수 있어
   // 여기선 안전하게 chunk로 create()를 병렬 처리
   const chunks = chunk(postsData, 50)
   for (const c of chunks) {

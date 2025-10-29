@@ -1,6 +1,3 @@
-import './globals.css'
-import { QueryProvider } from '@/providers/query-provider'
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -8,9 +5,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body>
-        <QueryProvider>{children}</QueryProvider>
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
