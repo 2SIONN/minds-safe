@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import TagBadge from '@/components/common/TagBadge'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 type TagType = {
   tag: string
@@ -9,12 +9,11 @@ type TagType = {
 }
 
 export default function TagSearch() {
-  const [tags, setTags] = useState<TagType[]>([])
-  const [selectedTag, setSelectedTag] = useState<string | null>()
   const searchParams = useSearchParams()
   const router = useRouter()
-  const search = searchParams.get('q')
-  const MaxSelect = 5
+  const pathname = usePathname()
+  const [tags, setTags] = useState<TagType[]>([])
+  const [selectedTag, setSelectedTag] = useState<string>(searchParams.get('tag') ?? '')
 
   useEffect(() => {
     async function fetchTags() {
@@ -23,36 +22,37 @@ export default function TagSearch() {
         const data = await res.json()
 
         if (data.success) {
-          const topTags = setTags(data.items.slice(0, 10))
+          console.log('데이터를 성공적으로 가져왔')
+        } else {
+          console.error('데이터를 성공적으로 가져오지 못 했습니다.')
         }
+        setTags(data.items.slice(0, 10))
+        return
       } catch (e) {
-        console.error(e)
+        console.error('호출 실패', e)
       }
     }
     fetchTags()
   }, [])
-  //selected를 받아온다
-  // useEffect(() => {
-  //   async function fetchPost() {
-  //     try {
-  //       const res = await fetch(`/apis/posts?tag=${encodeURIComponent(selectedTag)}`)
-  //       const data = await res.json()
-  //       console.log(data)
-  //     } catch (e) {
-  //       console.error(e)
-  //     }
-  //   }
-  //   fetchPost()
-  // }, [selectedTag])
 
+  //useCallback
   const onClickTag = (tag: string) => {
-    const selec = selectedTag ? '전체' : tag
-    setSelectedTag(selec)
-    console.log(selec)
+    const next = selectedTag === tag ? '' : tag
+    setSelectedTag(next)
+
+    const params = new URLSearchParams(searchParams.toString())
+    if (selectedTag === tag) {
+      params.delete('tag')
+    } else {
+      params.set('tag', tag)
+    }
+    console.log(params.get('tag'))
+    router.push(`${pathname}?${params}`)
   }
   return (
     <>
       {/* 태그 리스트 */}
+      <h2 className="text-sm font-semibold text-foreground mb-2 mt-4">인기태그 TOP10</h2>
       <div className="mx-auto max-w-4xl mb-4 flex flex-wrap gap-2 mt-4">
         {tags.map((t) => (
           <TagBadge
