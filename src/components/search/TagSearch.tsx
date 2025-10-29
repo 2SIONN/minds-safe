@@ -23,7 +23,7 @@ export default function TagSearch() {
 
         if (data.success) {
         } else {
-          console.error('데이터를 성공적으로 가져오지 못 했습니다.')
+          console.error('데이터를 성공적으로 가져오지 못했습니다.')
         }
         setTags(data.items.slice(0, 10))
         return
