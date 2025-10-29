@@ -12,6 +12,8 @@ export const MESSAGES = {
   INFO: {
     EMPTY_NICKNAME: '닉네임을 비워두면 ‘익명’으로 표시됩니다.',
     EMPTY_STATE: '아직 등록된 고민이 없어요.',
+    EMPTY_STATE_Q: '첫 고민을 남겨볼까요?',
+    EMPTY_STATE_LAST: '마지막 글까지 모두 봤어요.',
     FILTER_EMPTY: '조건에 맞는 고민이 없어요.',
     DUPLICATE_LIKE: '이미 공감했습니다.',
   },
@@ -23,5 +25,6 @@ export const MESSAGES = {
     VALIDATION: '입력 형식을 확인하세요.',
     PERMISSION_DENIED: '작성자만 삭제할 수 있습니다.',
     NOT_FOUND: '존재하지 않는 리소스입니다.',
+    EMPTY_ERROR: '목록을 불러오지 못했어요.',
   },
 } as const

@@ -17,7 +17,7 @@ type props = {
 }
 
 export default async function Home({ searchParams }: props) {
-  const { q = '', sort = SORT.LATEST, tags } = (await searchParams) ?? {}
+  const { q = '', sort = SORT.LATEST, tag = '' } = (await searchParams) ?? {}
 
   return (
     <div>
@@ -45,9 +45,7 @@ export default async function Home({ searchParams }: props) {
           <SortSearch />
         </div>
         {/* 게시글 리스트 / 빈 상태 */}
-        <div className="space-y-4">
-          <ServerPage q={q} sort={sort} tags={tags} />
-        </div>
+        <ServerPage q={q} sort={sort} tag={tag} />
       </main>
 
       {/* 변경: 기존 <Fab .../> 대신 */}
