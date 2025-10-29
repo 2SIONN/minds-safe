@@ -33,19 +33,17 @@ export default function ReplyList({ id, postAuthorId, sort }: ReplyListProps) {
   })
 
   if (isLoading) {
-    return <div className="w-full flex items-center justify-center h-[10vh] py-6 border-y border-white/10"><Spinner /></div>
+    return <div className="w-full flex items-center justify-center h-[10vh] py-6"><Spinner /></div>
   }
   if (!replies || replies.length === 0) {
-    return <div className="w-full text-center text-gray-400 p-10 border-y border-white/10">응원이 첫 걸음이 돼요.</div>
+    return <div className="w-full text-center text-muted-foreground p-10">응원이 첫 걸음이 돼요.</div>
   }
   return (
-    <>
-      <ul className="w-full max-h-[25vh] overflow-x-hidden">
-        {replies.map(reply => <ReplyItem key={reply.id} reply={reply} postAuthorId={postAuthorId} sort={sort} />)}
-        <div ref={bottomRef} aria-hidden />
+    <div className="w-full max-h-[25vh] overflow-x-hidden">
+      {replies.map(reply => <ReplyItem key={reply.id} reply={reply} postAuthorId={postAuthorId} sort={sort} />)}
+      <div ref={bottomRef} aria-hidden />
 
-        {isFetchingNextPage && <div className="w-full flex items-center justify-center h-[10vh]"><Spinner /></div>}
-      </ul>
-    </>
+      {isFetchingNextPage && <div className="w-full flex items-center justify-center h-[10vh]"><Spinner /></div>}
+    </div>
   )
 }
