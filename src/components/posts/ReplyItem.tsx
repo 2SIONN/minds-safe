@@ -1,15 +1,15 @@
 'use client'
 
+import { Card, CardContent, CardFooter, CardHeader, TagBadge } from '@/components/common'
+import LikeButton from '@/components/posts/LikeButton'
+import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
 import { useAuthStore } from '@/store/useAuthStore'
+import { toast } from '@/store/useToast'
 import { Reply } from '@/types/post'
+import { Sort } from '@/types/search'
 import { formatRelativeDate } from '@/utils/date'
 import { Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
-import LikeButton from './LikeButton'
-import { toast } from '@/store/useToast'
-import { Card, CardContent, CardFooter, CardHeader, TagBadge } from '../common'
-import { Sort } from '@/types/search'
 
 interface TruncatedBodyProps {
   body: string
@@ -18,6 +18,7 @@ interface TruncatedBodyProps {
 }
 
 interface ReplyItemProps {
+  isBest?: boolean
   reply: Reply
   postAuthorId: string
   sort: Sort
@@ -25,14 +26,14 @@ interface ReplyItemProps {
 
 const MAX_LENGTH = 200
 
-export default function ReplyItem({ reply, postAuthorId, sort }: ReplyItemProps) {
+export default function ReplyItem({ isBest, reply, postAuthorId, sort }: ReplyItemProps) {
   const { user } = useAuthStore()
   const [isShown, setIsShown] = useState(false)
 
   const liked = useMemo(() => {
     if (!reply.empathies || !user) return false
     return reply.empathies.some((em) => user.id === em.userId)
-  }, [reply.empathies, user?.id]);
+  }, [reply.empathies, user?.id])
 
   const likeCount = reply.empathies?.length ?? 0
 
@@ -52,19 +53,19 @@ export default function ReplyItem({ reply, postAuthorId, sort }: ReplyItemProps)
   }
 
   return (
-    <Card className={`w-full mb-4`}>
+    <Card className={`w-full mb-4 ${isBest ? 'border-2 border-primary/50' : ''}`}>
       {/* 닉네임, 뱃지(글쓴이, 베스트), 시간 */}
-      <CardHeader className="flex items-center gap-4 text-sm pb-0 mb-3">
+      <CardHeader className="flex items-center gap-4 text-sm pb-0 mb-3 [&>div.flex-1]:flex [&>div.flex-1]:items-center">
         <span className="font-semibold">{reply.author.nickname ?? '익명'}</span>
         &nbsp;&nbsp;
         {reply.authorId === postAuthorId && (
-          <TagBadge
-            size="sm"
-            selected={true}
-            disabled
-            className="bg-secondary/20 text-secondary rounded mr-2"
-          >
+          <TagBadge size="sm" variant="author" disabled className="rounded-[5px] px-2 py-0.5 mr-2">
             글쓴이
+          </TagBadge>
+        )}
+        {isBest && (
+          <TagBadge size="sm" selected={true} disabled className="rounded-[5px] px-2 py-0.5 mr-2">
+            베스트
           </TagBadge>
         )}
         <span className="text-muted-foreground">{formatRelativeDate(reply.createdAt)}</span>
@@ -92,7 +93,7 @@ export default function ReplyItem({ reply, postAuthorId, sort }: ReplyItemProps)
           <button onClick={() => handleClick(reply)} className="cursor-pointer">
             <Trash2 className="text-red-700 size-4" />
           </button>
-        )}{' '}
+        )}
       </CardFooter>
     </Card>
   )
@@ -102,7 +103,7 @@ function TruncatedBody({ body, isShown, onClick }: TruncatedBodyProps) {
   if (!isShown) {
     return (
       <div>
-        <p className='break-all'>{truncatedText}</p>
+        <p className="break-all">{truncatedText}</p>
         <button
           className="cursor-pointer underline text-gray-400 hover:text-gray-200"
           onClick={onClick}
@@ -114,7 +115,7 @@ function TruncatedBody({ body, isShown, onClick }: TruncatedBodyProps) {
   }
   return (
     <div>
-      <p className='break-all'>{body}</p>
+      <p className="break-all">{body}</p>
       <button
         className="cursor-pointer underline text-gray-400 hover:text-gray-200"
         onClick={onClick}
