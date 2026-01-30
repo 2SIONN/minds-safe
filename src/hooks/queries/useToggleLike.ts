@@ -1,10 +1,14 @@
-import { Empathy, EmpathyPayload, Post, Reply, TargetType } from '@/types/post'
-import { useOptimisticToggleLike } from './useOptimisticToggleLike'
-import { queryKeys } from './query-keys'
+import { User } from '@prisma/client'
+
+
+
 import { postToggleLikeClient } from '@/lib/client'
 import { useAuthStore } from '@/store/useAuthStore'
-import { User } from '@prisma/client'
+import { Empathy, EmpathyPayload, Post, Reply, TargetType } from '@/types/post'
 import { Sort } from '@/types/search'
+
+import { queryKeys } from './query-keys'
+import { useOptimisticToggleLike } from './useOptimisticToggleLike'
 
 type LikeTargetMap<T extends TargetType> = T extends 'POST'
   ? Post

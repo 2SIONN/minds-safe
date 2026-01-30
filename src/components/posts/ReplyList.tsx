@@ -1,12 +1,13 @@
 'use client'
 
+import { useCallback, useMemo } from 'react'
+
 import Spinner from '@/components/common/Spinner'
 import ReplyItem from '@/components/posts/ReplyItem'
 import { useGetReplies } from '@/hooks/queries/replies/useGetReplies'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
 import { Reply } from '@/types/post'
 import { Sort } from '@/types/search'
-import { useCallback, useMemo } from 'react'
 
 interface ReplyListProps {
   id: string
@@ -30,7 +31,7 @@ export default function ReplyList({ id, postAuthorId, sort }: ReplyListProps) {
 
   // 무한 스크롤 추적
   const onReachBottom = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage()
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   const bottomRef = useIntersectionFetchNext(onReachBottom, {

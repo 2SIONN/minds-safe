@@ -2,14 +2,14 @@
 
 import { create } from 'zustand'
 
-type Toast = {
+interface Toast {
   id: string
   message: string
   type: 'success' | 'error' | 'info'
   duration?: number // 기본 5000ms (5초)
 }
 
-type ToastState = {
+interface ToastState {
   items: Toast[]
   add: (toast: Omit<Toast, 'id'>) => void
   remove: (id: string) => void

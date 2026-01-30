@@ -18,7 +18,7 @@ export function useIntersectionFetchNext(
 
     io.observe(el)
     return () => io.disconnect()
-  }, [onIntersect])
+  }, [onIntersect, options])
 
   return ref
 }

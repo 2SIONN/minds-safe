@@ -1,8 +1,9 @@
 'use client'
 
-import { Card, CardContent } from '@/components/common/Card.tsx'
 import { Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
+
+import { Card, CardContent } from '@/components/common/Card.tsx'
 
 interface Post {
   id: string
@@ -42,7 +43,7 @@ export default function MypagePostCard() {
       }
     }
 
-    fetchData()
+    void fetchData()
   }, [])
 
   async function handleDelete(id: string | undefined) {

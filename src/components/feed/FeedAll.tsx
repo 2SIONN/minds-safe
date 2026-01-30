@@ -1,22 +1,21 @@
 'use client'
 
-import { FeedItem, FeedListSkeleton } from '@/components/feed'
-import PostDetailCard from '@/components/posts/PostDetailCard'
-import { SORT } from '@/constants/search'
+import { useQuery } from '@tanstack/react-query'
 import { useCallback, useMemo, useState } from 'react'
 
-// hook
+import { FeedItem, FeedListSkeleton } from '@/components/feed'
+import PostDetailCard from '@/components/posts/PostDetailCard'
+import { MESSAGES } from '@/constants/messages'
+import { SORT } from '@/constants/search'
 import { queryKeys } from '@/hooks/queries/query-keys'
 import { useInfiniteCursorQuery } from '@/hooks/queries/useInfiniteCursorQuery'
 import { useIntersectionFetchNext } from '@/hooks/useIntersectionFetchNext'
-import { useQuery } from '@tanstack/react-query'
-
-// lib & type
-import { MESSAGES } from '@/constants/messages'
 import { getFeedClient } from '@/lib/api/feed'
 import { getPostDetailClient } from '@/lib/client'
+
 import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
+
 
 export default function FeedAll({ filter }: { filter: Filter }) {
   const { q = '', sort = SORT.LATEST, tag } = filter
@@ -29,7 +28,6 @@ export default function FeedAll({ filter }: { filter: Filter }) {
       getFeedClient({ cursor: pageParam ?? undefined, filter, signal }),
     getNextPageParam: (last) => last?.data?.nextCursor ?? null,
     staleTime: 30_000,
-    suspense: false,
   })
 
   const { data, error, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } = query
@@ -41,7 +39,7 @@ export default function FeedAll({ filter }: { filter: Filter }) {
 
   // 무한 스크롤 추적
   const onReachBottom = useCallback(() => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage()
+    if (hasNextPage && !isFetchingNextPage) void fetchNextPage()
   }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
   const bottomRef = useIntersectionFetchNext(onReachBottom, {

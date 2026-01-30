@@ -1,10 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+
+
 import { registerSchema } from '@/lib/validators'
+
 import RegisterForm from '../_component/RegisterForm'
+
 import type { z } from 'zod'
+
 
 type FormDataState = z.infer<typeof registerSchema>
 type FieldErrors = Partial<Record<keyof FormDataState, string[]>>

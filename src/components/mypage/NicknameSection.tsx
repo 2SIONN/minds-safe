@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
 import { Pencil } from 'lucide-react'
+import { useRouter, usePathname } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
+
 import Button from '@/components/common/Button'
-import Input from '@/components/common/Input'
 import { Card, CardContent } from '@/components/common/Card'
+import Input from '@/components/common/Input'
 
 interface NicknameSectionProps {
   initialName?: string
@@ -39,7 +40,7 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   useEffect(() => {
     const ac = new AbortController()
 
-    ;(async () => {
+    void (async () => {
       try {
         setIsLoading(true)
         const res = await fetch('/apis/me', {
@@ -84,7 +85,7 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
   }, [isEdit])
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleSave()
+    if (e.key === 'Enter') void handleSave()
     if (e.key === 'Escape') handleCancel()
   }
 
@@ -227,4 +228,3 @@ export default function NicknameSection({ initialName = '익명' }: NicknameSect
     </>
   )
 }
-

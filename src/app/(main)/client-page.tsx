@@ -1,16 +1,20 @@
 'use client'
 
-import { Spinner } from '@/components/common'
-import { SORT } from '@/constants/search'
-import { queryKeys } from '@/hooks/queries/query-keys'
-import type { Post } from '@/types/post'
-import type { Filter } from '@/types/search'
 import { useQueryClient } from '@tanstack/react-query'
 import { lazy, useEffect, useMemo, useState } from 'react'
 
+
+import { Spinner } from '@/components/common'
+import { SORT } from '@/constants/search'
+import { queryKeys } from '@/hooks/queries/query-keys'
+
+import type { Post } from '@/types/post'
+import type { Filter } from '@/types/search'
+
+
 const FeedAll = lazy(() => import('@/components/feed/FeedAll'))
 
-type Props = {
+interface Props {
   filter: Omit<Filter, 'limit'>
   initialItems: Post[]
   initialNextCursor: string | null

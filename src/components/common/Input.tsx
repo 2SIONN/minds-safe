@@ -1,5 +1,6 @@
-import cn from '@/utils/cn'
 import { ComponentPropsWithRef } from 'react'
+
+import cn from '@/utils/cn'
 
 interface InputProps extends ComponentPropsWithRef<'input'> {
   label?: string

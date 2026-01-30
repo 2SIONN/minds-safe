@@ -1,22 +1,22 @@
 // src/components/posts/PostWriteModal.tsx
 'use client'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { postCreateSchema } from '@/lib/validators'
-import type { z } from 'zod'
 
-import { usePostWriteModal } from '@/store/postWriteModal'
-import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/common/Modal'
+
 import Button from '@/components/common/Button'
+import { Modal, ModalHeader, ModalContent, ModalFooter } from '@/components/common/Modal'
 import Textarea from '@/components/common/Textarea'
+import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
+import { postCreateSchema } from '@/lib/validators'
+import { usePostWriteModal } from '@/store/postWriteModal'
 import { toast } from '@/store/useToast'
 
-import { useRouter } from 'next/navigation'
 import type { Post } from '@/types/post'
-
-import { useCreatePostOptimistic } from '@/hooks/queries/useCreatePostOptimistic'
+import type { z } from 'zod'
 
 type FormValues = z.input<typeof postCreateSchema>
 

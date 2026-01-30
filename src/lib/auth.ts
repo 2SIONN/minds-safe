@@ -1,9 +1,10 @@
 
 import { cookies } from 'next/headers'
+
 import { verifySession } from './jwt'
 import { prisma } from './prisma'
 
-export type SessionUser = { id: string; email: string; nickname: string | null }
+export interface SessionUser { id: string; email: string; nickname: string | null }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
   const cookie = (await cookies()).get('session')?.value

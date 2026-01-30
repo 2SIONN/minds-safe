@@ -1,6 +1,7 @@
 'use client'
 
 import { Heart, MessageCircle } from 'lucide-react'
+
 import cn from '@/utils/cn'
 
 type Variant = 'like' | 'comment'

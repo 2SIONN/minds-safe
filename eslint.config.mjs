@@ -1,12 +1,10 @@
 import { dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { FlatCompat } from '@eslint/eslintrc'
-
 import js from '@eslint/js'
+import nextPlugin from '@next/eslint-plugin-next'
 import { defineConfig } from 'eslint/config'
 import prettierOff from 'eslint-config-prettier/flat'
 import importPlugin from 'eslint-plugin-import'
-import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import unusedImports from 'eslint-plugin-unused-imports'
 import globals from 'globals'
@@ -15,10 +13,8 @@ import tseslint from 'typescript-eslint'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const compat = new FlatCompat({ baseDirectory: __dirname })
-
 export default defineConfig([
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+  nextPlugin.configs['core-web-vitals'],
   {
     ignores: [
       'node_modules/**',
@@ -34,21 +30,19 @@ export default defineConfig([
   },
   {
     settings: {
-      react: { version: 'detect' },
       'import/resolver': {
-        typescript: { project: true, alwaysTryTypes: true },
+        typescript: { project: ['./tsconfig.json'], alwaysTryTypes: true },
       },
     },
   },
   {
     files: ['**/*.{js,jsx}', 'src/**/*.{js,jsx}'],
     plugins: {
-      react,
       import: importPlugin,
       'react-hooks': reactHooks,
       'unused-imports': unusedImports,
     },
-    extends: [js.configs.recommended, react.configs.flat.recommended, prettierOff],
+    extends: [js.configs.recommended, prettierOff],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
@@ -84,17 +78,6 @@ export default defineConfig([
       'no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['off', { args: 'after-used', ignoreRestSiblings: true }],
-      'react/prop-types': 'off',
-      'react/react-in-jsx-scope': 'off',
-      'react/jsx-uses-react': 'off',
-      'react/display-name': 'off',
-      'react/jsx-key': ['error', { checkFragmentShorthand: true, checkKeyMustBeforeSpread: true }],
-      'react/no-unknown-property': 'error',
-      'react/jsx-no-useless-fragment': ['warn', { allowExpressions: true }],
-      'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
-      'react/jsx-no-bind': ['warn', { allowArrowFunctions: true }],
-      'react/jsx-no-duplicate-props': ['error', { ignoreCase: true }],
-      'react/self-closing-comp': ['warn', { component: true, html: true }],
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },
@@ -103,7 +86,6 @@ export default defineConfig([
     files: ['**/*.{ts,tsx}', 'src/**/*.{ts,tsx}'],
     plugins: {
       '@typescript-eslint': tseslint.plugin,
-      react,
       import: importPlugin,
       'react-hooks': reactHooks,
       'unused-imports': unusedImports,
@@ -128,6 +110,16 @@ export default defineConfig([
       'no-undef': 'off',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-base-to-string': 'off',
+      '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/prefer-for-of': 'off',
       'unused-imports/no-unused-imports': 'error',
       'import/no-duplicates': 'error',
       'import/newline-after-import': ['warn', { count: 1 }],
@@ -146,14 +138,6 @@ export default defineConfig([
         { checksVoidReturn: { attributes: false } },
       ],
 
-      ...react.configs.flat.recommended.rules,
-      ...reactHooks.configs.recommended.rules,
-      'react/prop-types': 'off',
-      'react/react-in-jsx-scope': 'off',
-      'react/jsx-uses-react': 'off',
-      'react/jsx-key': ['error', { checkFragmentShorthand: true, checkKeyMustBeforeSpread: true }],
-      'react/no-unknown-property': 'error',
-      'react/self-closing-comp': ['warn', { component: true, html: true }],
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
     },

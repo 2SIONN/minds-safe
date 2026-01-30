@@ -1,14 +1,17 @@
 'use client'
 
-import { useOptimisticCreate } from '@/hooks/queries/useOptimisticCreate'
-import { queryKeys } from '@/hooks/queries/query-keys'
-import type { Post } from '@/types/post'
-import type { User } from '@prisma/client'
 import { QueryClient, QueryKey } from '@tanstack/react-query'
 import { useSearchParams } from 'next/navigation'
 
-type Vars = { content: string; tags: string[] | string }
-type Snapshot = { key: QueryKey; data: any }
+import { queryKeys } from '@/hooks/queries/query-keys'
+import { useOptimisticCreate } from '@/hooks/queries/useOptimisticCreate'
+
+import type { Post } from '@/types/post'
+import type { User } from '@prisma/client'
+
+
+interface Vars { content: string; tags: string[] | string }
+interface Snapshot { key: QueryKey; data: any }
 
 // 필요한 최소 필드만 채운 임시 author
 const makeTempAuthor = (): User =>
@@ -96,7 +99,7 @@ export function useCreatePostOptimistic() {
         const j = await res.json().catch(() => ({}))
         throw new Error(j?.message || `등록 실패(${res.status})`)
       }
-      const raw = (await res.json()) as any
+      const raw = (await res.json())
       const normalized: Post = { ...raw, author: raw.author ?? makeTempAuthor() }
       return normalized
     },

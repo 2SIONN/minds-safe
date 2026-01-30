@@ -1,11 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import type { z } from 'zod'
-import { registerSchema } from '@/lib/validators'
+
+
+import Button from '@/components/common/Button'
 import { Card, CardContent } from '@/components/common/Card'
 import Input from '@/components/common/Input'
-import Button from '@/components/common/Button'
+import { registerSchema } from '@/lib/validators'
+
+import type { z } from 'zod'
 
 type FormData = z.infer<typeof registerSchema>
 

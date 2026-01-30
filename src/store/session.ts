@@ -1,9 +1,9 @@
 // src/stores/session.ts
 import { create } from 'zustand'
-import { createStore } from 'zustand/vanilla'
 import { persist, subscribeWithSelector, createJSONStorage } from 'zustand/middleware'
+import { createStore } from 'zustand/vanilla'
 
-type SessionState = {
+interface SessionState {
   isAuthed: boolean
   nickname: string
   setAuthed: (v: boolean) => void

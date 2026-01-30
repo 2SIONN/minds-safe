@@ -1,5 +1,8 @@
 'use client'
 
+import { Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
+
 import { Card, CardContent, CardFooter, CardHeader, TagBadge } from '@/components/common'
 import LikeButton from '@/components/posts/LikeButton'
 import { useDeleteReplies } from '@/hooks/queries/replies/useDeleteReplies'
@@ -8,8 +11,6 @@ import { toast } from '@/store/useToast'
 import { Reply } from '@/types/post'
 import { Sort } from '@/types/search'
 import { formatRelativeDate } from '@/utils/date'
-import { Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
 
 interface TruncatedBodyProps {
   body: string
@@ -29,11 +30,12 @@ const MAX_LENGTH = 200
 export default function ReplyItem({ isBest, reply, postAuthorId, sort }: ReplyItemProps) {
   const { user } = useAuthStore()
   const [isShown, setIsShown] = useState(false)
+  const userId = user?.id ?? null
 
   const liked = useMemo(() => {
-    if (!reply.empathies || !user) return false
-    return reply.empathies.some((em) => user.id === em.userId)
-  }, [reply.empathies, user?.id])
+    if (!reply.empathies || !userId) return false
+    return reply.empathies.some((em) => userId === em.userId)
+  }, [reply.empathies, userId])
 
   const likeCount = reply.empathies?.length ?? 0
 

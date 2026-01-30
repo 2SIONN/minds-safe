@@ -1,5 +1,6 @@
-import { Page, PageData, Post, Reply, Snapshot } from '@/types/post'
 import { InfiniteData, QueryClient, QueryKey } from '@tanstack/react-query'
+
+import { Page, PageData, Post, Reply, Snapshot } from '@/types/post'
 
 // postId에 해당하는 게시글만 updater 적용
 function patchPostsListData(data: Page, postId: string, updater: (p: Post) => Post) {

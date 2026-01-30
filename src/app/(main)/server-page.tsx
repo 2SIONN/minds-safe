@@ -1,9 +1,11 @@
 import ClientPage from '@/app/(main)/client-page'
 import { SORT } from '@/constants/search'
 import { getBaseUrl } from '@/lib/http'
+
 import type { GetFeedServerPayload } from '@/types/feed'
 import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
+
 import 'server-only'
 
 function buildPostsUrl(base: string, { q = '', sort, tag }: Required<Omit<Filter, 'limit'>>) {

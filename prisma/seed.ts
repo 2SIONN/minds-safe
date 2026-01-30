@@ -217,7 +217,7 @@ async function main() {
   )
   const boosterUsers = sample(users, Math.min(25, users.length)) as { id: string }[]
   for (const [postId, rIdsRaw] of Object.entries(repliesByPost)) {
-    const rIds = rIdsRaw as string[]
+    const rIds = rIdsRaw
     if (!rIds.length) continue
     const target = choice(rIds)
     for (const u of boosterUsers) {

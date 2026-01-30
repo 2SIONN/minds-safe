@@ -3,13 +3,13 @@
 
 import { Trash2 } from 'lucide-react';
 
-export type Reply = { id: string; content: string };
+export interface Reply { id: string; content: string }
 
-type MyReplyItemProps = {
+interface MyReplyItemProps {
   reply: Reply;
   onDelete?: (id: string) => void;
   isDeleting?: boolean;
-};
+}
 
 export default function MyReplyItem({ reply, onDelete, isDeleting }: MyReplyItemProps) {
   return (

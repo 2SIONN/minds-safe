@@ -1,8 +1,9 @@
 'use client'
 
+import { Plus } from 'lucide-react'
+
 import Fab from '@/components/common/Fab'
 import { usePostWriteModal } from '@/store/postWriteModal'
-import { Plus } from 'lucide-react'
 
 export default function PostFab() {
   const { openModal } = usePostWriteModal()

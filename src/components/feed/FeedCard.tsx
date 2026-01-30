@@ -1,10 +1,11 @@
+import { memo } from 'react'
+
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 import { FeedTags } from '@/components/feed'
 import NickName from '@/components/posts/NickName'
 import { formatRelativeDate } from '@/utils/date'
-import { memo } from 'react'
 
-type Props = {
+interface Props {
   content: string
   createdAt: string
   nickname: string

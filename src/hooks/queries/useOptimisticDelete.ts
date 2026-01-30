@@ -1,7 +1,8 @@
-import { Snapshot } from '@/types/post'
 import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
 
-type Ctx = {
+import { Snapshot } from '@/types/post'
+
+interface Ctx {
   postSnapshots?: Snapshot[]
   replySnapshots?: Snapshot[]
   removeId?: string
@@ -61,7 +62,7 @@ export function useOptimisticDelete<T extends { id: string }>({
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: listKey })
+      void queryClient.invalidateQueries({ queryKey: listKey })
     },
   })
 }

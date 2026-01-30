@@ -1,7 +1,8 @@
-import { prisma } from '@/lib/prisma'
 import { cookies } from 'next/headers'
-import { verifySession } from '@/lib/jwt'
 import { NextResponse } from 'next/server'
+
+import { verifySession } from '@/lib/jwt'
+import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   const cookie = (await cookies()).get('session')?.value

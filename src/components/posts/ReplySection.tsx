@@ -1,8 +1,11 @@
 import { useCallback, useState } from "react"
+
+import { Sort } from "@/types/search"
+
 import ReplyForm from "./ReplyForm"
 import ReplyList from "./ReplyList"
-import { Sort } from "@/types/search"
 import { DropBox } from "../common"
+
 
 interface ReplySectionProps {
   postId: string

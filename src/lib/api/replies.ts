@@ -1,7 +1,7 @@
 import { ReplyPayload } from '@/types/post'
 import { Sort } from '@/types/search'
 
-type GetReplies = {
+interface GetReplies {
   cursor?: string | null
   limit?: number
   sort: Sort

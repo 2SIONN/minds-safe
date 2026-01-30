@@ -1,7 +1,7 @@
 import { User } from "@prisma/client"
 import { QueryKey } from "@tanstack/react-query"
 
-export type Post = {
+export interface Post {
   id: string
   authorId: string
   author: User
@@ -46,12 +46,12 @@ export interface Empathy extends EmpathyPayload {
 
 export type TargetType = 'POST' | 'REPLY'
 
-export type Snapshot = {
+export interface Snapshot {
   key: QueryKey
   data: Page[]
 }
 
-export type PageData = {
+export interface PageData {
   data: {
     items: any[]
     nextCursor: string
@@ -59,7 +59,7 @@ export type PageData = {
   ok: boolean
 }
 
-export type Page = {
+export interface Page {
   pageParams: any[]
   pages: PageData[]
 }

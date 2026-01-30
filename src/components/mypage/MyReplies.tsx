@@ -1,13 +1,14 @@
 'use client';
 
 import { memo, useEffect, useState, useCallback } from 'react';
-import MyReplyItem, { Reply } from '@/components/mypage/MyReplyItem';
-import { Card, CardContent } from '@/components/common/Card.tsx';
 
-type MyRepliesProps = {
+import { Card, CardContent } from '@/components/common/Card.tsx';
+import MyReplyItem, { Reply } from '@/components/mypage/MyReplyItem';
+
+interface MyRepliesProps {
   className?: string;
   title?: string;
-};
+}
 
 function MyRepliesBase({
   className = '',
@@ -56,7 +57,7 @@ function MyRepliesBase({
       }
     };
 
-    fetchReplies();
+    void fetchReplies();
   }, []);
 
   const handleDelete = useCallback(async (id: string) => {

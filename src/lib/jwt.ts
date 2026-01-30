@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from 'jose'
+
 import type { JWTPayload } from 'jose'
 
 const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'dev-secret')

@@ -1,8 +1,10 @@
+import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server'
+
+import { verifySession } from '@/lib/jwt'
 import { prisma } from '@/lib/prisma'
 import { likeToggleSchema } from '@/lib/validators'
-import { cookies } from 'next/headers'
-import { verifySession } from '@/lib/jwt'
-import { NextResponse } from 'next/server'
+
 
 export async function POST(req: Request) {
   try {

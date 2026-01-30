@@ -1,22 +1,19 @@
 import { useInfiniteQuery, useSuspenseInfiniteQuery } from '@tanstack/react-query'
 
-// common infinite cursor query hook
-export function useInfiniteCursorQuery<TData, TError = Error, TPageParam = string | null>({
-  queryKey,
-  queryFn,
-  getNextPageParam,
-  initialPageParam = null as TPageParam,
-  staleTime = 30_000,
-  suspense = false,
-}: {
-  queryKey: ReadonlyArray<unknown>
+interface InfiniteCursorOptions<TData, TPageParam> {
+  queryKey: readonly unknown[]
   queryFn: (ctx: { pageParam: TPageParam; signal?: AbortSignal }) => Promise<TData>
   getNextPageParam: (last: TData) => TPageParam | undefined
   initialPageParam?: TPageParam
   staleTime?: number
-  suspense?: boolean
-}) {
-  const options = {
+}
+
+// common infinite cursor query hook
+export function useInfiniteCursorQuery<TData, TError = Error, TPageParam = string | null>(
+  options: InfiniteCursorOptions<TData, TPageParam>
+) {
+  const { queryKey, queryFn, getNextPageParam, initialPageParam, staleTime } = options
+  const resolvedOptions = {
     queryKey,
     queryFn: (ctx: { pageParam: unknown; signal?: AbortSignal }) =>
       queryFn({ pageParam: ctx.pageParam as TPageParam, signal: ctx.signal }),
@@ -25,8 +22,23 @@ export function useInfiniteCursorQuery<TData, TError = Error, TPageParam = strin
     staleTime,
   }
 
-  if (suspense) {
-    return useSuspenseInfiniteQuery(options as any)
+  return useInfiniteQuery(resolvedOptions as any)
+}
+
+export function useSuspenseInfiniteCursorQuery<
+  TData,
+  TError = Error,
+  TPageParam = string | null,
+>(options: InfiniteCursorOptions<TData, TPageParam>) {
+  const { queryKey, queryFn, getNextPageParam, initialPageParam, staleTime } = options
+  const normalizedOptions = {
+    queryKey,
+    queryFn: (ctx: { pageParam: unknown; signal?: AbortSignal }) =>
+      queryFn({ pageParam: ctx.pageParam as TPageParam, signal: ctx.signal }),
+    initialPageParam,
+    getNextPageParam,
+    staleTime,
   }
-  return useInfiniteQuery(options as any)
+
+  return useSuspenseInfiniteQuery(normalizedOptions as any)
 }

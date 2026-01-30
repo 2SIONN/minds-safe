@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
-type S = { open: boolean }
-type A = { openModal: () => void; closeModal: () => void }
+interface S { open: boolean }
+interface A { openModal: () => void; closeModal: () => void }
 
 export const usePostWriteModal = create<S & A>((set) => ({
   open: false,

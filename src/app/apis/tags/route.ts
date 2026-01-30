@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
+
 import { prisma } from '@/lib/prisma'
 
-export type tagsType = { tag: string; count: number }
+export interface tagsType { tag: string; count: number }
 
 function normalizeTags(raw: unknown): string[] {
   if (Array.isArray(raw)) {

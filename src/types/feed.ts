@@ -3,13 +3,13 @@
 import type { Post } from '@/types/post'
 import type { Filter } from '@/types/search'
 
-export type GetFeedClient = {
+export interface GetFeedClient {
   cursor?: string | null
   signal?: AbortSignal
   filter: Omit<Filter, 'limit'>
 }
 
-export type GetFeedServerPayload = {
+export interface GetFeedServerPayload {
   ok: true
   data: { items: Post[]; nextCursor?: string | null }
 }

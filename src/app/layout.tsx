@@ -1,6 +1,8 @@
 import './globals.css'
 import { QueryProvider } from '@/providers/query-provider'
+
 import type { Metadata } from 'next'
+
 
 export const metadata: Metadata = {
   title: 'Minds Safe',

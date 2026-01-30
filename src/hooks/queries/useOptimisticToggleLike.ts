@@ -1,6 +1,9 @@
-import { Empathy, EmpathyPayload, Post, Reply, Snapshot, TargetType } from '@/types/post'
 import { QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
+
+import { Empathy, EmpathyPayload, Post, Reply, Snapshot, TargetType } from '@/types/post'
+
 import { findItemInSnapshots, patchAllPostsLists, prePatchToggleReply } from './query-utils'
+
 
 interface Likable {
   id: string
@@ -22,7 +25,7 @@ interface UseOptimisticToggleLikeParams<T extends WithEmpathies> {
   buildTempEmpathy: (payload: EmpathyPayload) => Empathy
 }
 
-type Ctx<T extends WithEmpathies> = {
+interface Ctx<T extends WithEmpathies> {
   prevList?: T[] | Snapshot[]
   prevDetail?: T
   targetId: string
@@ -141,11 +144,11 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
       }
       if (ctx?.prevList) {
         if (ctx.prevList.every((s) => 'key' in s && 'data' in s)) {
-          for (const { key, data } of ctx.prevList as Snapshot[]) {
+          for (const { key, data } of ctx.prevList) {
             queryClient.setQueryData(key, data)
           }
         } else if (listKey) {
-          queryClient.setQueryData(listKey, ctx.prevList as T[])
+          queryClient.setQueryData(listKey, ctx.prevList)
         }
       }
     },
@@ -179,7 +182,7 @@ export function useOptimisticToggleLike<T extends WithEmpathies>({
       if (type === 'REPLY') {
         // 댓글 리스트는 서버와 한번 동기화 필요
         if (listKey) {
-          queryClient.invalidateQueries({ queryKey: listKey })
+          void queryClient.invalidateQueries({ queryKey: listKey })
         }
         // detailKey는 REPLY에선 없으므로 호출 X
       }

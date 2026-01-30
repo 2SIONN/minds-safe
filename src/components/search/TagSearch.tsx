@@ -1,9 +1,10 @@
 'use client'
-import TagBadge from '@/components/common/TagBadge'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
-type TagType = {
+import TagBadge from '@/components/common/TagBadge'
+
+interface TagType {
   tag: string
   count: number
 }
@@ -30,7 +31,7 @@ export default function TagSearch() {
         console.error('호출 실패', e)
       }
     }
-    fetchTags()
+    void fetchTags()
   }, [])
 
   const onClickTag = useCallback(
@@ -46,7 +47,7 @@ export default function TagSearch() {
       }
       router.push(`${pathname}?${params}`)
     },
-    [selectedTag]
+    [pathname, router, searchParams, selectedTag]
   )
   return (
     <>

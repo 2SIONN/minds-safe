@@ -1,9 +1,10 @@
-import { prisma } from '@/lib/prisma'
-import { loginSchema } from '@/lib/validators'
 import bcrypt from 'bcryptjs'
-import { signSession } from '@/lib/jwt'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
+
+import { signSession } from '@/lib/jwt'
+import { prisma } from '@/lib/prisma'
+import { loginSchema } from '@/lib/validators'
 
 export async function POST(req: Request) {
   try {

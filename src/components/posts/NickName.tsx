@@ -1,4 +1,4 @@
-type NickNameProps = {
+interface NickNameProps {
   nickname: string
 }
 

@@ -1,24 +1,27 @@
 'use client'
 
+import { useCallback, useMemo } from 'react'
+
 import { ActionToggle } from '@/components/common'
 import FeedCard from '@/components/feed/FeedCard'
 import LikeButton from '@/components/posts/LikeButton'
 import { useAuthStore } from '@/store/useAuthStore'
+
 import type { Post } from '@/types/post'
-import { useCallback, useMemo } from 'react'
 
 export default function FeedItem({ post, onOpen }: { post: Post; onOpen: (id: string) => void }) {
   const { id, content, tags, empathies, replies, author, createdAt } = post
   const { user } = useAuthStore()
+  const userId = user?.id ?? null
 
   const likeCount = empathies?.length ?? 0
   const replyCount = replies?.length ?? 0
   const nickname = author.nickname ?? '익명'
 
   const initiallyLiked = useMemo(() => {
-    if (!empathies || !user) return false
-    return empathies.some((e) => e.userId === user.id)
-  }, [empathies, user?.id])
+    if (!empathies || !userId) return false
+    return empathies.some((e) => e.userId === userId)
+  }, [empathies, userId])
 
   const stopPropagation = useCallback<React.MouseEventHandler>((e) => {
     e.stopPropagation()

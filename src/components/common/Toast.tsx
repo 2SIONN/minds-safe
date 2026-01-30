@@ -1,7 +1,8 @@
 'use client'
 
-import { useToast } from '@/store/useToast'
 import { X } from 'lucide-react'
+
+import { useToast } from '@/store/useToast'
 
 export default function Toast() {
   const { items, remove } = useToast()

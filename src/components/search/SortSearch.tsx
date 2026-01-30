@@ -1,16 +1,17 @@
 'use client'
 
-import DropBox from '@/components/common/DropBox'
-import { SORT } from '@/constants/search'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo } from 'react'
+
+import DropBox from '@/components/common/DropBox'
+import { SORT } from '@/constants/search'
 
 export default function SortSearch() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  const currentSort = (searchParams.get('sort') ?? SORT.LATEST) as string
+  const currentSort = (searchParams.get('sort') ?? SORT.LATEST)
 
   const currentUrl = useMemo(() => {
     const qs = searchParams.toString()

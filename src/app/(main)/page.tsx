@@ -1,19 +1,20 @@
 // src/app/(main)/page.tsx
-import TagBadge from '@/components/common/TagBadge'
-import { DEFAULT_TAGS } from '@/constants/tags'
 import 'server-only'
 
 // 변경: Fab/Plus 대신 PostFab + PostWriteModal 사용
+
 import ServerPage from '@/app/(main)/server-page'
 import PostFab from '@/components/posts/PostFab'
 import PostWriteModal from '@/components/posts/PostWriteModal'
 import SearchInput from '@/components/search/SearchInput'
 import SortSearch from '@/components/search/SortSearch'
-import { SORT } from '@/constants/search'
-import type { Filter } from '@/types/search'
 import TagSearch from '@/components/search/TagSearch'
+import { SORT } from '@/constants/search'
 
-type props = {
+import type { Filter } from '@/types/search'
+
+
+interface props {
   searchParams?: Promise<Omit<Filter, 'limit'>>
 }
 

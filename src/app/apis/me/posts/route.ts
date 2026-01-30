@@ -2,8 +2,9 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+
 import { verifySession } from '@/lib/jwt'
+import { prisma } from '@/lib/prisma'
 
 /**
  * GET /apis/my/posts?limit=10&cursor=postId&order=desc
@@ -19,7 +20,7 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url)
     const limit = Math.min(Number(searchParams.get('limit') || '10'), 50)
-    const order = (searchParams.get('order') === 'asc' ? 'asc' : 'desc') as 'asc' | 'desc'
+    const order = (searchParams.get('order') === 'asc' ? 'asc' : 'desc')
     const cursor = searchParams.get('cursor') || undefined
 
     const items = await prisma.post.findMany({

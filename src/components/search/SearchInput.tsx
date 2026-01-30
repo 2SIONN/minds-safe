@@ -1,9 +1,10 @@
 'use client'
 
-import SearchFilter from '@/components/common/SearchFilter'
-import { useDebounce } from '@/hooks/useDebounce'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
+
+import SearchFilter from '@/components/common/SearchFilter'
+import { useDebounce } from '@/hooks/useDebounce'
 
 export default function SearchInput() {
   const router = useRouter()

@@ -1,17 +1,21 @@
 'use client'
 
+import { useQueryClient, useQuery } from '@tanstack/react-query'
+
+
 import { CardContent, CardFooter, CardHeader } from '@/components/common/Card'
 import { Modal } from '@/components/common/Modal'
 import { FeedTags } from '@/components/feed'
 import LikeButton from '@/components/posts/LikeButton'
 import NickName from '@/components/posts/NickName'
+import { queryKeys } from '@/hooks/queries/query-keys'
 import { useAuthStore } from '@/store/useAuthStore'
 import { Post } from '@/types/post'
-import { useQueryClient, useQuery } from '@tanstack/react-query'
-import { queryKeys } from '@/hooks/queries/query-keys'
+
 import ReplySection from './ReplySection'
 
-type Props = {
+
+interface Props {
   open: boolean
   onClose: () => void
   post: Post | null
@@ -20,6 +24,15 @@ type Props = {
 export default function PostDetailCard({ open, onClose, post }: Props) {
   const { user } = useAuthStore()
   const queryClient = useQueryClient()
+  const postId = post?.id ?? null
+
+  const { data: cachedPost } = useQuery({
+    queryKey: postId ? queryKeys.posts.detail(postId) : ['post', 'detail', 'empty'],
+    queryFn: () => post,
+    initialData: () =>
+      postId ? queryClient.getQueryData(queryKeys.posts.detail(postId)) ?? post : null,
+    enabled: !!postId,
+  })
 
   if (!post) {
     return (
@@ -30,12 +43,6 @@ export default function PostDetailCard({ open, onClose, post }: Props) {
       </Modal>
     )
   }
-
-  const { data: cachedPost } = useQuery({
-    queryKey: queryKeys.posts.detail(post.id),
-    queryFn: async () => post, // 이미 받은 post를 초기 데이터로 사용
-    initialData: () => queryClient.getQueryData(queryKeys.posts.detail(post.id)) ?? post,
-  })
 
   const currentPost = cachedPost ?? post
   const liked = currentPost.empathies?.some((e) => e.userId === user?.id) ?? false

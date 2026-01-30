@@ -1,7 +1,8 @@
-import { Snapshot } from '@/types/post'
 import { QueryClient, QueryKey, useMutation, useQueryClient } from '@tanstack/react-query'
 
-type Ctx = {
+import { Snapshot } from '@/types/post'
+
+interface Ctx {
   postSnapshots?: Snapshot[]
   repliesSnapshots?: Snapshot[]
   tempId?: string
@@ -100,7 +101,7 @@ export function useOptimisticCreate<T, V>({
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: listKey })
+      void queryClient.invalidateQueries({ queryKey: listKey })
     },
   })
 }

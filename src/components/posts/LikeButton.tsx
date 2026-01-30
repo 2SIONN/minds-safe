@@ -1,12 +1,14 @@
 'use client'
 
-import LikeAction from './LikeAction'
-import { TargetType } from '@/types/post'
+
 import { useToggleLike } from '@/hooks/queries/useToggleLike'
 import { useAuthStore } from '@/store/useAuthStore'
+import { TargetType } from '@/types/post'
 import { Sort } from '@/types/search'
 
-type LikeButtonProps = {
+import LikeAction from './LikeAction'
+
+interface LikeButtonProps {
   id: string
   targetId?: string
   active?: boolean

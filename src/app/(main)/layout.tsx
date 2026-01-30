@@ -1,13 +1,14 @@
 'use client'
 
-import Header from '@/components/common/Header'
-import Toast from '@/components/common/Toast'
+import { LogOut } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
-import { useAuthStore } from '@/store/useAuthStore' // Zustand 스토어 가져오기
-import { LogOut } from 'lucide-react'
+
 import { Button } from '@/components/common'
+import Header from '@/components/common/Header'
+import Toast from '@/components/common/Toast'
+import { useAuthStore } from '@/store/useAuthStore' // Zustand 스토어 가져오기
 
 export default function HomePage({ children }: { children: ReactNode }) {
   const pathname = usePathname()

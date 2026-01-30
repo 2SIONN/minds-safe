@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
 import { ChevronDown, Check } from 'lucide-react'
+import { useState, useRef, useEffect } from 'react'
 
-type DropBoxProps = {
+interface DropBoxProps {
   defaultValue?: string
   onSelect?: (value: string) => void
   className?: string
