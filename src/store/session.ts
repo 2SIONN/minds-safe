@@ -1,7 +1,6 @@
 // src/stores/session.ts
 import { create } from 'zustand'
 import { persist, subscribeWithSelector, createJSONStorage } from 'zustand/middleware'
-import { createStore } from 'zustand/vanilla'
 
 interface SessionState {
   isAuthed: boolean
@@ -11,7 +10,7 @@ interface SessionState {
   reset: () => void
 }
 
-export const sessionStore = createStore<SessionState>()(
+export const useSession = create<SessionState>()(
   persist(
     subscribeWithSelector<SessionState>((set) => ({
       isAuthed: false,
@@ -27,6 +26,4 @@ export const sessionStore = createStore<SessionState>()(
       version: 1,
     }
   )
-)
-
-export const useSession = create(sessionStore) // 컴포넌트에서 사용
+) // 컴포넌트에서 사용

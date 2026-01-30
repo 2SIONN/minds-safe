@@ -6,7 +6,7 @@ export interface Post {
   authorId: string
   author: User
   content: string
-  tags: string
+  tags: string[] | string
   imageUrl: string | null
   createdAt: string
   updatedAt: string
@@ -63,4 +63,3 @@ export interface Page {
   pageParams: any[]
   pages: PageData[]
 }
-

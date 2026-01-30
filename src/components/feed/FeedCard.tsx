@@ -9,7 +9,7 @@ interface Props {
   content: string
   createdAt: string
   nickname: string
-  tags?: string
+  tags?: string[] | string
   onClick?: () => void
   children?: React.ReactNode
 }

@@ -63,7 +63,7 @@ export default function SearchInput() {
   //   setSearch(e.currentTarget.value)
   // }
 
-  const onInputSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onInputSearch = (e: React.FormEvent<HTMLInputElement>) => {
     // q 100자 초과 거부
     const value = e.currentTarget.value
     if (value.length > 100) {
