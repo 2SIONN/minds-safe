@@ -25,7 +25,6 @@ export const metadata: Metadata = {
       { rel: 'manifest', url: '/manifest.json' },
     ],
   },
-  themeColor: '#ffffff',
 }
 
 export default function RootLayout({
