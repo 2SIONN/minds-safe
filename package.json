@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "postinstall": "prisma generate",
     "build": "next build --turbopack",
     "start": "next start",
     "typecheck": "tsc --noEmit",
